@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>611</width>
+    <height>381</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Export Image Options</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="plot_layout"/>
+   </item>
+   <item row="0" column="1">
+    <layout class="QGridLayout" name="grid_rt">
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="titleInput"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="lineThickInput"/>
+     </item>
+     <item row="4" column="1">
+      <widget class="QDialogButtonBox" name="okBtn">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+     <item colspan="2" row="0" column="0">
+      <widget class="QCheckBox" name="annCbox">
+       <property name="text">
+        <string>Show annotations</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="lineLabel">
+       <property name="text">
+        <string>Line thickness</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="textSizeInput"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="textLabel">
+       <property name="text">
+        <string>Font size</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QCheckBox" name="titleCbox">
+       <property name="text">
+        <string>Show title</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>annCbox</sender>
+   <signal>toggled()</signal>
+   <receiver>Form</receiver>
+   <slot>annChecked()</slot>
+  </connection>
+  <connection>
+   <sender>titleCbox</sender>
+   <signal>toggled()</signal>
+   <receiver>Form</receiver>
+   <slot>titleChecked()</slot>
+  </connection>
+  <connection>
+   <sender>lineThickInput</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>Form</receiver>
+   <slot>chgLineThick()</slot>
+  </connection>
+  <connection>
+   <sender>textSizeInput</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>Form</receiver>
+   <slot>chgTextSize()</slot>
+  </connection>
+  <connection>
+   <sender>titleInput</sender>
+   <signal>textChanged()</signal>
+   <receiver>Form</receiver>
+   <slot>titleChanged()</slot>
+  </connection>
+ </connections>
+</ui>
