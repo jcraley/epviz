@@ -3,7 +3,7 @@ JHU EEG
 
 Installation:
 -----
-Clone the repository ```git clone https://github.com/jcraley/jhu-eeg.git```  
+Clone the repository ```git clone https://github.com/jcraley/epviz.git```  
 
 Python >= 3.5 is required. Other packages can be installed by creating a virtual environment and using the provided requirements.txt file.
 
@@ -34,10 +34,6 @@ You can then run the visualizer from the main folder using
     ```python visualization/plot.py```
     
 For more command line options, see the section below. 
-
-If you get the error "ModuleNotFoundError: No module named 'preprocessing' "
-this is likely a path issue with python, and can be fixed using
-    ```export PYTHONPATH=$(pwd)```
     
 Features:
 -----
