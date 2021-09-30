@@ -1,5 +1,4 @@
-# jhu-eeg
-JHU EEG
+# EPViz
 
 Installation:
 -----
