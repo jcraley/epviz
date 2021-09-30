@@ -20,8 +20,8 @@ class ChannelOptions(QWidget):
         self.left = 10
         self.top = 10
         self.title = 'Select signals'
-        self.width = parent.width / 5
-        self.height = parent.height / 2.5
+        self.width = int(parent.width / 5)
+        self.height = int(parent.height / 2.5)
         # self.unprocessed_data = data_for_preds
         # if loading new data make copies in case user cancels loading channels
         self.new_load = 0
@@ -64,7 +64,7 @@ class ChannelOptions(QWidget):
         self.data.total_nchns = len(self.data.chns2labels)
 
         self.setWindowTitle(self.title)
-        self.setGeometry(self.parent.width / 3, self.parent.height / 3,
+        self.setGeometry(int(self.parent.width / 3), int(self.parent.height / 3),
                                 self.width, self.height)
 
         lbl_info = QLabel("Select channels to plot: ")
@@ -203,7 +203,7 @@ class ChannelOptions(QWidget):
                     self.pi.preds_loaded = 1
                     self.pi.plot_loaded_preds = 1
                     self.pi.preds_fn = "loaded from .edf file"
-                    self.pi.pred_width = ((self.data.fs * self.data.max_time) /
+                    self.pi.pred_width = ((self.data.fs * self.parent.max_time_temp) /
                                                 self.pi.preds.shape[0])
                     self.parent.predicted = 1
 

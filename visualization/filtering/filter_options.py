@@ -18,10 +18,11 @@ class FilterOptions(QWidget):
         self.left = 10
         self.top = 10
         self.title = 'Filter Options'
-        self.width = parent.width / 5
-        self.height = parent.height / 3
+        self.width = int(parent.width / 5)
+        self.height = int(parent.height / 3)
         self.data = data
         self.parent = parent
+        self.fs = self.parent.edf_info.fs
         self.setup_ui()
 
     def setup_ui(self):
@@ -30,8 +31,8 @@ class FilterOptions(QWidget):
         layout = QGridLayout()
         self.setWindowTitle(self.title)
         center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(center_point.x() - self.width / 2,
-                center_point.y() - self.height / 2, self.width, self.height)
+        self.setGeometry(int(center_point.x() - self.width / 2),
+                int(center_point.y() - self.height / 2), self.width, self.height)
 
         self.btn_exit = QPushButton('Ok', self)
         layout.addWidget(self.btn_exit,4,3)
@@ -44,7 +45,7 @@ class FilterOptions(QWidget):
 
         self.btn_get_lp = QDoubleSpinBox(self)
         self.btn_get_lp.setValue(self.data.lp)
-        self.btn_get_lp.setRange(0, self.data.fs / 2)
+        self.btn_get_lp.setRange(0, self.fs / 2)
         layout.addWidget(self.btn_get_lp,0,1)
 
         lp_hz_lbl = QLabel("Hz",self)
@@ -58,7 +59,7 @@ class FilterOptions(QWidget):
 
         self.btn_get_hp = QDoubleSpinBox(self)
         self.btn_get_hp.setValue(self.data.hp)
-        self.btn_get_hp.setRange(0, self.data.fs / 2)
+        self.btn_get_hp.setRange(0, self.fs / 2)
         layout.addWidget(self.btn_get_hp,1,1)
 
         hp_hz_lbl = QLabel("Hz",self)
@@ -72,7 +73,7 @@ class FilterOptions(QWidget):
 
         self.btn_get_notch = QDoubleSpinBox(self)
         self.btn_get_notch.setValue(self.data.notch)
-        self.btn_get_notch.setRange(0, self.data.fs / 2)
+        self.btn_get_notch.setRange(0, self.fs / 2)
         layout.addWidget(self.btn_get_notch,2,1)
 
         notch_hz_lbl = QLabel("Hz",self)
@@ -86,7 +87,7 @@ class FilterOptions(QWidget):
 
         self.btn_get_bp1 = QDoubleSpinBox(self)
         self.btn_get_bp1.setValue(self.data.bp1)
-        self.btn_get_bp1.setRange(0, self.data.fs / 2)
+        self.btn_get_bp1.setRange(0, self.fs / 2)
         layout.addWidget(self.btn_get_bp1,3,1)
 
         bp_to_lbl = QLabel("to",self)
@@ -94,7 +95,7 @@ class FilterOptions(QWidget):
 
         self.btn_get_bp2 = QDoubleSpinBox(self)
         self.btn_get_bp2.setValue(self.data.bp2)
-        self.btn_get_bp2.setRange(0, self.data.fs / 2)
+        self.btn_get_bp2.setRange(0, self.fs / 2)
         layout.addWidget(self.btn_get_bp2,3,3)
 
         notch_hz_lbl = QLabel("Hz",self)
@@ -161,20 +162,23 @@ class FilterOptions(QWidget):
         lp = self.btn_get_lp.value()
         bp1 = self.btn_get_bp1.value()
         bp2 = self.btn_get_bp2.value()
-        if ((0 < lp < self.data.fs / 2) and
-            (0 < hp < self.data.fs / 2)):
-            if lp - hp > 0:
-                if self.data.do_lp:
+        if ((0 < lp < self.fs / 2) and
+            (0 < hp < self.fs / 2)):
+            if self.data.do_lp and self.data.do_hp:
+                if lp - hp > 0:
                     self.data.lp = self.btn_get_lp.value()
-                if self.data.do_hp:
                     self.data.hp = self.btn_get_hp.value()
+            elif self.data.do_lp:
+                self.data.lp = self.btn_get_lp.value()
+            elif self.data.do_hp:
+                self.data.hp = self.btn_get_hp.value()
         if 0 < bp1 < bp2:
             if self.data.do_bp:
                 self.data.bp1 = bp1
                 self.data.bp2 = bp2
         else:
             self.data.do_bp = 0
-        if self.btn_get_notch.value() > 0 and self.btn_get_notch.value() < self.data.fs / 2:
+        if self.btn_get_notch.value() > 0 and self.btn_get_notch.value() < self.fs / 2:
             if self.data.do_notch:
                 self.data.notch = self.btn_get_notch.value()
         else:
