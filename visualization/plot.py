@@ -61,15 +61,17 @@ class MainPage(QMainWindow):
         self.top = 10
         self.title = 'EEG Prediction Visualization (EPViz)'
         size_object = QtWidgets.QDesktopWidget().screenGeometry(-1)
-        self.width = size_object.width() * 0.9
-        self.height = size_object.height() * 0.7
+        self.width = int(size_object.width() * 0.9)
+        self.height = int(size_object.height() * 0.7)
         self.app = app
         self.init_ui()
 
     def init_ui(self):
         """ Setup the UI
         """
-        self.app.setStyleSheet(open('visualization/ui_files/gui_stylesheet.css').read())
+        style_file = open('visualization/ui_files/gui_stylesheet.css')
+        self.app.setStyleSheet(style_file.read())
+        style_file.close()
         layout = QGridLayout()
         layout.setSpacing(10)
         grid_lt = QGridLayout()
@@ -249,7 +251,6 @@ class MainPage(QMainWindow):
         self.main_dock.addWidget(self.plot_layout)
         self.grid_rt.addWidget(self.plot_area,0,0,6,8)
 
-
         self.slider = QSlider(Qt.Horizontal, self)
         self.slider.setMinimum(0)
         self.slider.setMaximum(3000)
@@ -285,8 +286,7 @@ class MainPage(QMainWindow):
         self.grid_rt.addWidget(self.time_lbl, 7, 7)
 
         #---- Right side dock ----#
-        self.dock_width = self.width * 0.23
-
+        self.dock_width = int(self.width * 0.23)
         # Annotation dock
         self.scroll = QDockWidget()
         self.btn_open_edit_ann = QPushButton("Open annotation editor", self)
@@ -578,6 +578,7 @@ class MainPage(QMainWindow):
             else:
                 self.fi.do_hp = 0
             if float(str_n) > 0:
+                self.fi.do_notch = 1
                 self.fi.notch = float(str_n)
             else:
                 self.fi.do_notch = 0
@@ -631,6 +632,100 @@ class MainPage(QMainWindow):
             "(threshold = " + str(self.thresh) + ")")  # reset label
         self.filtered_data = []  # set filtered_data
         self.si = SpecInfo()
+    
+    def load_data(self, name=""):
+        """
+        Function to load in the data
+
+        loads selected .edf file into edf_info and data
+        data is initially unfiltered
+        """
+        if self.init or self.argv.fn is None:
+            name = QFileDialog.getOpenFileName(
+                self, 'Open file', '.', 'EDF files (*.edf)')
+            name = name[0]
+        if name is None or len(name) == 0:
+            return
+        else:
+            self.edf_file_name_temp = name
+            loader = EdfLoader()
+            try:
+                self.edf_info_temp = loader.load_metadata(name)
+            except:
+                self.throw_alert("The .edf file is invalid.")
+                return
+            self.edf_info_temp.annotations = np.array(
+                self.edf_info_temp.annotations)
+
+            try:
+                if len(self.edf_info_temp.fs) > 1:
+                    self.edf_info_temp.fs = np.max(self.edf_info_temp.fs)
+                elif len(self.edf_info_temp.fs) == 1:
+                    self.edf_info_temp.fs = self.edf_info_temp.fs[0]
+            except:
+                pass
+
+            # setting temporary variables that will be overwritten if
+            # the user selects signals to plot
+            self.max_time_temp = int(
+                self.edf_info_temp.nsamples[0] / self.edf_info_temp.fs)
+            self.ci_temp = ChannelInfo()  # holds channel information
+            self.ci_temp.chns2labels = self.edf_info_temp.chns2labels
+            self.ci_temp.labels2chns = self.edf_info_temp.labels2chns
+            self.ci_temp.fs = self.edf_info_temp.fs
+            self.ci_temp.edf_fn = name
+            self.fn_full_temp = name
+            if len(name.split('/')[-1]) < 40:
+                self.fn_temp = name.split('/')[-1]
+            else:
+                self.fn_temp = name.split('/')[-1][0:37] + "..."
+
+            self.chn_win_open = 1
+            self.predicted = 0  # whether or not predictions have been made
+            self.chn_ops = ChannelOptions(self.ci_temp, self)
+            if self.argv.show and self.argv.montage_file is None:
+                self.chn_ops.show()
+
+    def call_initial_move_plot(self):
+        """
+        Function called by channel_options when channels are loaded
+        """
+        self.init_graph()
+
+        self.slider.setMaximum(self.max_time - self.window_size)
+        self.thresh_slider.setValue(int(self.argv.prediction_thresh * 100))
+
+        self.ann_qlist.clear()  # Clear annotations
+        self.populate_ann_dock()  # Add annotations if they exist
+        self.show_ann_stats_dock()
+
+        nchns = self.ci.nchns_to_plot
+        self.plot_lines = []
+        if not self.init and self.argv.location < self.max_time - self.window_size:
+            self.count = self.argv.location
+
+        ann = self.edf_info.annotations
+        topo_chns_correct = self.check_topo_chns()
+        if (self.pi.pred_by_chn and self.predicted and topo_chns_correct
+            and not self.pi.multi_class):
+            self.add_topoplot()
+            self.btn_topo.setText("Hide topoplots")
+            self.btn_topo.setEnabled(1)
+        if self.filter_checked == 1 or (len(ann[0]) > 0 and ann[2][0] == "filtered"):
+            self.move_plot(0, 0, self.ylim[1], 0)
+        else:
+            # profile.runctx('self.move_plot(0, 0, self.ylim[0], 0)', globals(), locals())
+            self.move_plot(0, 0, self.ylim[0], 0)
+
+        if not self.argv.save_edf_fn is None and self.init == 0:
+            self.init = 1
+            self.save_to_edf()
+
+        self.init = 1
+
+        ann = self.edf_info.annotations
+        if len(ann[0]) > 0 and ann[2][0] == "filtered" or self.filter_checked == 1:
+            self.cbox_filter.setChecked(True)  # must be set after init = 1
 
     def ann_clicked(self):
         """ Moves the plot when annotations in the dock are clicked.
@@ -768,8 +863,7 @@ class MainPage(QMainWindow):
             self.call_move_plot(0,0)
 
     def update_normal_time(self):
-        """
-        Updates self.ann_time_edit_time when self.ann_time_edit_count is changed.
+        """ Updates self.ann_time_edit_time when self.ann_time_edit_count is changed.
         """
         hrs, minutes, sec = convert_from_count(self.ann_time_edit_count.value())
         t = QTime(hrs, minutes, sec)
@@ -777,8 +871,7 @@ class MainPage(QMainWindow):
         self.ann_duration.setRange(-1,self.max_time - self.ann_time_edit_count.value())
 
     def update_count_time(self):
-        """
-        Updates self.ann_time_edit_count when self.ann_time_edit_time is changed.
+        """ Updates self.ann_time_edit_count when self.ann_time_edit_time is changed.
         """
         c = ( 3600 * self.ann_time_edit_time.time().hour() +
                 60 * self.ann_time_edit_time.time().minute() +
@@ -970,8 +1063,7 @@ class MainPage(QMainWindow):
         QDesktopServices.openUrl(QUrl("https://github.com/jcraley/jhu-eeg"))
 
     def slider_change(self):
-        """
-        Updates plot when slider is changed.
+        """ Updates plot when slider is changed.
         """
         if self.init == 1:
             size = self.slider.value()
@@ -1116,110 +1208,6 @@ class MainPage(QMainWindow):
                 if self.argv.show == 0:
                     sys.exit()
 
-    def load_data(self, name=""):
-        """
-        Function to load in the data
-
-        loads selected .edf file into edf_info and data
-        data is initially unfiltered
-        """
-        if self.init or self.argv.fn is None:
-            name = QFileDialog.getOpenFileName(
-                self, 'Open file', '.', 'EDF files (*.edf)')
-            name = name[0]
-            # name = "/Users/daniellecurrey/Desktop/GUI/Random_edf_files/00013145_s004_t002.edf"
-        if name is None or len(name) == 0:
-            return
-        else:
-            self.edf_file_name_temp = name
-            loader = EdfLoader()
-            try:
-                self.edf_info_temp = loader.load_metadata(name)
-            except:
-                self.throw_alert("The .edf file is invalid.")
-                return
-            self.edf_info_temp.annotations = np.array(
-                self.edf_info_temp.annotations)
-
-            # edf_montages = EdfMontage(self.edf_info_temp)
-            # fs_idx = edf_montages.getIndexForFs(self.edf_info_temp.labels2chns)
-
-            # self.data_temp = loader.load_buffers(self.edf_info_temp)
-            # data_for_preds = self.data_temp
-            # self.edf_info_temp.fs, self.data_temp = load_signals(
-            #    self.data_temp, self.edf_info_temp.fs)
-            try:
-                if len(self.edf_info_temp.fs) > 1:
-                    self.edf_info_temp.fs = np.max(self.edf_info_temp.fs)
-                elif len(self.edf_info_temp.fs) == 1:
-                    self.edf_info_temp.fs = self.edf_info_temp.fs[0]
-            except:
-                pass
-
-            # setting temporary variables that will be overwritten if
-            # the user selects signals to plot
-            self.max_time_temp = int(
-                self.edf_info_temp.nsamples[0] / self.edf_info_temp.fs)
-            self.ci_temp = ChannelInfo()  # holds channel information
-            self.ci_temp.chns2labels = self.edf_info_temp.chns2labels
-            self.ci_temp.labels2chns = self.edf_info_temp.labels2chns
-            self.ci_temp.fs = self.edf_info_temp.fs
-            self.ci_temp.max_time = self.max_time_temp
-            self.ci_temp.edf_fn = name
-            self.fn_full_temp = name
-            if len(name.split('/')[-1]) < 40:
-                self.fn_temp = name.split('/')[-1]
-            else:
-                self.fn_temp = name.split('/')[-1][0:37] + "..."
-
-            self.chn_win_open = 1
-            self.predicted = 0  # whether or not predictions have been made
-            self.chn_ops = ChannelOptions(self.ci_temp, self)
-            if self.argv.show and self.argv.montage_file is None:
-                self.chn_ops.show()
-
-    def call_initial_move_plot(self):
-        """
-        Function called by channel_options when channels are loaded
-        """
-        self.init_graph()
-
-        self.fi.fs = self.ci.fs
-        self.slider.setMaximum(self.max_time - self.window_size)
-        self.thresh_slider.setValue(self.argv.prediction_thresh * 100)
-
-        self.ann_qlist.clear()  # Clear annotations
-        self.populate_ann_dock()  # Add annotations if they exist
-        self.show_ann_stats_dock()
-
-        nchns = self.ci.nchns_to_plot
-        self.plot_lines = []
-        if not self.init and self.argv.location < self.max_time - self.window_size:
-            self.count = self.argv.location
-
-        ann = self.edf_info.annotations
-        topo_chns_correct = self.check_topo_chns()
-        if (self.pi.pred_by_chn and self.predicted and topo_chns_correct
-            and not self.pi.multi_class):
-            self.add_topoplot()
-            self.btn_topo.setText("Hide topoplots")
-            self.btn_topo.setEnabled(1)
-        if self.filter_checked == 1 or (len(ann[0]) > 0 and ann[2][0] == "filtered"):
-            self.move_plot(0, 0, self.ylim[1], 0)
-        else:
-            # profile.runctx('self.move_plot(0, 0, self.ylim[0], 0)', globals(), locals())
-            self.move_plot(0, 0, self.ylim[0], 0)
-
-        if not self.argv.save_edf_fn is None and self.init == 0:
-            self.init = 1
-            self.save_to_edf()
-
-        self.init = 1
-
-        ann = self.edf_info.annotations
-        if len(ann[0]) > 0 and ann[2][0] == "filtered" or self.filter_checked == 1:
-            self.cbox_filter.setChecked(True)  # must be set after init = 1
-
     def right_plot_1s(self):
         """ Move plot right 1s """
         self.call_move_plot(1, 1)
@@ -1259,6 +1247,8 @@ class MainPage(QMainWindow):
             new_ws = int(new_ws.split("s")[0])
             self.window_size = new_ws
             self.slider.setMaximum(self.max_time - self.window_size)
+            if self.count > self.max_time - self.window_size:
+                self.count = self.max_time - self.window_size
             self.call_move_plot(0, 0)
         else:
             self.ws_combobox.setCurrentIndex(2)

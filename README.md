@@ -23,7 +23,7 @@ Activate the environment (Windows):
 
 Install required packages:  
 ```
-pip install numpy==1.20.3  
+pip install numpy==1.21.2  
 pip install -r requirements.txt
 ```
 

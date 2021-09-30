@@ -3,65 +3,42 @@ import numpy as np
 import pyedflib
 
 def _check_label(label, label_list):
-    """
-    Checks if a label is in the label list
+    """ Checks if a label is in the label list
+
+        Args:
+            label - the label to check (not converted)
+            label_list - the list (converted)
+        Returns:
+            the index of the label if it is in the list, else -1
     """
     label_CAPS = {k.upper(): v for k, v in label_list.items()}
-    ret = _check_label_helper(label, label_CAPS)
+    # ret = _check_label_helper(label, label_CAPS)
+    labels_noEEG = {}
+    labels_noRef = {}
+    for k,_ in label_CAPS.items():
+        loc = k.find("EEG ")
+        if loc != -1:
+            k2 = k[0:loc] + k[loc+4:]
+            labels_noEEG[k2] = label_CAPS[k]
+        else:
+            labels_noEEG[k] = label_CAPS[k]
+    ret = _check_label_helper(label, labels_noEEG)
     if ret == -1:
-        labels_noEEG = {}
-        labels_noRef = {}
-        for k,_ in label_CAPS.items():
-            loc = k.find("EEG ")
+        for k,_ in labels_noEEG.items():
+            loc = k.find("-REF")
             if loc != -1:
-                k2 = k[loc+4:]
-                labels_noEEG[k2] = label_CAPS[k]
+                k2 = k[0:loc] + k[loc+4:]
+                labels_noRef[k2] = labels_noEEG[k]
             else:
-                labels_noEEG[k] = label_CAPS[k]
-        ret = _check_label_helper(label, labels_noEEG)
+                labels_noRef[k] = labels_noEEG[k]
+        ret = _check_label_helper(label, labels_noRef)
         if ret == -1:
-            for k,_ in labels_noEEG.items():
-                loc = k.find("-REF")
-                if loc != -1:
-                    k2 = k[0:loc]
-                    labels_noRef[k2] = labels_noEEG[k]
-                else:
-                    labels_noRef[k] = labels_noEEG[k]
-            ret = _check_label_helper(label, labels_noRef)
+            label2 = convert_txt_chn_names(label)
+            ret = _check_label_helper(label2, label_CAPS)
             if ret == -1:
-                if label.find("-") != -1:
-                    label2 = ""
-                    if label.split("-")[0] == "T7":
-                        label2 = "T3-" + label.split("-")[1]
-                    if label.split("-")[0] == "P7":
-                        label2 = "T5-" + label.split("-")[1]
-                    if label.split("-")[0] == "T8":
-                        label2 = "T4-" + label.split("-")[1]
-                    if label.split("-")[0] == "P8":
-                        label2 = "T6-" + label.split("-")[1]
-                    if label.split("-")[1] == "T7":
-                        label2 = label.split("-")[0] + "T3"
-                    if label.split("-")[1] == "P7":
-                        label2 = label.split("-")[0] + "T5"
-                    if label.split("-")[1] == "T8":
-                        label2 = label.split("-")[0] + "T4"
-                    if label.split("-")[1] == "P8":
-                        label2 = label.split("-")[0] + "T6"
-                else:
-                    label2 = ""
-                    if label == "T7":
-                        label2 = "T3"
-                    if label == "P7":
-                        label2 = "T5"
-                    if label == "T8":
-                        label2 = "T4"
-                    if label == "P8":
-                        label2 = "T6"
-                ret = _check_label_helper(label2, label_CAPS)
+                ret = _check_label_helper(label2, labels_noEEG)
                 if ret == -1:
-                    ret = _check_label_helper(label2, labels_noEEG)
-                    if ret == -1:
-                        ret = _check_label_helper(label2, labels_noRef)
+                    ret = _check_label_helper(label2, labels_noRef)
     return ret
 
 def _check_label_helper(label, label_list):
@@ -89,20 +66,24 @@ def convert_txt_chn_names(chn_txt):
         chn2 = ""
         if chn.split("-")[0] == "T7":
             chn2 = "T3-"
-        if chn.split("-")[0] == "P7":
+        elif chn.split("-")[0] == "P7":
             chn2 = "T5-"
-        if chn.split("-")[0] == "T8":
+        elif chn.split("-")[0] == "T8":
             chn2 = "T4-"
-        if chn.split("-")[0] == "P8":
+        elif chn.split("-")[0] == "P8":
             chn2 = "T6-"
+        else:
+            chn2 = chn.split("-")[0] + "-"
         if chn.split("-")[1] == "T7":
             chn2 += "T3"
-        if chn.split("-")[1] == "P7":
+        elif chn.split("-")[1] == "P7":
             chn2 += "T5"
-        if chn.split("-")[1] == "T8":
+        elif chn.split("-")[1] == "T8":
             chn2 += "T4"
-        if chn.split("-")[1] == "P8":
+        elif chn.split("-")[1] == "P8":
             chn2 += "T6"
+        else:
+            chn2 += chn.split("-")[1]
         chn = chn2
     else:
         if chn == "T7":
@@ -124,7 +105,6 @@ class ChannelInfo():
         self.chns2labels = []
         self.labels2chns = []
         self.fs = 0
-        self.max_time = 0
         self.edf_fn = ""
 
         self.total_nchns = 0
@@ -210,7 +190,6 @@ class ChannelInfo():
         self.chns2labels = ci2.chns2labels
         self.labels2chns = ci2.labels2chns
         self.fs = ci2.fs
-        self.max_time = ci2.max_time
         self.edf_fn = ci2.edf_fn
 
         self.labels_from_txt_file = ci2.labels_from_txt_file
@@ -227,7 +206,6 @@ class ChannelInfo():
         """
         Converts given channel names to those in two montages.
         """
-
         for _ in range(len(self.chns2labels)):
             self.converted_chn_names.append("")
 
@@ -544,3 +522,4 @@ class ChannelInfo():
                     self.colors.insert(0,self.mid_col)
                 self.data_to_plot[c,:] = f.readSignal(idxs[k]) # data[idxs[k],:]
                 c -= 1
+        self.fs = 2
