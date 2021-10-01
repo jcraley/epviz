@@ -1,14 +1,9 @@
-from collections import defaultdict
+""" Module for various filtering operations """
 from copy import deepcopy
 
 import numpy as np
+from sklearn.preprocessing import scale
 import scipy.signal
-from numpy.fft import fft, fftfreq
-from scipy.special import comb as nchoosek
-from scipy.stats import norm
-from scipy.stats.stats import pearsonr
-from sklearn.preprocessing import StandardScaler, scale
-from scipy.signal import resample_poly
 
 
 #################
@@ -80,11 +75,3 @@ def prefilter(bufs, fs, notch=False, lpf_fc=0, hpf_fc=0, clip_level=3.0,
             filt_bufs[chn] = scale(filt_bufs[chn])
 
     return filt_bufs
-
-
-def resample_256to200(bufs):
-    """Resample all the buffers from 256 Hz to 200 Hz
-    """
-    for ii in range(len(bufs)):
-        bufs[ii] = resample_poly(bufs[ii], up=25, down=32, axis=0)
-    return bufs

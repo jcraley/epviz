@@ -1,3 +1,4 @@
+""" Module for loading edf files """
 import pyedflib
 
 from preprocessing.eeg_info import EegInfo
@@ -13,8 +14,7 @@ def _check_label(label, label_list):
     # If the label is present, load the channel
     if label.upper() in label_list:
         return label.upper()
-    else:
-        return False
+    return False
 
 
 class EdfLoader():
@@ -39,7 +39,7 @@ class EdfLoader():
         eeg_info.name = fn.split('/')[-1].split('.')[0]
         eeg_info.label_list = self.label_list
 
-        """Load the metadata"""
+        # Load the metadata
         f = pyedflib.EdfReader(fn)
         nsignals = f.signals_in_file
         signal_labels = f.getSignalLabels()
