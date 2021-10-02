@@ -868,7 +868,7 @@ class MainPage(QMainWindow):
         hrs, minutes, sec = convert_from_count(self.ann_time_edit_count.value())
         t = QTime(hrs, minutes, sec)
         self.ann_time_edit_time.setTime(t)
-        self.ann_duration.setRange(-1,self.max_time - self.ann_time_edit_count.value())
+        self.ann_duration.setRange(-1, self.max_time - self.ann_time_edit_count.value())
 
     def update_count_time(self):
         """ Updates self.ann_time_edit_count when self.ann_time_edit_time is changed.
@@ -1471,7 +1471,6 @@ class MainPage(QMainWindow):
             for a in self.ann_list:
                 self.main_plot.removeItem(a)
             self.ann_list[:] = []
-
         ann, idx_w_ann = check_annotations(self.count, self.window_size, self.edf_info)
         font_size = 10
         if len(ann) != 0:

@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QProgressDialog
 import preprocessing.dsp as dsp
 
-def check_annotations(t_start,window_size,edf_info):
+def check_annotations(t_start, window_size, edf_info):
     """ Checks to see if there are any anotations in the range t_start to t_end sec
 
     Args:

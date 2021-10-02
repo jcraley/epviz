@@ -70,6 +70,7 @@ class TestChannelLoading(unittest.TestCase):
     def test_init_graph(self):
         # Test that everything is set properly when graph is initialized
         self.plot_window.argv.fn = self.TEST_FN
+        self.plot_window.argv.filter[0] = 1
         self.plot_window.load_data(name=self.TEST_FN)
 
         self.plot_window.edf_info = self.plot_window.edf_info_temp
@@ -86,7 +87,7 @@ class TestChannelLoading(unittest.TestCase):
         self.assertEqual(self.plot_window.fi.do_hp, 1)
         self.assertEqual(self.plot_window.fi.do_notch, 0)
         self.assertEqual(self.plot_window.fi.do_bp, 0)
-        self.assertEqual(self.plot_window.filter_checked, 0)
+        self.assertEqual(self.plot_window.filter_checked, 1)
         self.assertEqual(self.plot_window.cbox_filter.isChecked(), 0)
 
         self.assertEqual(self.plot_window.ylim, [150, 100])
@@ -101,7 +102,7 @@ class TestChannelLoading(unittest.TestCase):
         self.assertEqual(self.plot_window.thresh_lbl.text(),
                 "Change threshold of prediction:  (threshold = 0.5)")
 
-    def test_init_graph_filtered(self):
+    def test_init_graph_filtered0(self):
         # Test that filter info properties are set correctly if filtered info is
         #   in the annotations
         self.plot_window.argv.fn = self.TEST_FN
@@ -129,6 +130,37 @@ class TestChannelLoading(unittest.TestCase):
         self.assertEqual(self.plot_window.fi.do_hp, 1)
         self.assertEqual(self.plot_window.fi.do_notch, 1)
         self.assertEqual(self.plot_window.fi.do_bp, 0)
+        self.assertEqual(self.plot_window.filter_checked, 1)
+        self.assertEqual(self.plot_window.cbox_filter.isChecked(), 0)
+
+    def test_init_graph_filtered1(self):
+        # Test that filter info properties are set correctly if filtered info is
+        #   in the annotations
+        self.plot_window.argv.fn = self.TEST_FN
+        self.plot_window.load_data(name=self.TEST_FN)
+
+        self.plot_window.edf_info = self.plot_window.edf_info_temp
+        self.plot_window.edf_info.annotations = np.insert(self.plot_window.edf_info.annotations,
+                                                            0, [0.0, -1.0, "filtered"], axis=1)
+        self.plot_window.edf_info.annotations = np.insert(self.plot_window.edf_info.annotations,
+                                                            1, [0.0, -1.0, "LP: 0Hz"], axis=1)
+        self.plot_window.edf_info.annotations = np.insert(self.plot_window.edf_info.annotations,
+                                                            2, [0.0, -1.0, "HP: 0Hz"], axis=1)
+        self.plot_window.edf_info.annotations = np.insert(self.plot_window.edf_info.annotations,
+                                                            3, [0.0, -1.0, "N: 0Hz"], axis=1)
+        self.plot_window.edf_info.annotations = np.insert(self.plot_window.edf_info.annotations,
+                                                            4, [0.0, -1.0, "BP: 3-5Hz"], axis=1)
+        self.plot_window.init_graph()
+        
+        self.assertEqual(self.plot_window.fi.lp, 30)
+        self.assertEqual(self.plot_window.fi.hp, 2)
+        self.assertEqual(self.plot_window.fi.notch, 60)
+        self.assertEqual(self.plot_window.fi.bp1, 3)
+        self.assertEqual(self.plot_window.fi.bp2, 5)
+        self.assertEqual(self.plot_window.fi.do_lp, 0)
+        self.assertEqual(self.plot_window.fi.do_hp, 0)
+        self.assertEqual(self.plot_window.fi.do_notch, 0)
+        self.assertEqual(self.plot_window.fi.do_bp, 1)
         self.assertEqual(self.plot_window.filter_checked, 1)
         self.assertEqual(self.plot_window.cbox_filter.isChecked(), 0)
 
@@ -192,7 +224,78 @@ class TestChannelLoading(unittest.TestCase):
         self.assertEqual(self.plot_window.thresh_lbl.text(),
                     "Change threshold of prediction:  (threshold = 0.04)")
 
+    def test_move_plot(self):
+        # Test moving the plot left and right
+        self.plot_window.argv.show = 0
+        self.plot_window.argv.fn = self.TEST_FN
+        self.plot_window.load_data(name=self.TEST_FN)
+        self.plot_window.chn_ops.cbox_bip.setChecked(1)
+        self.plot_window.chn_ops.check()
+        self.plot_window.call_initial_move_plot()
 
+        self.assertEqual(self.plot_window.count, 0)
+        self.plot_window.left_plot_1s()
+        self.assertEqual(self.plot_window.count, 0)
+        self.plot_window.right_plot_1s()
+        self.assertEqual(self.plot_window.count, 1)
+        self.plot_window.right_plot_10s()
+        self.assertEqual(self.plot_window.count, 11)
+        self.plot_window.left_plot_10s()
+        self.assertEqual(self.plot_window.count, 1)
+
+    def test_change_amp(self):
+        # Test changing the ylim
+        self.plot_window.argv.show = 0
+        self.plot_window.argv.fn = self.TEST_FN
+        self.plot_window.load_data(name=self.TEST_FN)
+        self.plot_window.chn_ops.cbox_bip.setChecked(1)
+        self.plot_window.chn_ops.check()
+        self.plot_window.call_initial_move_plot()
+
+        self.assertEqual(self.plot_window.ylim, [150, 100])
+        self.plot_window.inc_amp()
+        self.assertEqual(self.plot_window.ylim, [135, 90])
+        self.plot_window.inc_amp()
+        self.plot_window.inc_amp()
+        self.plot_window.inc_amp()
+        self.plot_window.inc_amp()
+        self.plot_window.inc_amp()
+        self.plot_window.inc_amp()
+        self.plot_window.inc_amp()
+        self.assertEqual(self.plot_window.ylim, [45, 30])
+        self.plot_window.dec_amp()
+        self.assertEqual(self.plot_window.ylim, [60, 40])
+
+    def test_update_normal_time(self):
+        # Test the time ann label updates properly
+        self._load_signals()
+
+        # Before changing
+        self.assertEqual(self.plot_window.ann_time_edit_time.time().second(), 0)
+        self.assertEqual(self.plot_window.ann_time_edit_time.time().minute(), 0)
+        self.assertEqual(self.plot_window.ann_time_edit_time.time().hour(), 0)
+        self.assertEqual(self.plot_window.ann_time_edit_count.value(), 0)
+        self.assertEqual(self.plot_window.ann_duration.minimum(), 0)
+        self.assertEqual(self.plot_window.ann_duration.maximum(), 99)
+
+        self.plot_window.ann_time_edit_count.setValue(27)
+        self.plot_window.update_normal_time()
+        # After changing
+        self.assertEqual(self.plot_window.ann_time_edit_time.time().second(), 27)
+        self.assertEqual(self.plot_window.ann_time_edit_time.time().minute(), 0)
+        self.assertEqual(self.plot_window.ann_time_edit_time.time().hour(), 0)
+        self.assertEqual(self.plot_window.ann_time_edit_count.value(), 27)
+        self.assertEqual(self.plot_window.ann_duration.minimum(), -1)
+        self.assertEqual(self.plot_window.ann_duration.maximum(), 688 - 27)
+
+    def _load_signals(self):
+        # for loading in the test file
+        self.plot_window.argv.show = 0
+        self.plot_window.argv.fn = self.TEST_FN
+        self.plot_window.load_data(name=self.TEST_FN)
+        self.plot_window.chn_ops.cbox_bip.setChecked(1)
+        self.plot_window.chn_ops.check()
+        self.plot_window.call_initial_move_plot()
 
     def tearDown(self):
         pass
