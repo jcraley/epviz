@@ -55,7 +55,7 @@ class SaveEdfInfo():
             self.pyedf_header['recording_additional'] = ""
 
         yr = int(self.start_date.split(".")[2])
-        if yr > 20:
+        if yr > 30:
             yr += 1900
         else:
             yr += 2000

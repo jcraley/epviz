@@ -54,7 +54,7 @@ def check_annotations(t_start, window_size, edf_info):
     return ret, idx_w_ann
 
 def filter_data(data, fs, fi):
-    """ Calls dsp.prefilter to filter the data
+    """ Filters the data.
         Progress bar is created if the process is estimated to take > 4s
 
     Args:
@@ -85,7 +85,7 @@ def filter_data(data, fs, fi):
     for chn in range(nchns):
         # Notch
         if fi.notch > 0 and fi.notch < fs / 2:
-            filt_bufs[chn] = apply_notch(filt_bufs[chn], fs,fi.notch)
+            filt_bufs[chn] = dsp.apply_notch(filt_bufs[chn], fs,fi.notch)
         i += 1
         progress.setValue(i)
         if progress.wasCanceled():
@@ -93,7 +93,7 @@ def filter_data(data, fs, fi):
             break
         # LPF
         if lp > 0:
-            filt_bufs[chn] = dsp.applyLowPass(filt_bufs[chn], fs, lp)
+            filt_bufs[chn] = dsp.apply_low_pass(filt_bufs[chn], fs, lp)
         i += 1
         progress.setValue(i)
         if progress.wasCanceled():
@@ -101,7 +101,7 @@ def filter_data(data, fs, fi):
             break
         # HPF
         if hp > 0:
-            filt_bufs[chn] = dsp.applyHighPass(filt_bufs[chn], fs, hp)
+            filt_bufs[chn] = dsp.apply_high_pass(filt_bufs[chn], fs, hp)
         i += 1
         progress.setValue(i)
         if progress.wasCanceled():
@@ -109,7 +109,7 @@ def filter_data(data, fs, fi):
             break
         # BPF
         if bp1 > 0:
-            filt_bufs[chn] = apply_band_pass(filt_bufs[chn], fs, [bp1, bp2])
+            filt_bufs[chn] = dsp.apply_band_pass(filt_bufs[chn], fs, [bp1, bp2])
         i += 1
         progress.setValue(i)
         if progress.wasCanceled():
@@ -211,17 +211,3 @@ def load_signals(data, fs_array):
             buf = np.array(data_temp)
 
     return fs, buf
-
-def apply_notch(x, fs, fc=60, Q=20.0):
-    """ Apply a notch filter at fc Hz
-    """
-    w60Hz = fc / (fs / 2)
-    b, a = scipy.signal.iirnotch(w60Hz, Q)
-    return scipy.signal.filtfilt(b, a, x, method='gust')
-
-def apply_band_pass(x, fs, fc=[1.6,30], N=4):
-    """ Apply a low-pass filter to the signal
-    """
-    wc = fc / (fs / 2)
-    b, a = scipy.signal.butter(N, wc, btype='bandpass')
-    return scipy.signal.filtfilt(b, a, x, method='gust')

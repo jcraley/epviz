@@ -8,6 +8,35 @@ from PyQt5.QtWidgets import (QMessageBox, QWidget, QPushButton, QLabel,
 from PyQt5.QtGui import QFont
 from matplotlib.backends.qt_compat import QtWidgets
 
+def _valid_date(datetext):
+    """ Function to check if a date is valid.
+        Valid dates are in the form 05-DEC-1998.
+
+        Args:
+            datetext - the date in the form DD-MMM-YYYY
+        Returns:
+            -1 if the date is invalid, 0 if the date is valid
+    """
+    MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP",
+                    "OCT","NOV","DEC"]
+    date = datetext.split("-")
+    if len(date) != 3:
+        return -1
+    if len(date[2]) != 4:
+        return -1
+    if len(date[0]) != 2:
+        return -1
+    try:
+        MONTHS.index(date[1])
+    except ValueError:
+        return -1
+    try:
+        int(date[2])
+        int(date[0])
+    except ValueError:
+        return -1
+    return 0
+
 class Anonymizer(QWidget):
     """ Class for the anonymizer window """
     def __init__(self, data, parent):
@@ -291,7 +320,7 @@ class Anonymizer(QWidget):
             if not (pt_id_text[1] in {"X","F","M"}):
                 pt_id_text[1] = "X"
             if len(pt_id_text) > 2:
-                if self._valid_date(pt_id_text[2]) == -1:
+                if _valid_date(pt_id_text[2]) == -1:
                     pt_id_text[2] = "01-JAN-2001"
         if len(pt_id_text) == 0:
             pt_id_text = ["X","X","01-JAN-2001","X"]
@@ -311,7 +340,7 @@ class Anonymizer(QWidget):
                 pt_id_text[3] = "X"
 
         if len(rec_info_text) > 1:
-            if self._valid_date(rec_info_text[1]) == -1:
+            if _valid_date(rec_info_text[1]) == -1:
                 rec_info_text[1] = "01-JAN-2001"
         if len(rec_info_text) == 0:
             rec_info_text = ["Startdate","01-JAN-2001","X","X","X"]
@@ -374,7 +403,7 @@ class Anonymizer(QWidget):
             self.oldrec_info_fields[4].setText("")
 
         yrs = int(file[174:176].decode("utf-8"))
-        if yrs > 20:
+        if yrs > 30:
             yrs = yrs + 1900
         else:
             yrs = yrs + 2000
@@ -419,7 +448,7 @@ class Anonymizer(QWidget):
         if len(pt_id) < 80:
             pt_id = pt_id + " " * (80 - len(pt_id))
         elif len(pt_id) > 80:
-            self.throw_alert("The patient ID fields must be less than 80 characters. You have "
+            self.parent.throw_alert("The patient ID fields must be less than 80 characters. You have "
                     + str(len(pt_id)) + " characters. Please edit your fields and try again.")
             return
 
@@ -442,7 +471,7 @@ class Anonymizer(QWidget):
         if len(rec_info) < 80:
             rec_info = rec_info + " " * (80 - len(rec_info))
         elif len(rec_info) > 80:
-            self.throw_alert("The recording information fields must be less than "
+            self.parent.throw_alert("The recording information fields must be less than "
                 + "80 characters. You have " + str(len(rec_info))
                 + " characters. Please edit your fields and try again.")
             return
@@ -519,28 +548,16 @@ class Anonymizer(QWidget):
             self.datetimefield_inputs[0].setDate(QDate(2001,1,1))
             self.datetimefield_inputs[1].setTime(QTime(1,1,1))
 
-    def _valid_date(self,datetext):
-        date = datetext.split("-")
-        if len(date) != 3:
-            return -1
-        if len(date[2]) != 4:
-            return -1
-        if len(date[0]) != 2:
-            return -1
-        if self.MONTHS.index(date[1]) == -1:
-            return -1
-        return 0
-
-    def throw_alert(self, msg, text = ""):
-        """ Throws an alert to the user.
-        """
-        alert = QMessageBox()
-        alert.setIcon(QMessageBox.Information)
-        alert.setText(msg)
-        alert.setInformativeText(text)
-        alert.setWindowTitle("Warning")
-        alert.exec_()
-        self.resize( self.sizeHint() )
+    #def throw_alert(self, msg, text = ""):
+    #    """ Throws an alert to the user.
+    #    """
+    #    alert = QMessageBox()
+    #    alert.setIcon(QMessageBox.Information)
+    #    alert.setText(msg)
+    #    alert.setInformativeText(text)
+    #    alert.setWindowTitle("Warning")
+    #    alert.exec_()
+    #    self.resize( self.sizeHint() )
 
 class QHLine(QFrame):
     """ Class for a horizontal line widget """

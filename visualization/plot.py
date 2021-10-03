@@ -16,11 +16,11 @@ from image_saving.saveImg_options import SaveImgOptions
 from image_saving.saveTopoplot_options import SaveTopoplotOptions
 from edf_saving.saveEdf_info import SaveEdfInfo
 from edf_saving.saveEdf_options import SaveEdfOptions
-from signalStats_info import SignalStatsInfo
-from statsFsBand_options import StatsFsBandOptions
+from signal_stats.signalStats_info import SignalStatsInfo
+from signal_stats.signalStats_options import SignalStatsOptions
 
 import pyedflib
-from plot_utils import *
+from plot_utils import check_annotations, filter_data, convert_from_count, get_time
 from montages import *
 import numpy as np
 from matplotlib.figure import Figure
@@ -169,7 +169,6 @@ class MainPage(QMainWindow):
 
         label_amp = QLabel("Change amplitude:", self)
         grid_lt.addWidget(label_amp, ud, 0)
-        ud += 1
 
         self.button_amp_inc = QPushButton("+", self)
         self.button_amp_inc.setToolTip("Click to increase signal amplitude")
@@ -1875,7 +1874,6 @@ class MainPage(QMainWindow):
             self.populate_stat_list()
             self.chn_qlist.setCurrentRow(0)
             self.ssi.chn = 0
-            self.ssi.fs = self.edf_info.fs
             self.create_stat_select_time_rect(self.ssi.chn)
             self.stat_chn_clicked()
         else:
@@ -1901,7 +1899,7 @@ class MainPage(QMainWindow):
         """ Opens the window to add new fs bands.
         """
         self.stat_fs_band_win_open = 1
-        self.stats_fs_band_win = StatsFsBandOptions(self.ssi, self)
+        self.stats_fs_band_win = SignalStatsOptions(self.ssi, self)
 
     def stat_chn_clicked(self):
         """ When a channel is clicked.
@@ -1944,7 +1942,8 @@ class MainPage(QMainWindow):
         """ Called when the stats bar is moved.
         """
         bounds = self.statSelectTimeRect.getRegion()
-        bounds = bounds + self.count * self.edf_info.fs
+        bounds = (bounds[0] + self.count * self.edf_info.fs,
+                    bounds[1] + self.count * self.edf_info.fs)
         mean_str, var_str, line_len_str = self.get_stats(int(bounds[0]), int(bounds[1]))
         mean_str = "" + "{:.2f}".format(mean_str)
         self.mean_sel_lbl.setText(mean_str)
@@ -1999,7 +1998,7 @@ class MainPage(QMainWindow):
         if self.filter_checked == 1:
             lp = self.fi.lp
             hp = self.fi.hp
-        fs_band_dict = self.ssi.get_power(data, s, f, hp, lp)
+        fs_band_dict = self.ssi.get_power(data, s, f, hp, lp, self.edf_info.fs)
         return fs_band_dict
 
     def set_fs_band_lbls(self):

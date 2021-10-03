@@ -20,6 +20,8 @@ class TestFilter(unittest.TestCase):
         self.parent = MainPage(args, app)
         self.filter_info = FilterInfo()
         # Create a dummy "edf_info" object to hold the fs
+        # (doesn't really need to be edf_info, fs is the only thing
+        # filter_info needs from edf_info)
         self.parent.edf_info = FilterInfo()
         self.parent.edf_info.fs = 256
         self.filter_info2 = FilterInfo()
