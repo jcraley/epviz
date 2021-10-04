@@ -231,15 +231,6 @@ class TestFilter(unittest.TestCase):
         self.assertEqual(-1, _valid_date("01-JAN-200C"))
         self.assertEqual(0, _valid_date("01-JAN-2001"))
 
-    def _load_signals(self):
-        # for loading in the test file
-        self.parent.argv.show = 0
-        self.parent.argv.fn = self.TEST_FN
-        self.parent.load_data(name=self.TEST_FN)
-        self.parent.chn_ops.cbox_bip.setChecked(1)
-        self.parent.chn_ops.check()
-        self.parent.call_initial_move_plot()
-
     def tearDown(self):
         pass
 

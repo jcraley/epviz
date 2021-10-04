@@ -1093,17 +1093,15 @@ class MainPage(QMainWindow):
             self.chn_ops.show()
 
     def save_to_edf(self):
-        """
-        Opens window for anonymization. Anonymizer window calls save_sig_to_edf
-        to save to file.
+        """ Opens window for anonymization. Anonymizer window calls save_sig_to_edf
+            to save to file.
         """
         if self.init == 1:
             self.saveedf_win_open = 1
             self.saveedf_ops = SaveEdfOptions(self.sei, self)
 
     def save_sig_to_edf(self):
-        """
-        Function to save current data to .edf file, called by anonymization windows
+        """ Function to save current data to .edf file, called by anonymization windows
         """
         if self.init == 1:
             if self.filter_checked == 1:
