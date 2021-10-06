@@ -180,6 +180,7 @@ class TestChannelLoading(unittest.TestCase):
         self.assertEqual(self.plot_window.thresh_slider.value(), 70)
         self.assertEqual(self.plot_window.init, 1)
 
+    # 2. Test the sliders
     def test_slider(self):
         # Test whether the slider changes count properly
         self.plot_window.argv.show = 0
@@ -224,6 +225,7 @@ class TestChannelLoading(unittest.TestCase):
         self.assertEqual(self.plot_window.thresh_lbl.text(),
                     "Change threshold of prediction:  (threshold = 0.04)")
 
+    # 3. Test moving the plot
     def test_move_plot(self):
         # Test moving the plot left and right
         self.plot_window.argv.show = 0
@@ -287,6 +289,215 @@ class TestChannelLoading(unittest.TestCase):
         self.assertEqual(self.plot_window.ann_time_edit_count.value(), 27)
         self.assertEqual(self.plot_window.ann_duration.minimum(), -1)
         self.assertEqual(self.plot_window.ann_duration.maximum(), 688 - 27)
+
+    # 4. Test the annotation editor
+    def test_open_ann_editor(self):
+        # Test opening annotation editor
+        self._load_signals()
+
+        # Make sure the docks are open and the editors are not
+        self.assertTrue(self.plot_window.ann_edit_dock.isHidden())
+        self.assertFalse(self.plot_window.scroll.isHidden())
+        self.assertTrue(self.plot_window.stats_main_widget.isHidden())
+        self.assertFalse(self.plot_window.stats_dock.isHidden())
+        self.assertEqual(self.plot_window.btn_open_edit_ann.text(),
+                            "Open annotation editor")
+
+        # Make sure that the correct things are in the ann scroll
+        ann = self.plot_window.edf_info.annotations
+        ann_scroll = []
+        for i in range(self.plot_window.ann_qlist.count()):
+            ann_scroll.append(self.plot_window.ann_qlist.item(i).text())
+        self.assertEqual(ann_scroll.sort(), ann[2,:].sort())
+
+        # Let's open the ann editor!
+        self.plot_window.open_ann_editor()
+
+        # Make sure that everything is correct after opening it
+        self.assertEqual(self.plot_window.btn_open_edit_ann.text(),
+                            "Close annotation editor")
+        self.assertFalse(self.plot_window.ann_edit_dock.isHidden())
+        self.assertEqual(self.plot_window.ann_txt_edit.text(), "")
+        self.assertEqual(self.plot_window.ann_duration.minimum(), -1)
+        self.assertEqual(self.plot_window.ann_duration.maximum(),
+                            self.plot_window.max_time)
+        self.assertEqual(self.plot_window.ann_duration.value(), -1)
+        self.assertEqual(self.plot_window.ann_time_edit_count.maximum(),
+                            self.plot_window.max_time)
+        self.assertEqual(self.plot_window.ann_time_edit_count.value(),
+                            self.plot_window.count)
+        self.assertFalse(self.plot_window.btn_ann_edit.isEnabled())
+        self.assertFalse(self.plot_window.btn_ann_del.isEnabled())
+        self.assertEqual(len(self.plot_window.ann_qlist.selectedItems()), 0)
+
+    def test_click_ann_editor(self):
+        # Test editing annotations
+        self._load_signals()
+
+
+        # Let's click on an annotation and make sure everthing happens properly
+        item_num = 1
+        ann = self.plot_window.edf_info.annotations[:, item_num]
+        self.plot_window.ann_qlist.setCurrentRow(item_num)
+
+        self.plot_window.ann_clicked()
+        self.assertEqual(self.plot_window.count, int(float(ann[0])))
+
+        # Let's open the ann editor and do it again
+        self.plot_window.open_ann_editor()
+        self.plot_window.right_plot_10s()
+
+        self.plot_window.ann_qlist.setCurrentRow(item_num)
+        self.plot_window.ann_clicked()
+        self.assertEqual(self.plot_window.count, int(float(ann[0])))
+        self.assertEqual(self.plot_window.ann_txt_edit.text(), ann[2])
+        self.assertEqual(self.plot_window.ann_time_edit_count.value(),
+                            int(float(ann[0])))
+        self.assertEqual(self.plot_window.ann_duration.value(), int(float(ann[1])))
+        self.assertTrue(self.plot_window.btn_ann_edit.isEnabled())
+        self.assertTrue(self.plot_window.btn_ann_del.isEnabled())
+
+        # Let's close the ann editor now
+        self.plot_window.open_ann_editor()
+
+        # Make sure that everything is correct after closing it
+        self.assertEqual(self.plot_window.btn_open_edit_ann.text(),
+                            "Open annotation editor")
+        self.assertTrue(self.plot_window.ann_edit_dock.isHidden())
+
+        # Let's open it again and make sure everything is cleared properly
+        self.plot_window.open_ann_editor()
+        self.assertEqual(self.plot_window.btn_open_edit_ann.text(),
+                            "Close annotation editor")
+        self.assertFalse(self.plot_window.ann_edit_dock.isHidden())
+        self.assertEqual(self.plot_window.ann_txt_edit.text(), "")
+        self.assertEqual(self.plot_window.ann_duration.minimum(), -1)
+        self.assertEqual(self.plot_window.ann_duration.maximum(),
+                            self.plot_window.max_time)
+        self.assertEqual(self.plot_window.ann_duration.value(), -1)
+        self.assertEqual(self.plot_window.ann_time_edit_count.maximum(),
+                            self.plot_window.max_time)
+        self.assertEqual(self.plot_window.ann_time_edit_count.value(),
+                            self.plot_window.count)
+        self.assertFalse(self.plot_window.btn_ann_edit.isEnabled())
+        self.assertFalse(self.plot_window.btn_ann_del.isEnabled())
+        self.assertEqual(len(self.plot_window.ann_qlist.selectedItems()), 0)
+
+    def test_edit_ann(self):
+        # Test editing annotations
+        self._load_signals()
+
+        # Let's click on an annotation and edit it
+        self.plot_window.open_ann_editor()
+        item_num = 1
+        ann = []
+        for x in self.plot_window.edf_info.annotations[:, item_num]:
+            ann.append(x)
+        self.plot_window.ann_qlist.setCurrentRow(item_num)
+        self.plot_window.ann_qlist.item(item_num).setSelected(1)
+        self.plot_window.ann_clicked()
+
+        # Edit the annotation and update it
+        self.plot_window.ann_txt_edit.setText("look at this!")
+        self.plot_window.ann_time_edit_count.setValue(2)
+        self.plot_window.ann_duration.setValue(3)
+        x = False
+        for i in range(self.plot_window.edf_info.annotations.shape[1]):
+            if (ann == self.plot_window.edf_info.annotations[:, i]).all():
+                x = True
+        self.assertTrue(x)
+        
+        self.plot_window.ann_editor_update()
+        self.assertTrue((self.plot_window.edf_info.annotations[:, item_num]
+                            == [2, 3, "look at this!"]).all())
+        self.assertEqual(self.plot_window.ann_qlist.item(item_num).text(), "look at this!")
+        self.assertEqual(self.plot_window.ann_txt_edit.text(), "")
+
+        x = False
+        y = False
+        for i in range(self.plot_window.edf_info.annotations.shape[1]):
+            if (ann == self.plot_window.edf_info.annotations[:, i]).all():
+                x = True
+            if ([2, 3, "look at this!"] == self.plot_window.edf_info.annotations[:, i]).all():
+                y = True
+        self.assertFalse(x)
+        self.assertTrue(y)
+
+        # Click on an annotation and delete it
+        item_num = 1
+        ann = []
+        len_ann = self.plot_window.edf_info.annotations.shape[1]
+        for x in self.plot_window.edf_info.annotations[:, item_num]:
+            ann.append(x)
+        self.plot_window.ann_qlist.setCurrentRow(item_num)
+        self.plot_window.ann_qlist.item(item_num).setSelected(1)
+        self.plot_window.ann_clicked()
+
+        self.plot_window.ann_editor_del()
+        self.assertEqual(self.plot_window.edf_info.annotations.shape[1], len_ann - 1)
+        x = False
+        for i in range(self.plot_window.edf_info.annotations.shape[1]):
+            if (ann == self.plot_window.edf_info.annotations[:, i]).all():
+                x = True
+        self.assertFalse(x)
+        self.assertFalse(self.plot_window.btn_ann_edit.isEnabled())
+        self.assertFalse(self.plot_window.btn_ann_del.isEnabled())
+        self.assertEqual(self.plot_window.ann_txt_edit.text(), "")
+
+        # Create an annotation
+        ann = []
+        len_ann = self.plot_window.edf_info.annotations.shape[1]
+        for x in self.plot_window.edf_info.annotations[:, item_num]:
+            ann.append(x)
+
+        self.plot_window.ann_txt_edit.setText("look here!")
+        self.plot_window.ann_time_edit_count.setValue(4)
+        self.plot_window.ann_duration.setValue(-1)
+        self.plot_window.ann_editor_create()
+        self.assertEqual(self.plot_window.edf_info.annotations.shape[1], len_ann + 1)
+        x = False
+        loc = -1
+        for i in range(self.plot_window.edf_info.annotations.shape[1]):
+            if ([4, -1, "look here!"] == self.plot_window.edf_info.annotations[:, i]).all():
+                x = True
+                loc = i
+        self.assertTrue(x)
+        self.assertEqual(loc, 1)
+        self.assertEqual(self.plot_window.ann_txt_edit.text(), "")
+
+    def test_opening_windows(self):
+        # Try opening auxillary windows to make sure nothing crashes
+        self._load_signals()
+
+        # Filter window
+        self.plot_window.change_filter()
+        self.assertEqual(self.plot_window.filter_win_open, 1)
+        
+        # Prediction window
+        self.plot_window.change_predictions()
+        self.assertEqual(self.plot_window.preds_win_open, 1)
+
+        # Change signals window
+        self.plot_window.chg_sig()
+        self.assertEqual(self.plot_window.chn_win_open, 1)
+
+        # Save to edf window
+        self.plot_window.save_to_edf()
+        self.assertEqual(self.plot_window.saveedf_win_open, 1)
+
+        # Print graph window
+        self.plot_window.print_graph()
+        self.assertEqual(self.plot_window.saveimg_win_open, 1)
+
+        # Open the spectrogram options window
+        self.plot_window.load_spec()
+        self.assertEqual(self.plot_window.spec_win_open, 1)
+
+    def test_open_zoom(self):
+        # Open the zoom window to make sure nothing crashes
+        self._load_signals()
+        self.plot_window.open_zoom_plot()
+        self.assertEqual(self.plot_window.btn_zoom.text(), "Close zoom")
 
     def _load_signals(self):
         # for loading in the test file

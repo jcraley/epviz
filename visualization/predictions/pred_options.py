@@ -13,8 +13,8 @@ class PredictionOptions(QWidget):
         self.left = 10
         self.top = 10
         self.title = 'Prediction Options'
-        self.width = parent.width / 3
-        self.height = parent.height / 3
+        self.width = int(parent.width / 3)
+        self.height = int(parent.height / 3)
         self.data = pi
         self.parent = parent
         self.nchns = self.parent.ci.nchns_to_plot
@@ -28,8 +28,8 @@ class PredictionOptions(QWidget):
 
         self.setWindowTitle(self.title)
         center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(center_point.x() - self.width / 2,
-            center_point.y() - self.height / 2, self.width, self.height)
+        self.setGeometry(center_point.x() - int(self.width / 2),
+            center_point.y() - int(self.height / 2), self.width, self.height)
 
         info_lbl = QLabel(self)
         info_lbl.setText("Loading predictions:" +

@@ -751,7 +751,7 @@ class MainPage(QMainWindow):
         """
         if self.btn_open_edit_ann.text() == "Open annotation editor":
             self.ann_txt_edit.clear()
-            self.ann_duration.setRange(-1,self.max_time)
+            self.ann_duration.setRange(-1, self.max_time)
             self.ann_duration.setValue(-1)
             hrs, minutes, sec = convert_from_count(self.max_time)
             t = QTime(hrs, minutes, sec)
@@ -819,6 +819,7 @@ class MainPage(QMainWindow):
         self.edf_info.annotations[0][self.ann_qlist.currentRow()] = loc
         self.edf_info.annotations[1][self.ann_qlist.currentRow()] = dur
         self.edf_info.annotations[2][self.ann_qlist.currentRow()] = ann_txt
+        self.ann_txt_edit.clear()
         self.populate_ann_dock()
         self.call_move_plot(0,0)
 
@@ -829,12 +830,8 @@ class MainPage(QMainWindow):
             self.edf_info.annotations,self.ann_qlist.currentRow(),axis = 1)
         self.btn_ann_edit.setEnabled(False)
         self.btn_ann_del.setEnabled(False)
-        # self.ann_edit_dock.hide()
+        self.ann_txt_edit.clear()
         self.populate_ann_dock()
-        #if len(self.edf_info.annotations[0]) == 0:
-        #    self.scroll.show()
-        #    self.btn_open_ann_dock.hide()
-        #self.ann_edit_dock.show()
         self.call_move_plot(0,0)
 
     def ann_editor_create(self):
@@ -858,6 +855,7 @@ class MainPage(QMainWindow):
                 self.edf_info.annotations = np.insert(
                     self.edf_info.annotations, i,
                     [loc, dur, ann_txt], axis = 1)
+            self.ann_txt_edit.clear()
             self.populate_ann_dock()
             self.call_move_plot(0,0)
 
