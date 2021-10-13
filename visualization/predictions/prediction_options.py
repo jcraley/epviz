@@ -158,10 +158,6 @@ class PredictionOptions(QWidget):
         if cbox.isChecked():
             if self.cbox_preds.isChecked():
                 self.cbox_preds.setChecked(False)
-                self.data.plot_loaded_preds = 0
-            self.data.plot_model_preds = 1
-        else:
-            self.data.plot_model_preds = 0
 
     def preds_checked(self):
         """ Called when the predictions cbox is checked.
@@ -170,10 +166,6 @@ class PredictionOptions(QWidget):
         if cbox.isChecked():
             if self.cbox_model.isChecked():
                 self.cbox_model.setChecked(False)
-                self.data.plot_model_preds = 0
-            self.data.plot_loaded_preds = 1
-        else:
-            self.data.plot_loaded_preds = 0
 
     def load_pt_data(self):
         """ Load data for prediction.
@@ -182,11 +174,10 @@ class PredictionOptions(QWidget):
         if ptfile_fn[0] is None or len(ptfile_fn[0]) == 0:
             return
         if len(ptfile_fn[0].split('/')[-1]) < 18:
-            self.label_load_pt_file.setText(ptfile_fn[0].split('/')[-1])
             self.data.data_fn = ptfile_fn[0].split('/')[-1]
         else:
-            self.label_load_pt_file.setText(ptfile_fn[0].split('/')[-1][0:15] + "...")
             self.data.data_fn = ptfile_fn[0].split('/')[-1][0:15] + "..."
+        self.label_load_pt_file.setText(self.data.data_fn)
         self.data.set_data(ptfile_fn[0])
         self.cbox_model.setChecked(True)
         self.cbox_preds.setChecked(False)
@@ -198,11 +189,10 @@ class PredictionOptions(QWidget):
         if model_fn[0] is None or len(model_fn[0]) == 0:
             return
         if len(model_fn[0].split('/')[-1]) < 18:
-            self.label_load_model.setText(model_fn[0].split('/')[-1])
             self.data.model_fn = model_fn[0].split('/')[-1]
         else:
-            self.label_load_model.setText(model_fn[0].split('/')[-1][0:15] + "...")
             self.data.model_fn = model_fn[0].split('/')[-1][0:15] + "..."
+        self.label_load_model.setText(self.data.model_fn)
         self.data.set_model(model_fn[0])
         self.cbox_model.setChecked(True)
         self.cbox_preds.setChecked(False)
@@ -222,11 +212,10 @@ class PredictionOptions(QWidget):
                             " Please check your file.")
         else:
             if len(preds_fn[0].split('/')[-1]) < 18:
-                self.label_load_preds.setText(preds_fn[0].split('/')[-1])
                 self.data.preds_fn = preds_fn[0].split('/')[-1]
             else:
-                self.label_load_preds.setText(preds_fn[0].split('/')[-1][0:15] + "...")
                 self.data.preds_fn = preds_fn[0].split('/')[-1][0:15] + "..."
+            self.label_load_preds.setText(self.data.preds_fn)
             self.cbox_model.setChecked(False)
             self.cbox_preds.setChecked(True)
 
@@ -237,12 +226,12 @@ class PredictionOptions(QWidget):
         self.parent.btn_topo.setEnabled(0)
         self.parent.btn_topo.setText("Show topoplots")
         self.parent.topoplot_dock.hide()
-        if self.data.plot_loaded_preds == 0 and self.data.plot_model_preds == 0:
+        # if nothing is checked, then turn off predictions
+        if not self.cbox_model.isChecked() and not self.cbox_preds.isChecked():
             self.parent.predicted = 0
             self.close_window()
-            self.parent.throw_alert("You have not chosen to plot any predictions.")
-            self.parent.call_move_plot(0,0,0)
-        elif self.data.plot_loaded_preds:
+            self.parent.call_move_plot(0, 0, 0)
+        elif self.cbox_preds.isChecked():
             if not self.data.preds_loaded:
                 self.parent.throw_alert("Please load predictions.")
             else:

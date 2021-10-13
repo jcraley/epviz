@@ -20,9 +20,9 @@ find tests -name '*tests.py' -print0 |
         elif [[ $line = "tests/plot_tests.py" ]]
         then
             echo "${green} Running tests for ${line} ${reset}"
-            python3 -m coverage run "$line"
+            # python3 -m coverage run "$line"
             echo "${cyan} Coverage Report for ${line}"
-            python3 -m coverage report -m visualization/plot.py
+            # python3 -m coverage report -m visualization/plot.py
         elif [[ $line = "tests/plot_utils_tests.py" ]]
         then
             echo "${green} Running tests for ${line} ${reset}"
@@ -39,17 +39,24 @@ find tests -name '*tests.py' -print0 |
         elif [[ $line = "tests/edf_saving_tests.py" ]]
         then
             echo "${green} Running tests for ${line} ${reset}"
-            # python3 -m coverage run "$line"
+            python3 -m coverage run "$line"
             echo "${cyan} Coverage Report for ${line}"
-            # python3 -m coverage report -m visualization/edf_saving/saveEdf_options.py
-            # python3 -m coverage report -m visualization/edf_saving/saveEdf_info.py
-            # python3 -m coverage report -m visualization/edf_saving/anonymizer.py
+            python3 -m coverage report -m visualization/edf_saving/saveEdf_options.py
+            python3 -m coverage report -m visualization/edf_saving/saveEdf_info.py
+            python3 -m coverage report -m visualization/edf_saving/anonymizer.py
         elif [[ $line = "tests/spectrogram_tests.py" ]]
         then
             echo "${green} Running tests for ${line} ${reset}"
             # python3 -m coverage run "$line"
             echo "${cyan} Coverage Report for ${line}"
             # python3 -m coverage report -m visualization/spectrogram_window/spec_options.py
+        elif [[ $line = "tests/prediction_tests.py" ]]
+        then
+            echo "${green} Running tests for ${line} ${reset}"
+            # python3 -m coverage run "$line"
+            echo "${cyan} Coverage Report for ${line}"
+            # python3 -m coverage report -m visualization/predictions/prediction_options.py
+            # python3 -m coverage report -m visualization/predictions/prediction_info.py
         else
             echo "TODO: add other tests here"
             # coverage report

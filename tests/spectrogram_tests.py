@@ -12,7 +12,7 @@ from visualization.plot import check_args, get_args
 from unittest.mock import patch
 
 app = QApplication([])
-class TestFilter(unittest.TestCase):
+class TestSpectrogram(unittest.TestCase):
     def setUp(self):
         self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/E_B_1-DeID_0003.edf"
         patch('sys.argv', ["--show","0"])

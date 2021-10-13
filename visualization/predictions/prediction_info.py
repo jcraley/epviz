@@ -2,7 +2,7 @@
 import torch
 import numpy as np
 
-class PredsInfo():
+class PredictionInfo():
     """ Data structure for holding model and preprocessed data for prediction """
     def __init__(self):
         self.ready = 0 # whether both model and data have been loaded

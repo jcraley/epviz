@@ -15,9 +15,10 @@ from unittest.mock import patch
 import datetime
 
 app = QApplication([])
-class TestFilter(unittest.TestCase):
+class TestEdfSaving(unittest.TestCase):
     def setUp(self):
         self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/E_B_1-DeID_0003.edf"
+        self.TEST_SAVE_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test0.edf"
         patch('sys.argv', ["--show","0"])
         args = get_args()
         check_args(args)
@@ -30,11 +31,28 @@ class TestFilter(unittest.TestCase):
 
     def test_setup(self):
         # Test that everything is checked properly at startup
-        self.assertEqual(self.saveedf_info.pt_id, "X X X X" + " " * 730)
+        self.assertEqual(self.saveedf_info.pt_id, "X X X X" + " " * 73)
         self.assertEqual(self.saveedf_info.rec_info, "Startdate X X X X" + " " * 63)
         self.assertEqual(self.saveedf_info.start_date, "01.01.01")
         self.assertEqual(self.saveedf_info.start_time, "01.01.01")
     
+    def test_setup_with_edf_fn(self):
+        # Test with edf file to save + anon
+        self.parent.argv.save_edf_fn = self.TEST_SAVE_FN
+        saveedf_info2 = SaveEdfInfo()
+        saveedf_info2.fn =self.TEST_FN
+        ui2 = SaveEdfOptions(saveedf_info2, self.parent)
+        self.assertTrue(ui2.seo_ui.cbox_anon.isChecked())
+
+    def test_setup_with_edf_fn_orig(self):
+        # Test with edf file to save + anon
+        self.parent.argv.save_edf_fn = self.TEST_SAVE_FN
+        self.parent.argv.anonymize_edf = 0
+        saveedf_info2 = SaveEdfInfo()
+        saveedf_info2.fn =self.TEST_FN
+        ui2 = SaveEdfOptions(saveedf_info2, self.parent)
+        self.assertTrue(ui2.seo_ui.cbox_orig.isChecked())
+
     def test_cboxes(self):
         # Test that cboxes work properly
         self.assertEqual(self.ui.seo_ui.cbox_anon.isChecked(), 1)
@@ -50,6 +68,26 @@ class TestFilter(unittest.TestCase):
         self.assertEqual(self.parent.anon_win_open, 0)
         self.ui.open_anon_editor()
         self.assertEqual(self.parent.anon_win_open, 1)
+
+    def test_save_to_edf(self):
+        # Test saving to edf with anonymization
+        self.ui.save_and_close()
+        self.assertEqual(self.saveedf_info.pt_id, "X X X X" + " " * 73)
+        self.assertEqual(self.saveedf_info.rec_info, "Startdate X X X X" + " " * 63)
+        self.assertEqual(self.saveedf_info.start_date, "01.01.01")
+        self.assertEqual(self.saveedf_info.start_time, "01.01.01")
+
+    def test_save_to_edf_keep_current_fields(self):
+        # Test saving to edf without anonymization
+        self.ui.seo_ui.cbox_orig.setChecked(1)
+        self.ui.save_and_close()
+
+        with open(self.saveedf_info.fn, 'rb') as edf_file:
+            file = edf_file.read(200)
+            self.assertEqual(self.saveedf_info.pt_id, file[8:88].decode("utf-8"))
+            self.assertEqual(self.saveedf_info.rec_info, file[88:168].decode("utf-8"))
+            self.assertEqual(self.saveedf_info.start_date, file[168:176].decode("utf-8"))
+            self.assertEqual(self.saveedf_info.start_time, file[176:184].decode("utf-8"))
 
     def test_convert_to_header(self):
         # Test converting string fields to header dict

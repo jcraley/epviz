@@ -7,8 +7,8 @@ from signal_loading.channel_info import ChannelInfo
 from signal_loading.channel_options import ChannelOptions
 from filtering.filter_options import FilterOptions
 from filtering.filter_info import FilterInfo
-from predictions.pred_options import PredictionOptions
-from predictions.preds_info import PredsInfo
+from predictions.prediction_options import PredictionOptions
+from predictions.prediction_info import PredictionInfo
 from spectrogram_window.spec_options import SpecOptions
 from spectrogram_window.spec_info import SpecInfo
 from image_saving.saveImg_info import SaveImgInfo
@@ -62,7 +62,7 @@ class MainPage(QMainWindow):
         self.title = 'EEG Prediction Visualization (EPViz)'
         size_object = QtWidgets.QDesktopWidget().screenGeometry(-1)
         self.width = int(size_object.width() * 0.9)
-        self.height = int(size_object.height() * 0.7)
+        self.height = int(size_object.height() * 0.3)
         self.app = app
         self.init_ui()
 
@@ -507,7 +507,7 @@ class MainPage(QMainWindow):
         self.savetopo_win_open = 0 # whether or not the topoplots window is open
         self.stat_fs_band_win_open = 0 # whether or not the stat fs window is open
         self.max_time = 0  # number of seconds in the recording
-        self.pi = PredsInfo()  # holds data needed to predict
+        self.pi = PredictionInfo()  # holds data needed to predict
         self.ci = ChannelInfo()  # holds channel information
         self.si = SpecInfo() # holds spectrogram information
         self.sii = SaveImgInfo() # holds info to save the img

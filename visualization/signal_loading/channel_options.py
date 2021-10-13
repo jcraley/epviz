@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (QVBoxLayout, QWidget, QListWidget, QPushButton,
                                 QListWidgetItem, QAbstractItemView, QFileDialog)
 
 import numpy as np
-from predictions.preds_info import PredsInfo
+from predictions.prediction_info import PredictionInfo
 from signal_loading.channel_info import ChannelInfo, convert_txt_chn_names
 from signal_loading.organize_channels import OrganizeChannels
 from signal_loading.color_options import ColorOptions
@@ -27,7 +27,7 @@ class ChannelOptions(QWidget):
         self.new_load = 0
         # if len(self.unprocessed_data) != 0:
         if data.edf_fn != parent.ci.edf_fn:
-            self.pi = PredsInfo()
+            self.pi = PredictionInfo()
             self.new_load = 1
         else:
             self.pi = parent.pi
@@ -97,7 +97,7 @@ class ChannelOptions(QWidget):
         #    self.cbox_bip1010 = QCheckBox("Bipolar (10-10)",self)
         #    self.cbox_bip1010.toggled.connect(self.bip_checked1010)
         #    grid_lt.addWidget(self.cbox_bip1010,4,0)
-        #elif self.bip1010:
+        # elif self.bip1010:
         #    self.cbox_bip1010 = QCheckBox("Bipolar (10-10)",self)
         #    self.cbox_bip1010.toggled.connect(self.bip_checked1010)
         #    grid_lt.addWidget(self.cbox_bip1010,3,0)

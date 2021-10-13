@@ -22,7 +22,7 @@ class SaveEdfOptions(QWidget):
 
     def setup_ui(self):
         """ Reset fields """
-        self.data.pt_id = "X X X X" + " " * 730
+        self.data.pt_id = "X X X X" + " " * 73
         self.data.rec_info = "Startdate X X X X" + " " * 63
         self.data.start_date = "01.01.01"
         self.data.start_time = "01.01.01"
@@ -41,7 +41,7 @@ class SaveEdfOptions(QWidget):
             if self.parent.argv.anonymize_edf:
                 self.seo_ui.cbox_anon.setChecked(1)
             else:
-                self.seo_ui.cbox_anon.setChecked(0)
+                self.seo_ui.cbox_orig.setChecked(1)
             self.save_and_close()
         else:
             self.show()

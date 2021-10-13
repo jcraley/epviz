@@ -16,7 +16,7 @@ from preprocessing.edf_loader import EdfLoader
 from PyQt5.QtWidgets import QCheckBox
 
 app = QApplication([])
-class TestChannelLoading(unittest.TestCase):
+class TestPlot(unittest.TestCase):
     def setUp(self):
         self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/E_B_1-DeID_0003.edf"
         patch('sys.argv', ["--show","0"])

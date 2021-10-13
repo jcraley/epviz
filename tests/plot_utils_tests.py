@@ -5,7 +5,7 @@ import unittest
 from visualization.plot_utils import *
 from preprocessing.edf_loader import EdfLoader
 
-class TestChannelLoading(unittest.TestCase):
+class TestPlotUtils(unittest.TestCase):
     def setUp(self):
         # Set the test files
         self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/E_B_1-DeID_0003.edf"
