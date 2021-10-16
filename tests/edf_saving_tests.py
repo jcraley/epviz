@@ -149,7 +149,6 @@ class TestEdfSaving(unittest.TestCase):
         file = bytearray(file)
         pt_id_text = file[8:88].decode("utf-8").split(" ")
         rec_info_text = file[88:168].decode("utf-8").split(" ")
-        print(file)
         self.assertEqual(self.anon_ui.lbl_fn.text(), "E_B_1-DeID_0003...")
         self.assertEqual(self.anon_ui.btn_anonfile.isEnabled(), 1)
         self.assertEqual(self.anon_ui.cbox_copyoriginal.isEnabled(), 1)

@@ -27,13 +27,7 @@ class PredictionInfo():
         self.multi_class = 0 # whether or not we are doing multi-class predictions
         self.predicted = 0
         # default colors to use for multi-class:
-        # transparent
-        # dark blue
-        # green
-        # yellow
-        # red
-        # pink
-        # purple
+        # transparent, dark blue, green, yellow, red, pink, purple
         self.class_colors = [(255,255,255,0),(50, 95, 168, 50), (50, 168, 82,50), (168, 52, 50, 50),
                                 (164, 168, 50, 50), (168, 50, 150,50), (127, 50, 168, 50)]
     def write_data(self, pi2):
@@ -56,13 +50,6 @@ class PredictionInfo():
         self.pred_width = pi2.pred_width
         self.pred_by_chn = pi2.pred_by_chn
 
-    def set_data(self, data_fn):
-        """ Set the data to the data from data_fn
-        """
-        self.data = torch.load(data_fn)
-        self.data_loaded = 1
-        self.update_ready()
-
     def get_color(self, i):
         """ Returns a color for multi-class prediction
 
@@ -73,10 +60,21 @@ class PredictionInfo():
         """
         if i < 6:
             return self.class_colors[i]
-        num0 = np.random.random() * 255
-        num1 = np.random.random() * 255
-        num2 = np.random.random() * 255
+        num0 = 255
+        num1 = 255
+        num2 = 255
+        while ((num0, num1, num2, 0) in self.class_colors):
+            num0 = np.random.random() * 255
+            num1 = np.random.random() * 255
+            num2 = np.random.random() * 255
         return (num0, num1, num2, 50)
+
+    def set_data(self, data_fn):
+        """ Set the data to the data from data_fn
+        """
+        self.data = torch.load(data_fn)
+        self.data_loaded = 1
+        self.update_ready()
 
     def set_model(self, model_fn):
         """ Load in the model given by model_fn.
@@ -84,6 +82,10 @@ class PredictionInfo():
         self.model = torch.load(model_fn)
         self.model_loaded = 1
         self.update_ready()
+
+    def update_ready(self):
+        if self.model_loaded and self.data_loaded:
+            self.ready = 1
 
     def set_preds(self, preds_fn, max_time, fs, nchns, binary = True):
         """ Loads predictions.
@@ -106,7 +108,7 @@ class PredictionInfo():
 
     def predict(self, max_time, fs, nchns, binary = True):
         """ Loads model, passes data through the model to get
-            binary seizure predictions
+            seizure predictions
 
         Args:
             data - the pytorch tensor, fully preprocessed
@@ -131,6 +133,7 @@ class PredictionInfo():
         Checks whether the predictions are the proper size.
         Samples in the file must be an integer multiple of length.
         The other dimension must be either 1, 2 (which will be collapsed) or nchns
+        size: (num predictions, <chns, optional>, num classes)
 
         Args:
             preds - the predictions (np array)
@@ -146,30 +149,17 @@ class PredictionInfo():
         self.pred_by_chn = 0 # reset
         self.multi_class = 0 # reset
         if binary:
-            if len(preds.shape) == 3:
-                if preds.shape[0] == 2:
-                    preds = preds[1,:,:]
-                elif preds.shape[1] == 2:
-                    preds = preds[:,1,:]
-                elif preds.shape[2] == 2:
-                    preds = preds[:,:,1]
-                if (len(preds.shape) == 3 and
-                    (preds.shape[0] == 1 or preds.shape[1] == 1 or
-                    preds.shape[2] == 1)):
-                    preds = np.squeeze(preds)
+            preds = np.squeeze(preds)
             dim = len(preds.shape)
             if dim == 1:
                 if (fs * max_time) % preds.shape[0] == 0:
                     ret = 0
             elif dim == 2:
-                if preds.shape[0] < preds.shape[1]:
-                    preds = preds.T
                 if (fs * max_time) % preds.shape[0] == 0:
-                    if preds.shape[1] == 1:
+                    if preds.shape[1] <= 2:
                         ret = 0
-                    elif preds.shape[1] == 2:
-                        preds = preds[:,1]
-                        ret = 0
+                        if preds.shape[1] == 2:
+                            preds = preds[:,1]
                     elif preds.shape[1] == nchns:
                         self.pred_by_chn = 1
                         ret = 0
@@ -177,7 +167,7 @@ class PredictionInfo():
             if (fs * max_time) % preds.shape[0] == 0:
                 if len(preds.shape) == 3:
                     if preds.shape[1] != nchns:
-                        return 1
+                        return -1
                     self.pred_by_chn = 1
                 ret = 0
                 self.multi_class = 1
@@ -190,10 +180,6 @@ class PredictionInfo():
                 self.preds_loaded = 1
                 self.preds = preds
         return ret
-
-    def update_ready(self):
-        if self.model_loaded and self.data_loaded:
-            self.ready = 1
 
     def compute_starts_ends_chns(self, thresh, count, ws, fs, nchns):
         """

@@ -17,7 +17,6 @@ class PredictionOptions(QWidget):
         self.height = int(parent.height / 3)
         self.data = pi
         self.parent = parent
-        self.nchns = self.parent.ci.nchns_to_plot
         self.setup_ui()
 
     def setup_ui(self):
@@ -204,7 +203,7 @@ class PredictionOptions(QWidget):
         if preds_fn[0] is None or len(preds_fn[0]) == 0:
             return
         if (self.data.set_preds(preds_fn[0], self.parent.max_time,
-            self.parent.edf_info.fs,self.nchns,
+            self.parent.edf_info.fs, self.parent.ci.nchns_to_plot,
             self.radio_binary_preds.isChecked()) == -1):
             self.parent.throw_alert("Predictions are not an even multiple of the" +
                             " samples in the .edf" +
@@ -222,6 +221,7 @@ class PredictionOptions(QWidget):
     def check(self):
         """ Take loaded model and data and compute predictions
         """
+        nchns = self.parent.ci.nchns_to_plot
         # reset topoplot
         self.parent.btn_topo.setEnabled(0)
         self.parent.btn_topo.setText("Show topoplots")
@@ -237,7 +237,7 @@ class PredictionOptions(QWidget):
             else:
                 loaded_preds_valid = self.data.check_preds_shape(self.data.preds, 0,
                                         self.parent.max_time, self.parent.edf_info.fs,
-                                        self.nchns, self.radio_binary_preds.isChecked())
+                                        nchns, self.radio_binary_preds.isChecked())
                 if not loaded_preds_valid:
                     self.parent.predicted = 1
                     self.data.preds_to_plot = self.data.preds
@@ -259,7 +259,7 @@ class PredictionOptions(QWidget):
         else:
             if self.data.ready:
                 preds_ret = self.data.predict(self.parent.max_time,
-                                self.parent.edf_info.fs,self.nchns,
+                                self.parent.edf_info.fs,nchns,
                                 self.radio_binary_model.isChecked())
                 if preds_ret == -2:
                     self.parent.throw_alert("An error occured when trying to call the predict() " +

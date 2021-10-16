@@ -21,7 +21,6 @@ from signal_stats.signalStats_options import SignalStatsOptions
 
 import pyedflib
 from plot_utils import check_annotations, filter_data, convert_from_count, get_time
-from montages import *
 import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (
