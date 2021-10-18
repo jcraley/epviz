@@ -44,8 +44,8 @@ class ColorOptions(QWidget):
         
         grid_lt = QGridLayout()
         
-        lbl_info = QLabel("Select the color for each channel:\n Please note that any non-standard channel "
-                        + "\n or names not recognized by the program will be "
+        lbl_info = QLabel("Select the color for each channel:\nPlease note that any non-standard channel "
+                        + "\nor names not recognized by the program will be "
                         + "\nassigned the color of the midline.")
         grid_lt.addWidget(lbl_info,0,0)
 
