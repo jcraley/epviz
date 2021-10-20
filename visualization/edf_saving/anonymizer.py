@@ -436,14 +436,14 @@ class Anonymizer(QWidget):
         else:
             pt_id_date = self.dobedit.date().toString("dd-MMM-yyyy").upper()
 
-        if self.pt_id_fields[0].text() == "" or self.pt_id_fields[0].text() == " ":
+        if self.pt_id_fields[0].text() == "" or self.pt_id_fields[0].text().isspace():
             self.pt_id_fields[0].setText("X")
-        if self.pt_id_fields[3].text() == "" or self.pt_id_fields[3].text() == " ":
+        if self.pt_id_fields[3].text() == "" or self.pt_id_fields[3].text().isspace():
             self.pt_id_fields[3].setText("X")
 
         pt_id = (self.pt_id_fields[0].text().replace(" ","_") + " " + sex + " " +
                 pt_id_date + " " + self.pt_id_fields[3].text().replace(" ","_") + " " +
-                self.pt_id_fields[4].text().replace(" ","_"))
+                self.pt_id_fields[4].text())
 
         if len(pt_id) < 80:
             pt_id = pt_id + " " * (80 - len(pt_id))
@@ -457,11 +457,11 @@ class Anonymizer(QWidget):
         else:
             rec_info_date = self.startdateedit.date().toString("dd-MMM-yyyy").upper()
 
-        if self.rec_info_fields[1].text() == "" or self.rec_info_fields[1].text() == " ":
+        if self.rec_info_fields[1].text() == "" or self.rec_info_fields[1].text().isspace():
             self.rec_info_fields[1].setText("X")
-        if self.rec_info_fields[2].text() == "" or self.rec_info_fields[2].text() == " ":
+        if self.rec_info_fields[2].text() == "" or self.rec_info_fields[2].text().isspace():
             self.rec_info_fields[2].setText("X")
-        if self.rec_info_fields[3].text() == "" or self.rec_info_fields[3].text() == " ":
+        if self.rec_info_fields[3].text() == "" or self.rec_info_fields[3].text().isspace():
             self.rec_info_fields[3].setText("X")
         rec_info = ("Startdate " + rec_info_date + " "
                     + self.rec_info_fields[1].text().replace(" ","_")

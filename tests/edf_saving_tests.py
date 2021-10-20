@@ -4,7 +4,7 @@ sys.path.append('visualization')
 import unittest
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtTest import QTest
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDate, QTime
 from visualization.edf_saving.saveEdf_options import SaveEdfOptions
 from visualization.edf_saving.saveEdf_info import SaveEdfInfo
 from visualization.edf_saving.anonymizer import Anonymizer, _valid_date
@@ -17,7 +17,7 @@ import datetime
 app = QApplication([])
 class TestEdfSaving(unittest.TestCase):
     def setUp(self):
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/E_B_1-DeID_0003.edf"
+        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03.edf"
         self.TEST_SAVE_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test0.edf"
         patch('sys.argv', ["--show","0"])
         args = get_args()
@@ -26,7 +26,7 @@ class TestEdfSaving(unittest.TestCase):
         # self.parent.argv.save_edf_fn = "/Users/daniellecurrey/Desktop/test0.edf"
         # self._load_signals()
         self.saveedf_info = SaveEdfInfo()
-        self.saveedf_info.fn =self.TEST_FN
+        self.saveedf_info.fn = self.TEST_FN
         self.ui = SaveEdfOptions(self.saveedf_info, self.parent)
 
     def test_setup(self):
@@ -49,7 +49,7 @@ class TestEdfSaving(unittest.TestCase):
         self.parent.argv.save_edf_fn = self.TEST_SAVE_FN
         self.parent.argv.anonymize_edf = 0
         saveedf_info2 = SaveEdfInfo()
-        saveedf_info2.fn =self.TEST_FN
+        saveedf_info2.fn = self.TEST_FN
         ui2 = SaveEdfOptions(saveedf_info2, self.parent)
         self.assertTrue(ui2.seo_ui.cbox_orig.isChecked())
 
@@ -149,7 +149,7 @@ class TestEdfSaving(unittest.TestCase):
         file = bytearray(file)
         pt_id_text = file[8:88].decode("utf-8").split(" ")
         rec_info_text = file[88:168].decode("utf-8").split(" ")
-        self.assertEqual(self.anon_ui.lbl_fn.text(), "E_B_1-DeID_0003...")
+        self.assertEqual(self.anon_ui.lbl_fn.text(), "chb01_03.edf")
         self.assertEqual(self.anon_ui.btn_anonfile.isEnabled(), 1)
         self.assertEqual(self.anon_ui.cbox_copyoriginal.isEnabled(), 1)
         self.assertEqual(self.anon_ui.cbox_setdefaults.isEnabled(), 1)
@@ -164,28 +164,39 @@ class TestEdfSaving(unittest.TestCase):
         self.assertEqual(self.anon_ui.oldpt_id_fields[0].text(), pt_id_text[0])
         self.assertEqual(self.anon_ui.radio_pt_id_x2.isChecked(), 1)
         self.assertEqual(self.anon_ui.radio_pt_id_date2.isChecked(), 1)
-        self.assertEqual(self.anon_ui.dob.date().year(), int(pt_id_text[2].split("-")[2]))
-        self.assertEqual(self.anon_ui.dob.date().month(), MONTHS.index(pt_id_text[2].split("-")[1]) + 1)
-        self.assertEqual(self.anon_ui.dob.date().day(), int(pt_id_text[2].split("-")[0]))
 
-        self.assertEqual(self.anon_ui.oldpt_id_fields[3].text(), pt_id_text[3])
+        self.assertEqual(self.anon_ui.dob.date().year(), 2001)
+        self.assertEqual(self.anon_ui.dob.date().month(), 1)
+        self.assertEqual(self.anon_ui.dob.date().day(), 1)
+
+        self.assertEqual(self.anon_ui.oldpt_id_fields[3].text(), "X")
         self.assertEqual(self.anon_ui.oldpt_id_fields[4].text(), "")
 
         self.assertEqual(self.anon_ui.rec_info_date2.isChecked(), 1)
-        self.assertEqual(self.anon_ui.startdate.date().year(), int(rec_info_text[1].split("-")[2]))
-        self.assertEqual(self.anon_ui.startdate.date().month(), MONTHS.index(rec_info_text[1].split("-")[1]) + 1)
-        self.assertEqual(self.anon_ui.startdate.date().day(), int(rec_info_text[1].split("-")[0]))
-        self.assertEqual(self.anon_ui.oldrec_info_fields[1].text(), rec_info_text[2])
-        self.assertEqual(self.anon_ui.oldrec_info_fields[2].text(), rec_info_text[3])
-        self.assertEqual(self.anon_ui.oldrec_info_fields[3].text(), rec_info_text[4])
+        self.assertEqual(self.anon_ui.startdate.date().year(), 2001)
+        self.assertEqual(self.anon_ui.startdate.date().month(), 1)
+        self.assertEqual(self.anon_ui.startdate.date().day(), 1)
+        self.assertEqual(self.anon_ui.oldrec_info_fields[1].text(), "X")
+        self.assertEqual(self.anon_ui.oldrec_info_fields[2].text(), "X")
+        self.assertEqual(self.anon_ui.oldrec_info_fields[3].text(), "X")
         self.assertEqual(self.anon_ui.oldrec_info_fields[4].text(), "")
-
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().year(), 2001)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().month(), 1)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().day(), 1)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().hour(), 4)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().minute(), 22)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().second(), 0)     
+        
+        yrs = int(file[174:176].decode("utf-8"))
+        if yrs > 30:
+            yrs = yrs + 1900
+        else:
+            yrs = yrs + 2000
+        mths = int(file[171:173].decode("utf-8"))
+        dys = int(file[168:170].decode("utf-8"))
+        hrs = int(file[176:178].decode("utf-8"))
+        minutes = int(file[179:181].decode("utf-8"))
+        sec = int(file[182:184].decode("utf-8"))
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().year(), yrs)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().month(), mths)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().day(), dys)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().hour(), hrs)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().minute(), minutes)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().second(), sec)     
     
     def test_copy_original_anon(self):
         # Test clicking anon cboxes
@@ -205,12 +216,12 @@ class TestEdfSaving(unittest.TestCase):
         self.assertEqual(self.anon_ui.rec_info_fields[3].text(), "X")
         self.assertEqual(self.anon_ui.rec_info_fields[4].text(), "")
 
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().year(), 2001)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().month(), 1)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().day(), 1)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().hour(), 4)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().minute(), 22)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().second(), 0)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().year(), 1976)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().month(), 11)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().day(), 6)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().hour(), 13)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().minute(), 43)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().second(), 4)
 
         QTest.mouseClick(self.anon_ui.cbox_copyoriginal, Qt.LeftButton)
         self.assertEqual(self.anon_ui.cbox_copyoriginal.isChecked(), 1)
@@ -251,12 +262,12 @@ class TestEdfSaving(unittest.TestCase):
         self.assertEqual(self.anon_ui.rec_info_fields[3].text(), "X")
         self.assertEqual(self.anon_ui.rec_info_fields[4].text(), "")
 
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().year(), 2001)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().month(), 1)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().day(), 1)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().hour(), 4)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().minute(), 22)
-        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().second(), 0)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().year(), 1976)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().month(), 11)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[0].date().day(), 6)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().hour(), 13)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().minute(), 43)
+        self.assertEqual(self.anon_ui.olddatetimefield_inputs[1].time().second(), 4)
     
     def test_valid_date(self):
         # Test the _valid_date function in anonymize
@@ -267,6 +278,60 @@ class TestEdfSaving(unittest.TestCase):
         self.assertEqual(-1, _valid_date("AB-JAN-2001"))
         self.assertEqual(-1, _valid_date("01-JAN-200C"))
         self.assertEqual(0, _valid_date("01-JAN-2001"))
+
+    def test_anon_file0(self):
+        # Test the anon_file function
+        self.anon_ui = Anonymizer(self.saveedf_info, self.parent)
+        self.anon_ui.anon_file()
+
+        self.assertEqual(self.saveedf_info.pt_id, "X X X X" + " " * 73)
+        self.assertEqual(self.saveedf_info.rec_info, "Startdate X X X X" + " " * 63)
+        self.assertEqual(self.saveedf_info.start_date, "01.01.01")
+        self.assertEqual(self.saveedf_info.start_time, "01.01.01")
+
+    def test_anon_file1(self):
+        # Test the anon_file function
+        self.anon_ui = Anonymizer(self.saveedf_info, self.parent)
+
+        self.anon_ui.radio_pt_id_f.setChecked(1)
+        self.anon_ui.radio_pt_id_date.setChecked(1)
+        self.anon_ui.dobedit.setDate(QDate(2021,10,15))
+        self.anon_ui.pt_id_fields[0].setText("    \t")
+        self.anon_ui.pt_id_fields[3].setText("")
+        self.anon_ui.rec_info_date.setChecked(1)
+        self.anon_ui.startdateedit.setDate(QDate(2021,9, 29))
+        self.anon_ui.rec_info_fields[2].setText("")
+        self.anon_ui.rec_info_fields[3].setText("     ")
+
+        self.anon_ui.anon_file()
+
+        self.assertEqual(self.saveedf_info.pt_id, "X F 15-OCT-2021 X" + " " * 63)
+        self.assertEqual(self.saveedf_info.rec_info, "Startdate 29-SEP-2021 X X X" + " " * 53)
+        self.assertEqual(self.saveedf_info.start_date, "01.01.01")
+        self.assertEqual(self.saveedf_info.start_time, "01.01.01")
+
+    def test_anon_file2(self):
+        # Test the anon_file function
+        self.anon_ui = Anonymizer(self.saveedf_info, self.parent)
+
+        self.anon_ui.radio_pt_id_m.setChecked(1)
+        self.anon_ui.pt_id_fields[0].setText("1234")
+        self.anon_ui.pt_id_fields[3].setText("John Doe")
+        self.anon_ui.pt_id_fields[4].setText("extra info")
+
+        self.anon_ui.rec_info_fields[1].setText("  \t")
+        self.anon_ui.rec_info_fields[2].setText("abcde")
+        self.anon_ui.rec_info_fields[3].setText("test code")
+
+        self.anon_ui.datetimefield_inputs[0].setDate(QDate(2021, 5, 27))
+        self.anon_ui.datetimefield_inputs[1].setTime(QTime(21, 5, 2))
+
+        self.anon_ui.anon_file()
+
+        self.assertEqual(self.saveedf_info.pt_id, "1234 M X John_Doe extra info" + " " * 52)
+        self.assertEqual(self.saveedf_info.rec_info, "Startdate X X abcde test_code" + " " * 51)
+        self.assertEqual(self.saveedf_info.start_date, "27.05.21")
+        self.assertEqual(self.saveedf_info.start_time, "21.05.02")
 
     def tearDown(self):
         pass

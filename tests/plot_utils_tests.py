@@ -8,7 +8,7 @@ from preprocessing.edf_loader import EdfLoader
 class TestPlotUtils(unittest.TestCase):
     def setUp(self):
         # Set the test files
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/E_B_1-DeID_0003.edf"
+        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03.edf"
         loader = EdfLoader()
         self.EDF_INFO = loader.load_metadata(self.TEST_FN)
 

@@ -14,7 +14,7 @@ from unittest.mock import patch
 app = QApplication([])
 class TestFilter(unittest.TestCase):
     def setUp(self):
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/E_B_1-DeID_0003.edf"
+        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03.edf"
         patch('sys.argv', ["--show","0"])
         args = get_args()
         check_args(args)
@@ -61,23 +61,23 @@ class TestFilter(unittest.TestCase):
         data = self.parent.ci.data_to_plot[0,:]
         lp = 0
         hp = 0
-        no_filter_dict = {'delta': 921564.9038488258,
-                          'theta': 140934.1102363741,
-                          'alpha': 32497.06585369092,
-                          'beta': 18906.463903905445,
-                          'gamma': 2740.2769393443546,
-                          'test0': 335062.22821289476}
+        no_filter_dict = {'delta': 5750580.188063894,
+                          'theta': 1623394.1100579707,
+                          'alpha': 779765.3023329942,
+                          'beta': 69927.60270696628,
+                          'gamma': 30319.31786894721,
+                          'test0': 3272411.217772229}
         fs_band_dict = self.signalstats_info.get_power(data, 0, 512, hp, lp, self.parent.edf_info.fs)
         for k in no_filter_dict.keys():
             self.assertTrue(abs(no_filter_dict[k] - fs_band_dict[k]) < diff_thresh)
         
         # lp filter on
-        lp_filter_dict = {'delta': 921564.9038488258,
-                          'theta': 140934.1102363741,
-                          'alpha': 32497.06585369092,
-                          'beta': 18906.463903905445,
-                          'gamma': 1970.392364297181,
-                          'test0': 335062.22821289476}
+        lp_filter_dict = {'delta': 5750580.188063894,
+                          'theta': 1623394.1100579707,
+                          'alpha': 779765.3023329942,
+                          'beta': 69927.60270696628,
+                          'gamma': 15338.107466774643,
+                          'test0': 3272411.217772229}
         lp = 31
         hp = 0
         fs_band_dict = self.signalstats_info.get_power(data, 0, 512, hp, lp, self.parent.edf_info.fs)
@@ -85,12 +85,12 @@ class TestFilter(unittest.TestCase):
             self.assertTrue(abs(lp_filter_dict[k] - fs_band_dict[k]) < diff_thresh)
 
         # lp filter on part2
-        lp_filter_dict = {'delta': 921564.9038488258,
-                          'theta': 140934.1102363741,
-                          'alpha': 32497.06585369092,
-                          'beta': 18906.463903905445,
+        lp_filter_dict = {'delta': 5750580.188063894,
+                          'theta': 1623394.1100579707,
+                          'alpha': 779765.3023329942,
+                          'beta': 69927.60270696628,
                           'gamma': 0,
-                          'test0': 335062.22821289476}
+                          'test0': 3272411.217772229}
         lp = 30
         hp = 0
         fs_band_dict = self.signalstats_info.get_power(data, 0, 512, hp, lp, self.parent.edf_info.fs)
@@ -99,10 +99,10 @@ class TestFilter(unittest.TestCase):
         
         # hp filter on
         hp_filter_dict = {'delta': 0,
-                          'theta': 74248.22729404943,
-                          'alpha': 32497.06585369092,
-                          'beta': 18906.463903905445,
-                          'gamma': 2740.2769393443546,
+                          'theta': 1256103.6541762687,
+                          'alpha': 779765.3023329942,
+                          'beta': 69927.60270696628,
+                          'gamma': 30319.31786894721,
                           'test0': 0}
         lp = 0
         hp = 6
@@ -113,11 +113,11 @@ class TestFilter(unittest.TestCase):
 
         # bp filter on
         bp_filter_dict = {'delta': 0,
-                          'theta': 140934.1102363741,
-                          'alpha': 34333.59987885282,
+                          'theta': 1623394.1100579707,
+                          'alpha': 480015.56167355896,
                           'beta': 0,
                           'gamma': 0,
-                          'test0': 193533.59098430723}
+                          'test0': 615836.7259411447}
         lp = 10
         hp = 4
         fs_band_dict = self.signalstats_info.get_power(data, 0, 512, hp, lp, self.parent.edf_info.fs)
