@@ -8,7 +8,7 @@ from preprocessing.edf_loader import EdfLoader
 class TestPlotUtils(unittest.TestCase):
     def setUp(self):
         # Set the test files
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03.edf"
+        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_file_annotations.edf"
         loader = EdfLoader()
         self.EDF_INFO = loader.load_metadata(self.TEST_FN)
 
@@ -17,19 +17,15 @@ class TestPlotUtils(unittest.TestCase):
         # Test check annotations
         self.EDF_INFO.annotations = np.array(self.EDF_INFO.annotations)
         ret, idx_w_ann = check_annotations(0, 10, self.EDF_INFO)
-        self.assertEqual(len(ret), 2)
+        self.assertEqual(len(ret), 3)
         self.assertEqual(len(idx_w_ann), 10)
         for x, y in zip(ret[0], self.EDF_INFO.annotations[:,0]):
             self.assertEqual(x, y)
         for x, y in zip(ret[1], self.EDF_INFO.annotations[:,1]):
             self.assertEqual(x, y)
         ret, idx_w_ann = check_annotations(532, 10, self.EDF_INFO)
-        self.assertEqual(len(ret), 2)
+        self.assertEqual(len(ret), 0)
         self.assertEqual(len(idx_w_ann), 10)
-        for x, y in zip(ret[0], self.EDF_INFO.annotations[:,16]):
-            self.assertEqual(x, y)
-        for x, y in zip(ret[1], self.EDF_INFO.annotations[:,17]):
-            self.assertEqual(x, y)
         test_edf = self.EDF_INFO
         test_edf.annotations = [[], [], []]
         ret, idx_w_ann = check_annotations(532, 10, test_edf)

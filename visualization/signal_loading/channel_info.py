@@ -116,11 +116,6 @@ class ChannelInfo():
         self.labelsAR1020 = ["O2","O1","PZ","CZ","FZ","P8","P7","T8","T7","F8",
                              "F7","P4","P3","C4","C3","F4","F3","FP2","FP1"]
 
-        """ self.labelsBIP1010 = ["F10-T10","FP2-F10","P8-O2","T8-P8","F8-T8",
-                              "FP2-F8","P4-O2","C4-P4","F4-C4","Fp2-F4","CZ-PZ",
-                              "FZ-CZ","P3-O1","C3-P3","F3-C3","FP1-F3","P7-O1",
-                              "T7-P7","F7-T7","FP1-F7","F9-T9","FP1-F9"]
-        """
         self.labelsAR1010 = ["IZ","O2","O1","OZ","POZ","PZ","CPZ","CZ","FCZ",
                              "FZ","AFZ","FPZ",
                              "P10","P9","TP10","TP9","A2","A1","T10","T9","FT10","FT9","F10","F9",
@@ -272,10 +267,10 @@ class ChannelInfo():
             labels_to_check = self.labelsBIP1020
         elif bip_ar == 1 and mont1010_1020 == 0:
             labels_to_check = self.labelsAR1020
-        else:
+        elif bip_ar == 1 and mont1010_1020 == 1:
             labels_to_check = self.labelsAR1010
-        #elif bip_ar == 0 and mont1010_1020 == 1:
-        #    labels_to_check = self.labelsBIP1010
+        else:
+            return 0
 
         ret = 1
         for i in range(len(labels_to_check)):
