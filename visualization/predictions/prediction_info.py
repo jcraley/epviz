@@ -149,6 +149,15 @@ class PredictionInfo():
         self.pred_by_chn = 0 # reset
         self.multi_class = 0 # reset
         if binary:
+            if len(preds.shape) == 3:
+                # really should be in axis=2
+                # but we'll check them all to be sure
+                if preds.shape[2] == 2:
+                    preds = preds[:,:,1]
+                elif preds.shape[1] == 2:
+                    preds = preds[:,1,:]
+                elif preds.shape[0] == 2:
+                    preds = preds[1,:,:]
             preds = np.squeeze(preds)
             dim = len(preds.shape)
             if dim == 1:

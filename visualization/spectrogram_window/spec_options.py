@@ -1,6 +1,7 @@
 """ Module for spectrogram options window """
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QGridLayout,
-                                QComboBox, QDoubleSpinBox)
+                                QComboBox, QDoubleSpinBox, QDesktopWidget)
 from PyQt5.QtGui import QFont
 from matplotlib.backends.qt_compat import QtWidgets
 
@@ -13,11 +14,12 @@ class SpecOptions(QWidget):
     def __init__(self, data, parent):
         """ Constructor """
         super().__init__()
-        self.left = 10
-        self.top = 10
-        self.title = 'Select signal for spectrogram'
-        self.width = int(parent.width / 6)
+        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        self.width = int(parent.width / 3)
         self.height = int(parent.height / 2.5)
+        self.left = centerPoint.x() - self.width / 2
+        self.top = centerPoint.y() - self.height / 2
+        self.title = 'Select signal for spectrogram'
         self.data = data
         self.parent = parent
         self.setup_ui()
@@ -25,10 +27,6 @@ class SpecOptions(QWidget):
     def setup_ui(self):
         """ Setup the UI """
         self.setWindowTitle(self.title)
-        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
-
-        self.setGeometry(center_point.x() - int(self.width / 2),
-            center_point.y() - int(self.height / 2), self.width, self.height)
 
         grid = QGridLayout()
 
@@ -66,6 +64,9 @@ class SpecOptions(QWidget):
         grid.addWidget(self.btn_exit, 3, 3)
 
         self.setLayout(grid)
+
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         self.set_sig_slots()
 

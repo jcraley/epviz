@@ -1,5 +1,5 @@
 """ Module for the color options class """
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import (QWidget, QListWidget, QPushButton, QLabel,
                                 QGridLayout, QScrollArea, QListWidgetItem,
                                 QAbstractItemView, QGroupBox, QRadioButton,
@@ -21,11 +21,12 @@ class ColorOptions(QWidget):
                 chn_ops - the channel options window
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
+        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        self.width = int(parent.width / 2)
+        self.height = int(parent.height / 3)
+        self.left = int(centerPoint.x() - self.width / 2)
+        self.top = int(centerPoint.y() - self.height / 2)
         self.title = 'Choose colors'
-        self.width = parent.width / 6
-        self.height = parent.height / 3
         self.data = data
         self.parent = parent
         self.chn_ops = chn_ops
@@ -37,10 +38,6 @@ class ColorOptions(QWidget):
     def setup_ui(self):
         """ Setup UI for the color options window.
         """
-        self.setWindowTitle(self.title)
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(centerPoint.x() - self.width / 2,
-                centerPoint.y() - self.height / 2, self.width, self.height)
         
         grid_lt = QGridLayout()
         
@@ -112,6 +109,10 @@ class ColorOptions(QWidget):
         btn_exit.clicked.connect(self.check)
         grid_lt.addWidget(btn_exit,4,0)
         self.setLayout(grid_lt)
+
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         self.show()
 

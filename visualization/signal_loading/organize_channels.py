@@ -1,5 +1,5 @@
 """ Module for the organize channels window """
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import (QWidget, QListWidget, QPushButton, QLabel,
                                 QGridLayout, QScrollArea, QListWidgetItem,
                                 QAbstractItemView)
@@ -20,11 +20,13 @@ class OrganizeChannels(QWidget):
                 parent - the main (parent) window
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
+        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        print(centerPoint)
+        self.width = int(parent.width / 6)
+        self.height = int(parent.height / 2.5)
+        self.left = centerPoint.x() - self.width / 2
+        self.top = centerPoint.y() - self.height / 2
         self.title = 'Organize signals'
-        self.width = parent.width / 6
-        self.height = parent.height / 2.5
         self.data = data
         self.parent = parent
         self.setup_ui()
@@ -51,9 +53,8 @@ class OrganizeChannels(QWidget):
         self.populateChnList()
 
         self.setWindowTitle(self.title)
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(centerPoint.x() - self.width / 2,
-                centerPoint.y() - self.height / 2, self.width, self.height)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         lbl_info = QLabel("Drag and drop channels \n to change their order: ")
         grid_lt.addWidget(lbl_info,0,0)

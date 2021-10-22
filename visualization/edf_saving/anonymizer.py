@@ -1,10 +1,10 @@
 """ Module for the anonymizer window """
-from PyQt5.QtCore import Qt, QTime, QDate
+from PyQt5.QtCore import Qt, QTime, QDate, QSize
 
 from PyQt5.QtWidgets import (QMessageBox, QWidget, QPushButton, QLabel,
                              QGridLayout, QLineEdit, QTimeEdit, QFrame,
                              QDateEdit, QGroupBox, QRadioButton, QHBoxLayout,
-                             QCheckBox)
+                             QCheckBox, QDesktopWidget)
 from PyQt5.QtGui import QFont
 from matplotlib.backends.qt_compat import QtWidgets
 
@@ -47,12 +47,12 @@ class Anonymizer(QWidget):
                 parent - the main gui window object
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
         self.title = 'EDF Anonymizer'
-        size_object = QtWidgets.QDesktopWidget().screenGeometry(-1)
-        self.width = size_object.width() * 0.2
-        self.height = size_object.height() * 0.2
+        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        self.width = int(parent.width / 2)
+        self.height = int(parent.height / 1.1)
+        self.left = centerPoint.x() - self.width / 2
+        self.top = centerPoint.y() - self.height / 2
         self.field_defaults = [bytes(" " * 80, 'utf-8'), bytes(" " * 80, 'utf-8'),
                                 bytes("01.01.01", 'utf-8'), bytes("01.01.01", 'utf-8')]
 
@@ -267,7 +267,8 @@ class Anonymizer(QWidget):
 
         self.lbl_fn = QLabel("No file loaded.")
         self.lbl_fn.setFont(font)
-        layout.addWidget(self.lbl_fn,1,1,1,1)
+        self.lbl_fn.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.lbl_fn,1,0,1,3)
         layout.addWidget(QHLine(), 2, 0, 1, 3)
 
         layout.addWidget(QHLine(), len(self.date_time_lbls) + 5, 0, 1, 3)
@@ -277,6 +278,9 @@ class Anonymizer(QWidget):
 
         self.setWindowTitle(self.title)
         self.setLayout(layout)
+
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         self.set_signals_slots()
         self.show()

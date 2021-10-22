@@ -30,13 +30,13 @@ import matplotlib
 matplotlib.use("Qt5Agg")
 import mne
 
-from PyQt5.QtCore import Qt, QTime, QUrl
+from PyQt5.QtCore import Qt, QTime, QUrl, QSize
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QFileDialog,
                              QMessageBox, QWidget,
                              QPushButton, QCheckBox, QLabel, QInputDialog,
                              QSlider, QGridLayout, QDockWidget, QListWidget,
                              QListWidgetItem, QLineEdit, QSpinBox,
-                             QTimeEdit, QComboBox, QFrame, QStyle)
+                             QTimeEdit, QComboBox, QFrame, QStyle, QDesktopWidget)
 from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QDesktopServices
 import pyqtgraph as pg
 from pyqtgraph.dockarea import *
@@ -56,12 +56,13 @@ class MainPage(QMainWindow):
         """
         super().__init__()
         self.argv = argv
-        self.left = 10
-        self.top = 10
+        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
         self.title = 'EEG Prediction Visualization (EPViz)'
         size_object = QtWidgets.QDesktopWidget().screenGeometry(-1)
         self.width = int(size_object.width() * 0.9)
-        self.height = int(size_object.height() * 0.3)
+        self.height = int(size_object.height() * 0.9)
+        self.left = centerPoint.x() - self.width / 2
+        self.top = centerPoint.y() - self.height / 2
         self.app = app
         self.init_ui()
 
@@ -429,6 +430,7 @@ class MainPage(QMainWindow):
 
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         self.set_signals_slots()
         self.init_values()

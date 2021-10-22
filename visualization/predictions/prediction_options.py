@@ -1,4 +1,5 @@
 """ Module for prediction options window """
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import (QFileDialog, QWidget, QPushButton, QCheckBox,
                                 QLabel, QGridLayout, QFrame, QRadioButton,
                                 QGroupBox, QHBoxLayout)
@@ -10,11 +11,12 @@ class PredictionOptions(QWidget):
     def __init__(self,pi,parent):
         """ Constructor """
         super().__init__()
-        self.left = 10
-        self.top = 10
+        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        self.width = int(parent.width / 2)
+        self.height = int(parent.height / 2.5)
+        self.left = centerPoint.x() - self.width / 2
+        self.top = centerPoint.y() - self.height / 2
         self.title = 'Prediction Options'
-        self.width = int(parent.width / 3)
-        self.height = int(parent.height / 3)
         self.data = pi
         self.parent = parent
         self.setup_ui()
@@ -26,9 +28,6 @@ class PredictionOptions(QWidget):
         layout.setSpacing(4)
 
         self.setWindowTitle(self.title)
-        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(center_point.x() - int(self.width / 2),
-            center_point.y() - int(self.height / 2), self.width, self.height)
 
         info_lbl = QLabel(self)
         info_lbl.setText("Loading predictions:" +
@@ -147,6 +146,9 @@ class PredictionOptions(QWidget):
         layout.addWidget(btn_exit,ud,4)
 
         self.setLayout(layout)
+
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         self.show()
 

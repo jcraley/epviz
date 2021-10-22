@@ -1,6 +1,7 @@
 """ Module for filtering options window. """
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import (QWidget, QPushButton, QCheckBox, QLabel,
-                                QGridLayout, QDoubleSpinBox)
+                                QGridLayout, QDoubleSpinBox, QDesktopWidget)
 
 from matplotlib.backends.qt_compat import QtWidgets
 
@@ -15,11 +16,13 @@ class FilterOptions(QWidget):
                 parent - the main (parent) window
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
-        self.title = 'Filter Options'
+        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        print(centerPoint)
         self.width = int(parent.width / 5)
         self.height = int(parent.height / 3)
+        self.left = centerPoint.x() - self.width / 2
+        self.top = centerPoint.y() - self.height / 2
+        self.title = 'Filter Options'
         self.data = data
         self.parent = parent
         self.fs = self.parent.edf_info.fs
@@ -29,10 +32,6 @@ class FilterOptions(QWidget):
         """ Setup the UI for the filter options window.
         """
         layout = QGridLayout()
-        self.setWindowTitle(self.title)
-        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(int(center_point.x() - self.width / 2),
-                int(center_point.y() - self.height / 2), self.width, self.height)
 
         self.btn_exit = QPushButton('Ok', self)
         layout.addWidget(self.btn_exit,4,3)
@@ -102,6 +101,11 @@ class FilterOptions(QWidget):
         layout.addWidget(notch_hz_lbl,3,4)
 
         self.setLayout(layout)
+
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
+
         self.set_signals_slots()
         self.show()
 
