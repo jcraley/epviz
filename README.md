@@ -86,11 +86,15 @@ These options include:
 Tests:
 -----
 Unit tests are located in the tests directory. To run the tests:
-```./run_tests```
+```
+./run_tests
+```
 
 Style guide:
 -----
 We are using Pylint to comply with PEP8 style guidelines.
 
 To run Pylint on all visualizer code:
-```./run_pylint```
+```
+./run_pylint
+```
