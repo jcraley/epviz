@@ -1,5 +1,6 @@
-# jhu-eeg
-JHU EEG
+# EPViz (EEG Prediction Visualizer)
+
+EPViz is a tool to aid researchers in developing, validating, and reporting their predictive modeling outputs. A lightweight and standalone software package developed in Python, EPViz allows researchers to load a PyTorch deep learning model, apply it to the EEG, and overlay the output channel-wise or subject-level temporal predictions on top of the original time series. 
 
 Installation:
 -----
@@ -49,7 +50,7 @@ This will save the signals that are currently being plotted. If the signals are 
 ***Saving to .png:***  
 This will save an image of the current graph along with any predictions that are plotted. 
 
-![](visualizerImg.png)
+![](epviz0.png)
 
 Command line options:
 -----

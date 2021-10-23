@@ -184,7 +184,7 @@ class MainPage(QMainWindow):
         grid_lt.addWidget(label_ws, ud, 0)
 
         self.ws_combobox = QComboBox()
-        self.ws_combobox.addItems(["1s","5s","10s","15s","20s","25s","30s", "45s"])
+        self.ws_combobox.addItems(["1s","5s","10s","15s","20s","25s","30s","45s"])
         self.ws_combobox.setCurrentIndex(2)
         grid_lt.addWidget(self.ws_combobox, ud, 1)
         ud += 1
