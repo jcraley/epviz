@@ -23,13 +23,11 @@ class ChannelOptions(QWidget):
         centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
         self.width = int(parent.width / 4)
         self.height = int(parent.height / 2.5)
-        self.left = centerPoint.x() - self.width / 2
-        self.top = centerPoint.y() - self.height / 2
+        self.left = int(centerPoint.x() - self.width / 2)
+        self.top = int(centerPoint.y() - self.height / 2)
         self.title = 'Select signals'
-        # self.unprocessed_data = data_for_preds
         # if loading new data make copies in case user cancels loading channels
         self.new_load = 0
-        # if len(self.unprocessed_data) != 0:
         if data.edf_fn != parent.ci.edf_fn:
             self.pi = PredictionInfo()
             self.new_load = 1
@@ -209,8 +207,8 @@ class ChannelOptions(QWidget):
         if cbox.isChecked():
             self.uncheck_txt_files()
             self.cbox_bip.setChecked(0)
-            #if self.ar1010:
-            #    self.cbox_ar1010.setChecked(0)
+            if self.ar1010:
+                self.cbox_ar1010.setChecked(0)
             #    self.cbox_bip1010.setChecked(0)
             #elif self.bip1010:
             #    self.cbox_bip1010.setChecked(0)
@@ -260,9 +258,10 @@ class ChannelOptions(QWidget):
         else:
             self._select_chns(chns, 1)
 
-    def bip_checked1010(self):
-        """ Called when bipolar 1010 is called.
-        """
+    #def bip_checked1010(self):
+    """ Called when bipolar 1010 is called.
+    """
+    """
         cbox = self.sender()
         chns = self.data.get_chns(self.data.labelsBIP1010)
         if self.ar1020:
@@ -283,7 +282,7 @@ class ChannelOptions(QWidget):
             self._select_chns(chns, 0)
         else:
             self._select_chns(chns, 1)
-
+    """
     def uncheck_txt_files(self):
         """ Deselect all text files.
         """

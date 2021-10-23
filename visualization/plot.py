@@ -61,8 +61,8 @@ class MainPage(QMainWindow):
         size_object = QtWidgets.QDesktopWidget().screenGeometry(-1)
         self.width = int(size_object.width() * 0.9)
         self.height = int(size_object.height() * 0.9)
-        self.left = centerPoint.x() - self.width / 2
-        self.top = centerPoint.y() - self.height / 2
+        self.left = int(centerPoint.x() - self.width / 2)
+        self.top = int(centerPoint.y() - self.height / 2)
         self.app = app
         self.init_ui()
 
@@ -1661,7 +1661,7 @@ class MainPage(QMainWindow):
         # Scale locations from [-1, 1]
         pos2d = 2 * (pos2d - 0.5)
 
-        self.ax = self.m.fig.add_subplot(self.m.gs[0])
+        self.ax = self.m.fig.add_subplot()#self.m.gs[0])
         im, cn = mne.viz.plot_topomap(curr_score, pos2d, sphere=1,
                                   axes=self.ax, vmin=0, vmax=1, show=False,
                                   outlines='head')

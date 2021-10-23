@@ -21,7 +21,6 @@ class OrganizeChannels(QWidget):
         """
         super().__init__()
         centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
-        print(centerPoint)
         self.width = int(parent.width / 6)
         self.height = int(parent.height / 2.5)
         self.left = centerPoint.x() - self.width / 2

@@ -2,8 +2,10 @@
 import math
 import numpy as np
 
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import (QHBoxLayout, QWidget, QCheckBox, QGridLayout,
-                             QLineEdit, QDialogButtonBox, QFileDialog, QDoubleSpinBox)
+                             QLineEdit, QDialogButtonBox, QFileDialog, QDoubleSpinBox,
+                             QDesktopWidget)
 from PyQt5 import QtWidgets
 
 from matplotlib.backends.backend_qt5agg import FigureCanvas
@@ -32,11 +34,12 @@ class SaveTopoplotOptions(QWidget):
                 parent - the main (parent) window
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
+        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        self.width = int(parent.width / 2)
+        self.height = int(parent.height / 2)
+        self.left = int(centerPoint.x() - self.width / 2)
+        self.top = int(centerPoint.y() - self.height / 2)
         self.title = 'Save topoplot'
-        self.width = parent.width / 2
-        self.height = parent.height / 2
         self.parent = parent
         self.plot_title = ""
         self.show_subplot_times = 0
@@ -49,9 +52,8 @@ class SaveTopoplotOptions(QWidget):
         # left side - plot window
         self.m = PlotCanvas(self, width=7, height=7)
         self.layout.addWidget(self.m)
-        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(center_point.x() - self.width / 2,
-                center_point.y() - self.height / 2, self.width, self.height)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         # right side - options
         self.rt_side_layout = QGridLayout()
@@ -235,7 +237,7 @@ class SaveTopoplotOptions(QWidget):
         if len(file[0]) == 0 or file[0] is None:
             return
         self.m.fig.savefig(file[0] + ".png", bbox_inches='tight', dpi=300)
-        self.closeWindow()
+        self.close_window()
 
     def close_window(self):
         """ Called when "ok" is pressed to exit.

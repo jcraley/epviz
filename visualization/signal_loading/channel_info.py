@@ -1,6 +1,7 @@
 """ Module for holding channel information."""
 import numpy as np
 import pyedflib
+import re
 
 def _check_label(label, label_list):
     """ Checks if a label is in the label list
@@ -148,63 +149,22 @@ class ChannelInfo():
         self.nchns_to_plot = 0
         self.mont_type = 5
 
-    def _set_colors(self):
-        """ Reset the colors in case of a color change.
-        """
-        self.colorsBIP1020 = [self.mid_col, self.mid_col, self.rt_col, self.rt_col, self.rt_col,
-                              self.rt_col, self.lt_col, self.lt_col, self.lt_col, self.lt_col,
-                              self.rt_col, self.rt_col, self.rt_col, self.rt_col, self.lt_col,
-                              self.lt_col,self.lt_col,self.lt_col,self.lt_col]
-        self.colorsAR1020 = [self.rt_col, self.lt_col, self.mid_col, self.mid_col, self.mid_col,
-                             self.rt_col, self.lt_col, self.rt_col, self.lt_col, self.rt_col,
-                             self.lt_col, self.rt_col, self.lt_col, self.rt_col, self.lt_col,
-                             self.rt_col,self.lt_col,self.rt_col,self.lt_col,self.rt_col]
-        self.colorsBIP1010 = [self.rt_col, self.rt_col, self.rt_col, self.rt_col, self.rt_col,
-                              self.rt_col, self.rt_col, self.rt_col, self.rt_col, self.rt_col,
-                              self.rt_col, self.rt_col, self.mid_col, self.mid_col, self.mid_col,
-                              self.mid_col, self.lt_col, self.lt_col, self.lt_col, self.lt_col,
-                              self.lt_col, self.lt_col, self.lt_col, self.lt_col, self.lt_col,
-                              self.lt_col,self.lt_col,self.lt_col]
-        self.colorsAR1010 = [self.mid_col, self.rt_col, self.lt_col, self.mid_col, self.mid_col,
-                             self.mid_col, self.mid_col, self.mid_col, self.mid_col, self.mid_col,
-                             self.mid_col, self.mid_col, self.rt_col, self.lt_col, self.rt_col,
-                             self.lt_col, self.rt_col, self.lt_col, self.rt_col, self.lt_col,
-                             self.rt_col, self.lt_col, self.rt_col, self.lt_col, self.rt_col,
-                             self.lt_col, self.rt_col, self.lt_col, self.rt_col, self.lt_col,
-                             self.rt_col, self.lt_col, self.rt_col, self.lt_col, self.rt_col,
-                             self.lt_col, self.rt_col, self.lt_col, self.rt_col, self.lt_col,
-                             self.rt_col, self.lt_col, self.rt_col, self.lt_col, self.rt_col,
-                             self.lt_col, self.rt_col, self.lt_col, self.rt_col, self.lt_col,
-                             self.rt_col, self.lt_col, self.rt_col, self.lt_col, self.rt_col,
-                             self.lt_col, self.rt_col, self.lt_col, self.rt_col, self.lt_col,
-                             self.rt_col, self.lt_col, self.rt_col, self.lt_col, self.rt_col,
-                             self.lt_col, self.rt_col, self.lt_col, self.rt_col, self.lt_col,
-                             self.rt_col, self.lt_col, self.rt_col, self.lt_col, self.mid_col]
+    def _get_color(self, chn):
+        """ Get the color of a given channel.
 
-        self.colorsBIP1010 = [self.rt_col, self.rt_col, self.rt_col, self.rt_col, self.rt_col,
-                              self.rt_col, self.rt_col, self.rt_col, self.rt_col, self.rt_col,
-                              self.mid_col, self.mid_col, self.lt_col, self.lt_col, self.lt_col,
-                              self.lt_col, self.lt_col, self.lt_col, self.lt_col, self.lt_col,
-                              self.lt_col, self.lt_col]
-        self.colorsAR1010 = [self.rt_col, self.rt_col, self.rt_col, self.rt_col, self.rt_col,
-                             self.rt_col, self.rt_col, self.rt_col, self.rt_col, self.rt_col,
-                             self.mid_col, self.mid_col, self.mid_col, self.lt_col, self.lt_col,
-                             self.lt_col, self.lt_col, self.lt_col, self.lt_col, self.lt_col,
-                             self.lt_col, self.lt_col, self.lt_col]
-        self.other_colors = [self.lt_col, self.rt_col, self.lt_col, self.rt_col, self.mid_col,
-                             self.mid_col, self.lt_col, self.lt_col, self.lt_col, self.mid_col,
-                             self.rt_col, self.rt_col, self.rt_col, self.lt_col, self.lt_col,
-                             self.lt_col, self.rt_col, self.rt_col, self.rt_col, self.lt_col,
-                             self.lt_col, self.lt_col, self.lt_col, self.lt_col, self.mid_col,
-                             self.rt_col, self.rt_col, self.rt_col, self.rt_col, self.rt_col,
-                             self.lt_col, self.lt_col, self.lt_col, self.rt_col, self.rt_col,
-                             self.rt_col, self.lt_col, self.lt_col, self.lt_col, self.lt_col,
-                             self.lt_col, self.mid_col, self.rt_col, self.rt_col, self.rt_col,
-                             self.rt_col, self.rt_col, self.lt_col, self.lt_col, self.lt_col,
-                             self.rt_col, self.rt_col, self.rt_col, self.lt_col, self.lt_col,
-                             self.mid_col, self.rt_col, self.rt_col, self.mid_col, self.mid_col,
-                             self.mid_col, self.lt_col, self.lt_col, self.rt_col, self.rt_col,
-                             self.mid_col]
+            Args:
+                chn - the channel
+            Returns:
+                the color based on whether the channel
+                is in the left / right hemisphere or midline
+                even = right, odd = left
+        """
+        num = re.findall(r'(\d+)', chn)
+        if len(num) == 0:
+            return self.mid_col
+        if int(num[0]) % 2 == 0:
+            return self.rt_col
+        return self.lt_col
 
     def write_data(self, ci2):
         """
@@ -226,32 +186,28 @@ class ChannelInfo():
         self.pred_chn_data = ci2.pred_chn_data
 
     def convert_chn_names(self):
-        """
-        Converts given channel names to those in two montages.
+        """ Converts given channel names to those in two montages.
         """
         for _ in range(len(self.chns2labels)):
             self.converted_chn_names.append("")
 
-        for k in range(len(self.labelsBIP1020)):
-            ret = _check_label(self.labelsBIP1020[k],self.labels2chns)
-            if ret != -1:
-                self.converted_chn_names[ret] = self.labelsBIP1020[k]
-
-        for k in range(len(self.labelsAR1020)):
-            ret = _check_label(self.labelsAR1020[k],self.labels2chns)
-            if ret != -1:
-                if self.converted_chn_names[ret] == "":
-                    self.converted_chn_names[ret] = self.labelsAR1020[k]
-
-        for k in range(len(self.other_labels)):
-            ret = _check_label(self.other_labels[k],self.labels2chns)
-            if ret != -1:
-                if self.converted_chn_names[ret] == "":
-                    self.converted_chn_names[ret] = self.other_labels[k]
+        self._convert_chn_names_helper(self.labelsBIP1020)
+        self._convert_chn_names_helper(self.labelsAR1020)
+        self._convert_chn_names_helper(self.other_labels)
 
         for k in range(len(self.converted_chn_names)):
             if self.converted_chn_names[k] == "":
                 self.converted_chn_names[k] = self.chns2labels[k]
+
+    def _convert_chn_names_helper(self, labels):
+        """ Helper for converted channel names.
+            Adds labels from labels to converted_chn_names.
+        """
+        for k in range(len(labels)):
+            ret = _check_label(labels[k], self.labels2chns)
+            if ret != -1:
+                if self.converted_chn_names[ret] == "":
+                    self.converted_chn_names[ret] = labels[k]
 
     def can_do_bip_ar(self, bip_ar, mont1010_1020):
         """
@@ -261,6 +217,33 @@ class ChannelInfo():
             mont1010_1020: 1 for 1010, 0 for 1020
         returns:
             1 for present, 0 for not present.
+        """
+        return self._can_do_bip_ar_helper(bip_ar, mont1010_1020,
+                    self.converted_chn_names)
+
+    def can_do_bip_ar_idx(self, list_of_idxs, bip_ar, mont1010_1020):
+        """ Whether or not the channels for the montage are present.
+
+            Args:
+                list_of_idxs: the list of indices
+                bip_ar: 1 for average reference, 0 for bipolar
+                mont1010_1020: 1 for 1010, 0 for 1020
+            Returns:
+                1 for present, 0 for not present.
+        """
+        chns_to_check = [self.converted_chn_names[x] for x in list_of_idxs]
+        return self._can_do_bip_ar_helper(bip_ar, mont1010_1020, chns_to_check)
+
+    def _can_do_bip_ar_helper(self, bip_ar, mont1010_1020, chns_to_check):
+        """ Whether or not the channels for the montage are present.
+
+            Args:
+                chns_to_check: the list of channel names to check if 
+                    they match the given labels
+                bip_ar: 1 for average reference, 0 for bipolar
+                mont1010_1020: 1 for 1010, 0 for 1020
+            Returns:
+                1 for present, 0 for not present.
         """
         labels_to_check = []
         if bip_ar == 0 and mont1010_1020 == 0:
@@ -274,37 +257,8 @@ class ChannelInfo():
 
         ret = 1
         for i in range(len(labels_to_check)):
-            if not labels_to_check[i] in self.converted_chn_names:
+            if not labels_to_check[i] in chns_to_check:
                 ret = 0
-        return ret
-
-    def can_do_bip_ar_idx(self, list_of_idxs, bip_ar, mont1010_1020):
-        """
-        Whether or not the channels for the montage are present.
-        inputs:
-            list_of_idxs: the list of indices
-            bip_ar: 1 for average reference, 0 for bipolar
-            mont1010_1020: 1 for 1010, 0 for 1020
-        returns:
-            1 for present, 0 for not present.
-        """
-        labels_to_check = []
-        if bip_ar == 0 and mont1010_1020 == 0:
-            labels_to_check = self.labelsBIP1020
-        elif bip_ar == 1 and mont1010_1020 == 0:
-            labels_to_check = self.labelsAR1020
-        else:
-            labels_to_check = self.labelsAR1010
-        #elif bip_ar == 0 and mont1010_1020 == 1:
-        #    labels_to_check = self.labelsBIP1010
-
-        for i in range(len(labels_to_check)):
-            ret = 0
-            for k in range(len(list_of_idxs)):
-                if labels_to_check[i] == self.converted_chn_names[list_of_idxs[k]]:
-                    ret = 1
-            if ret == 0:
-                return ret
         return ret
 
     def get_chns(self, labels):
@@ -346,11 +300,11 @@ class ChannelInfo():
                 from average reference data
             txt_file_name - name of text file if needed
         """
-        self._set_colors()
         f = pyedflib.EdfReader(self.edf_fn)
 
         # Things needed to plot - reset each time
-        # see if channels are already loaded and ordered
+        # see if channels are already organized ie if organize is true
+        # and all of the correct channels are present
         ret = 1
         self.nchns_to_plot = len(idxs)
         if plot_bip_from_ar:
@@ -371,7 +325,11 @@ class ChannelInfo():
                     ret = 0
         elif not plot_bip_from_ar:
             ret = 0
-        if ret == 1 and not self.use_loaded_txt_file and self.organize: # already organized
+        if ret == 1 and self.organize: # already organized
+            # redo the colors in case they have been changed
+            self.colors = []
+            for l in self.labels_to_plot[1:]:
+                self.colors.append(self._get_color(l))
             return
         if self.use_loaded_txt_file:
             self.organize = 0
@@ -414,7 +372,7 @@ class ChannelInfo():
                         idx1 = bip_idx[k,1]
                         self.data_to_plot[k,:] = f.readSignal(int(idx0)) - f.readSignal(int(idx1))
                         self.labels_to_plot.append(self.labelsBIP1020[k])
-                        self.colors.append(self.colorsBIP1020[k])
+                        self.colors.append(self._get_color(self.labelsBIP1020[k]))
                         c += 1
 
                     ar_idxs = self.get_chns(self.labelsAR1020) # clear these from the list
@@ -427,6 +385,7 @@ class ChannelInfo():
                     self.nchns_to_plot = 18 + len(idxs)
                     if self.nchns_to_plot == 18:
                         self.mont_type = 1
+            """
             elif mont_type == 3:
                 ar = self.can_do_bip_ar_idx(idxs,1,1) # must have all AR chns to convert to bipolar
                 if ar:
@@ -446,7 +405,7 @@ class ChannelInfo():
                         idx1 = bip_idx[k,1]
                         self.data_to_plot[k,:] = f.readSignal(int(idx0)) - f.readSignal(int(idx1))
                         self.labels_to_plot.append(self.labelsBIP1010[k])
-                        self.colors.append(self.colorsBIP1010[k])
+                        self.colors.append(self._get_color(self.labelsBIP1010[k]))
                         c += 1
 
                     ar_idxs = self.get_chns(self.labelsAR1010) # clear these from the list
@@ -459,6 +418,7 @@ class ChannelInfo():
                     self.nchns_to_plot = len(self.labelsBIP1010) + len(idxs)
                     if self.nchns_to_plot == len(self.labelsBIP1010):
                         self.mont_type = 3
+            """
 
         # Check if any of the channels are average reference / bipolar
         #ar = self.can_do_bip_ar_idx(idxs,1,0)
@@ -482,39 +442,14 @@ class ChannelInfo():
 
         if self.use_loaded_txt_file and mont_type == 4:
             labels = self.labels_from_txt_file[txt_file_name]
-            colors = []
-            for i in range(len(labels)):
-                idx = -1
-                if ar:
-                    try:
-                        idx = self.labelsAR1020.index(labels[i])
-                        colors.append(self.colorsAR1020[idx])
-                    except ValueError:
-                        colors.append(self.mid_col)
-                elif bip:
-                    try:
-                        idx = self.labelsBIP1020.index(labels[i])
-                        colors.append(self.colorsBIP1020[idx])
-                    except ValueError:
-                        colors.append(self.mid_col)
-                else:
-                    try:
-                        idx = self.other_labels.index(labels[i])
-                        colors.append(self.other_colors[idx])
-                    except ValueError:
-                        colors.append(self.mid_col)
         elif bip:
             labels = self.labelsBIP1020
-            colors = self.colorsBIP1020
         elif ar:
             labels = self.labelsAR1020
-            colors = self.colorsAR1020
         elif bip1010:
             labels = self.labelsBIP1010
-            colors = self.colorsBIP1010
         elif ar1010:
             labels = self.labelsAR1010
-            colors = self.colorsAR1010
 
         # insert any data for the given montages
         if bip or ar or ar1010 or bip1010 or self.use_loaded_txt_file:
@@ -523,7 +458,7 @@ class ChannelInfo():
                 while k < len(idxs):
                     if self.converted_chn_names[idxs[k]] == labels[i]:
                         self.labels_to_plot.append(labels[i])
-                        self.colors.append(colors[i])
+                        self.colors.append(self._get_color(labels[i]))
                         self.data_to_plot[c,:] = f.readSignal(idxs[k]) # data[idxs[k],:]
                         c += 1
                         idxs.pop(k)
@@ -538,11 +473,7 @@ class ChannelInfo():
             c = len(idxs) - 1
             for k in range(len(idxs)):
                 self.labels_to_plot.insert(1,self.converted_chn_names[idxs[k]])
-                if self.converted_chn_names[idxs[k]] in self.other_labels:
-                    i = self.other_labels.index(self.converted_chn_names[idxs[k]])
-                    self.colors.insert(0,self.other_colors[i])
-                else:
-                    self.colors.insert(0,self.mid_col)
+                self.colors.insert(0, self._get_color(self.converted_chn_names[idxs[k]]))
                 self.data_to_plot[c,:] = f.readSignal(idxs[k]) # data[idxs[k],:]
                 c -= 1
         self.fs = 2
