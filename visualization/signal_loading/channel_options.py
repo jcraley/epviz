@@ -8,10 +8,10 @@ from PyQt5.QtWidgets import (QVBoxLayout, QWidget, QListWidget, QPushButton,
 from matplotlib.backends.qt_compat import QtWidgets
 
 import numpy as np
-from predictions.prediction_info import PredictionInfo
-from signal_loading.channel_info import ChannelInfo, convert_txt_chn_names
-from signal_loading.organize_channels import OrganizeChannels
-from signal_loading.color_options import ColorOptions
+from visualization.predictions.prediction_info import PredictionInfo
+from visualization.signal_loading.channel_info import ChannelInfo, convert_txt_chn_names
+from visualization.signal_loading.organize_channels import OrganizeChannels
+from visualization.signal_loading.color_options import ColorOptions
 import pyedflib
 
 class ChannelOptions(QWidget):

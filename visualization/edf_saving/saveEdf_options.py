@@ -1,8 +1,8 @@
 """ Module for the edf saving window """
 from PyQt5.QtWidgets import QWidget
 
-from ui_files.saveEdfOps import Ui_saveToEdf
-from edf_saving.anonymizer import Anonymizer
+from visualization.ui_files.saveEdfOps import Ui_saveToEdf
+from visualization.edf_saving.anonymizer import Anonymizer
 
 class SaveEdfOptions(QWidget):
     """ Class for the edf saving window """

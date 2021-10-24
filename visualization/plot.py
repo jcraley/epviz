@@ -2,25 +2,26 @@
 import argparse as ap
 from os import path
 import sys
+import os
 
-from signal_loading.channel_info import ChannelInfo
-from signal_loading.channel_options import ChannelOptions
-from filtering.filter_options import FilterOptions
-from filtering.filter_info import FilterInfo
-from predictions.prediction_options import PredictionOptions
-from predictions.prediction_info import PredictionInfo
-from spectrogram_window.spec_options import SpecOptions
-from spectrogram_window.spec_info import SpecInfo
-from image_saving.saveImg_info import SaveImgInfo
-from image_saving.saveImg_options import SaveImgOptions
-from image_saving.saveTopoplot_options import SaveTopoplotOptions
-from edf_saving.saveEdf_info import SaveEdfInfo
-from edf_saving.saveEdf_options import SaveEdfOptions
-from signal_stats.signalStats_info import SignalStatsInfo
-from signal_stats.signalStats_options import SignalStatsOptions
+from visualization.signal_loading.channel_info import ChannelInfo
+from visualization.signal_loading.channel_options import ChannelOptions
+from visualization.filtering.filter_options import FilterOptions
+from visualization.filtering.filter_info import FilterInfo
+from visualization.predictions.prediction_options import PredictionOptions
+from visualization.predictions.prediction_info import PredictionInfo
+from visualization.spectrogram_window.spec_options import SpecOptions
+from visualization.spectrogram_window.spec_info import SpecInfo
+from visualization.image_saving.saveImg_info import SaveImgInfo
+from visualization.image_saving.saveImg_options import SaveImgOptions
+from visualization.image_saving.saveTopoplot_options import SaveTopoplotOptions
+from visualization.edf_saving.saveEdf_info import SaveEdfInfo
+from visualization.edf_saving.saveEdf_options import SaveEdfOptions
+from visualization.signal_stats.signalStats_info import SignalStatsInfo
+from visualization.signal_stats.signalStats_options import SignalStatsOptions
 
 import pyedflib
-from plot_utils import check_annotations, filter_data, convert_from_count, get_time
+from visualization.plot_utils import check_annotations, filter_data, convert_from_count, get_time
 import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (
@@ -41,8 +42,11 @@ from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QDesktopServices
 import pyqtgraph as pg
 from pyqtgraph.dockarea import *
 
-from preprocessing.edf_loader import *
+from visualization.preprocessing.edf_loader import *
 from scipy import signal
+
+from pkg_resources import resource_filename
+print(os.path.abspath(resource_filename('visualization.ui_files', 'gui_stylesheet.css')))
 
 class MainPage(QMainWindow):
     """ Class for main plottintg window """
@@ -69,7 +73,9 @@ class MainPage(QMainWindow):
     def init_ui(self):
         """ Setup the UI
         """
-        style_file = open('visualization/ui_files/gui_stylesheet.css')
+        print(os.getcwd())
+        style_path = os.path.abspath(resource_filename('visualization.ui_files', 'gui_stylesheet.css'))
+        style_file = open(style_path)
         self.app.setStyleSheet(style_file.read())
         style_file.close()
         layout = QGridLayout()
@@ -1639,7 +1645,6 @@ class MainPage(QMainWindow):
         """
         # clear figure
         self.m.fig.clf()
-
         curr_score = self.pi.preds_to_plot[pred_loc,:]
         # Create the layout
         layout = mne.channels.read_layout('EEG1005')
@@ -2133,11 +2138,13 @@ def check_args(args):
         if not mandatory_args.issubset(set(dir(args))):
             raise Exception(("You're missing essential arguments!"))
 
-
-if __name__ == '__main__':
+def main():
     """ main, creates main plotting window """
     args = get_args()
     check_args(args)
     app = QApplication(sys.argv)
     ex = MainPage(args, app)
     sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()

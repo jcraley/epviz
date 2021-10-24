@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QGridLayout,
 from PyQt5.QtGui import QFont
 from matplotlib.backends.qt_compat import QtWidgets
 
-from plot_utils import filter_data
+from visualization.plot_utils import filter_data
 import numpy as np
 from scipy import signal
 

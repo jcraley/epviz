@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (QWidget, QListWidget, QPushButton, QLabel,
                                 QAbstractItemView)
 
 import numpy as np
-from signal_loading.channel_info import ChannelInfo
+from visualization.signal_loading.channel_info import ChannelInfo
 
 from matplotlib.backends.qt_compat import QtWidgets
 

@@ -66,6 +66,7 @@ class SaveTopoplotOptions(QWidget):
         line_val = line_val / self.parent.edf_info.fs
         self.plot_single_time = 0 # default to plotting everything
         self.plot_at_time = self._get_pred_sample_from_time(line_val) # start where line is
+        print(self.plot_at_time)
         self.spinbox_single_time.setRange(0, self.parent.max_time - 1)
         self.spinbox_single_time.setValue(line_val)
         self.rt_side_layout.addWidget(self.cbox_single_time, 0,0,1,1)
@@ -163,7 +164,7 @@ class SaveTopoplotOptions(QWidget):
             layout = mne.channels.read_layout('EEG1005')
             pos2d = []
             layout_names = [name.upper() for name in layout.names]
-            for ch in self.parent.ci.labels_to_plot:
+            for ch in reversed(self.parent.ci.labels_to_plot):
                 if ch != "Notes":
                     if '-' in ch:
                         anode, cathode = ch.split('-')
