@@ -5,8 +5,13 @@ from visualization.preprocessing.eeg_info import EegInfo
 
 
 def _check_label(label, label_list):
-    """
-    Checks if a label is in the label list
+    """ Checks if a label is in the label list.
+
+        Args:
+            label - the label
+            label_list - the list to check
+        Returns:
+            The label if it is there, else ""
     """
     # If the label is not present, try splitting it
     if label.upper() not in label_list:
@@ -14,7 +19,7 @@ def _check_label(label, label_list):
     # If the label is present, load the channel
     if label.upper() in label_list:
         return label.upper()
-    return False
+    return ""
 
 
 class EdfLoader():
