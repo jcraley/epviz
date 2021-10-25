@@ -13,9 +13,6 @@ def _check_label(label, label_list):
         Returns:
             The label if it is there, else ""
     """
-    # If the label is not present, try splitting it
-    if label.upper() not in label_list:
-        label = label[4:].split('-')[0].upper()
     # If the label is present, load the channel
     if label.upper() in label_list:
         return label.upper()
