@@ -46,7 +46,6 @@ from visualization.preprocessing.edf_loader import *
 from scipy import signal
 
 from pkg_resources import resource_filename
-print(os.path.abspath(resource_filename('visualization.ui_files', 'gui_stylesheet.css')))
 
 class MainPage(QMainWindow):
     """ Class for main plottintg window """
@@ -73,7 +72,6 @@ class MainPage(QMainWindow):
     def init_ui(self):
         """ Setup the UI
         """
-        print(os.getcwd())
         style_path = os.path.abspath(resource_filename('visualization.ui_files', 'gui_stylesheet.css'))
         style_file = open(style_path)
         self.app.setStyleSheet(style_file.read())
