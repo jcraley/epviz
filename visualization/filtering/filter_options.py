@@ -20,8 +20,8 @@ class FilterOptions(QWidget):
         print(centerPoint)
         self.width = int(parent.width / 5)
         self.height = int(parent.height / 3)
-        self.left = centerPoint.x() - self.width / 2
-        self.top = centerPoint.y() - self.height / 2
+        self.left = int(centerPoint.x() - self.width / 2)
+        self.top = int(centerPoint.y() - self.height / 2)
         self.title = 'Filter Options'
         self.data = data
         self.parent = parent

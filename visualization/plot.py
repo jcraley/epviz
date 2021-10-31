@@ -1062,7 +1062,7 @@ class MainPage(QMainWindow):
     def open_help(self):
         """ Called when you click the help button.
         """
-        QDesktopServices.openUrl(QUrl("https://github.com/jcraley/jhu-eeg"))
+        QDesktopServices.openUrl(QUrl("https://engineering.jhu.edu/nsa/links/epviz/"))
 
     def slider_change(self):
         """ Updates plot when slider is changed.

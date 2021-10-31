@@ -17,8 +17,8 @@ class SpecOptions(QWidget):
         centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
         self.width = int(parent.width / 3)
         self.height = int(parent.height / 2.5)
-        self.left = centerPoint.x() - self.width / 2
-        self.top = centerPoint.y() - self.height / 2
+        self.left = int(centerPoint.x() - self.width / 2)
+        self.top = int(centerPoint.y() - self.height / 2)
         self.title = 'Select signal for spectrogram'
         self.data = data
         self.parent = parent

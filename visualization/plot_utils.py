@@ -68,6 +68,7 @@ def filter_data(data, fs, fi):
     hp = fi.hp
     bp1 = fi.bp1
     bp2 = fi.bp2
+    notch = fi.notch
     if fi.do_lp == 0 or lp < 0 or lp > fs / 2:
         lp = 0
     if fi.do_hp == 0 or hp < 0 or hp > fs / 2:
@@ -75,6 +76,8 @@ def filter_data(data, fs, fi):
     if fi.do_bp == 0 or bp1 < 0 or bp1 > fs / 2 or bp2 < 0 or bp1 > fs / 2 or bp2 - bp1 <= 0:
         bp1 = 0
         bp2 = 0
+    if fi.do_notch == 0 or fi.notch < 0 or fi.notch > fs / 2:
+        notch = 0
 
     nchns = len(data)
     filt_bufs = deepcopy(data)
@@ -84,8 +87,8 @@ def filter_data(data, fs, fi):
     i = 0
     for chn in range(nchns):
         # Notch
-        if fi.notch > 0 and fi.notch < fs / 2:
-            filt_bufs[chn] = dsp.apply_notch(filt_bufs[chn], fs,fi.notch)
+        if notch > 0:
+            filt_bufs[chn] = dsp.apply_notch(filt_bufs[chn], fs, fi.notch)
         i += 1
         progress.setValue(i)
         if progress.wasCanceled():

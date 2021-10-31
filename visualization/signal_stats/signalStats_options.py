@@ -1,9 +1,10 @@
 """ Module to hold the stats fs band options class """
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import (QWidget, QListWidget, QPushButton, QLabel,
                                 QGridLayout, QScrollArea, QListWidgetItem,
                                 QAbstractItemView, QGroupBox, QRadioButton,
-                                QHBoxLayout, QColorDialog, QLineEdit, QDoubleSpinBox)
+                                QHBoxLayout, QColorDialog, QLineEdit,
+                                QDoubleSpinBox, QDesktopWidget)
 
 from visualization.signal_loading.channel_info import ChannelInfo
 
@@ -19,11 +20,12 @@ class SignalStatsOptions(QWidget):
                 parent - the main (parent) window
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
+        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
         self.title = 'Add frequency band'
         self.width = int(parent.width / 6)
         self.height = int(parent.height / 4)
+        self.left = int(centerPoint.x() - self.width / 2)
+        self.top = int(centerPoint.y() - self.height / 2)
         self.data = data
         self.parent = parent
         self.fs_band_count = len(self.data.fs_bands.keys()) - 5
@@ -34,9 +36,8 @@ class SignalStatsOptions(QWidget):
         """ Setup UI for the color options window.
         """
         self.setWindowTitle(self.title)
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(centerPoint.x() - int(self.width / 2),
-                centerPoint.y() - int(self.height / 2), self.width, self.height)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
         
         grid_lt = QGridLayout()
         

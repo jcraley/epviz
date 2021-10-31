@@ -1,10 +1,16 @@
 """ Module for testing the filter options window """
 import sys
 sys.path.append('visualization')
+from PyQt5.QtWidgets import QApplication
 import unittest
 from visualization.plot_utils import *
 from preprocessing.edf_loader import EdfLoader
+from visualization.filtering.filter_info import FilterInfo
+import pyedflib
+import numpy as np
+import visualization.preprocessing.dsp as dsp
 
+app = QApplication([])
 class TestPlotUtils(unittest.TestCase):
     def setUp(self):
         # Set the test files
@@ -45,8 +51,35 @@ class TestPlotUtils(unittest.TestCase):
         
     # 1. Filter data
     def test_filter_data(self):
-        # TODO
-        pass
+        # Test filtering with different parameters
+        thresh = 0.000001
+        self.filter_info = FilterInfo()
+        self.filter_info.fs = self.EDF_INFO.fs
+        f = pyedflib.EdfReader(self.TEST_FN)
+        test_data = f.readSignal(0)
+        test_data = test_data[np.newaxis, ...]
+        filt_bufs = np.zeros((1, test_data.shape[1]))
+        filt_bufs[0, :] = dsp.apply_low_pass(test_data[0], self.EDF_INFO.fs, self.filter_info.lp)
+        filt_bufs[0, :] = dsp.apply_high_pass(filt_bufs[0], self.EDF_INFO.fs, self.filter_info.hp)
+        ret = filter_data(test_data, self.EDF_INFO.fs, self.filter_info)
+        for x, y in zip(ret[0, :], filt_bufs[0, :]):
+            self.assertTrue(abs(x - y) < thresh)
+        
+        # Test bandpass and notch
+        self.filter_info.do_lp = 0
+        self.filter_info.do_hp = 0
+        self.filter_info.do_bp = 1
+        self.filter_info.do_notch = 1
+        self.filter_info.notch = 20
+        self.filter_info.bp1 = 10
+        self.filter_info.bp2 = 30
+        filt_bufs = np.zeros((1, test_data.shape[1]))
+        filt_bufs[0, :] = dsp.apply_notch(test_data[0], self.EDF_INFO.fs, self.filter_info.notch)
+        filt_bufs[0, :] = dsp.apply_band_pass(filt_bufs[0], self.EDF_INFO.fs,
+                                [self.filter_info.bp1, self.filter_info.bp2])
+        ret = filter_data(test_data, self.EDF_INFO.fs, self.filter_info)
+        for x, y in zip(ret[0, :], filt_bufs[0, :]):
+            self.assertTrue(abs(x - y) < thresh)
 
     # 2. Convert from count
     def test_convert_from_count(self):
