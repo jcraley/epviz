@@ -316,7 +316,7 @@ class SaveImgOptions(QWidget):
                 self.close_window()
         else:
             file = QFileDialog.getSaveFileName(self, 'Save File')
-            if len(file[0]) == 0 or file[0] == None:
+            if len(file[0]) == 0 or file[0] is None:
                 return
             else:
                 self.ax.figure.savefig(file[0] + ".png",

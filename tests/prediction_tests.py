@@ -11,6 +11,8 @@ from visualization.plot import MainPage
 from visualization.plot import check_args, get_args
 from unittest.mock import patch
 
+import torch
+import numpy as np
 import datetime
 
 app = QApplication([])
@@ -40,6 +42,52 @@ class TestPrediction(unittest.TestCase):
         # Test that if you click out with nothing selected no predictions will be plotted
         self.ui.check()
         self.assertEqual(self.preds_info.predicted, 0)
+
+    def test_check(self):
+        # Test the check function in preds ops
+
+        # Try with loaded preds first
+        self.parent.pi = self.preds_info
+        self.preds_info.set_preds(self.TEST_PREDS, self.parent.max_time,
+                                  self.parent.edf_info.fs, self.parent.ci.nchns_to_plot,
+                                  binary=1)
+        self.ui.cbox_preds.setChecked(1)
+        self.ui.check()
+        self.assertEqual(self.parent.predicted, 1)
+        for x, y in zip(self.preds_info.preds_to_plot, self.preds_info.preds):
+            self.assertEqual(x, y)
+        self.assertEqual(self.preds_info.multi_class_preds, self.preds_info.multi_class)
+        self.assertEqual(self.parent.pred_label.text(), "Predictions plotted.")
+
+        # Try with model and predictions
+        # load the model and data
+        self.preds_info.set_model(self.TEST_MODEL)
+        self.preds_info.set_data(self.TEST_DATA)
+
+        self.ui.cbox_model.setChecked(1)
+        self.ui.check()
+        self.assertEqual(self.parent.predicted, 1)
+        preds = torch.load(self.TEST_MODEL).predict(torch.load(self.TEST_DATA))
+        preds = np.array(preds)
+        for x, y in zip(self.preds_info.preds_to_plot, preds):
+            self.assertEqual(x, y)
+        self.assertEqual(self.preds_info.multi_class_preds, self.preds_info.multi_class)
+        self.assertEqual(self.parent.pred_label.text(), "Predictions plotted.")
+
+        # Try with multi-class
+        self.preds_info.set_preds(self.TEST_PREDS_MULTICHN,
+                                    self.parent.max_time,
+                                    self.parent.edf_info.fs,
+                                    self.parent.ci.nchns_to_plot,
+                                    binary=1)
+        self.ui.cbox_preds.setChecked(1)
+        self.ui.check()
+        self.assertEqual(self.parent.predicted, 1)
+        for x, y in zip(self.preds_info.preds_to_plot, self.preds_info.preds):
+            for xx, yy in zip(x, y):
+                self.assertEqual(xx, yy)
+        self.assertEqual(self.preds_info.multi_class_preds, self.preds_info.multi_class)
+        self.assertEqual(self.parent.pred_label.text(), "Predictions plotted.")
 
     def test_load_model_and_data(self):
         # Test loading a model and data

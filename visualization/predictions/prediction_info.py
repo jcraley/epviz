@@ -63,7 +63,7 @@ class PredictionInfo():
         num0 = 255
         num1 = 255
         num2 = 255
-        while ((num0, num1, num2, 0) in self.class_colors):
+        while (num0, num1, num2, 0) in self.class_colors:
             num0 = np.random.random() * 255
             num1 = np.random.random() * 255
             num2 = np.random.random() * 255
@@ -84,6 +84,8 @@ class PredictionInfo():
         self.update_ready()
 
     def update_ready(self):
+        """ Updates whether the data and model are loaded.
+        """
         if self.model_loaded and self.data_loaded:
             self.ready = 1
 

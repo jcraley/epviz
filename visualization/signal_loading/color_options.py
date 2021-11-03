@@ -1,11 +1,7 @@
 """ Module for the color options class """
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtWidgets import (QWidget, QListWidget, QPushButton, QLabel,
-                                QGridLayout, QScrollArea, QListWidgetItem,
-                                QAbstractItemView, QGroupBox, QRadioButton,
-                                QHBoxLayout, QColorDialog)
-
-from visualization.signal_loading.channel_info import ChannelInfo
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QGridLayout,
+                             QGroupBox, QRadioButton, QHBoxLayout, QColorDialog)
 
 from matplotlib.backends.qt_compat import QtWidgets
 
@@ -21,11 +17,11 @@ class ColorOptions(QWidget):
                 chn_ops - the channel options window
         """
         super().__init__()
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
         self.width = int(parent.width / 2)
         self.height = int(parent.height / 3)
-        self.left = int(centerPoint.x() - self.width / 2)
-        self.top = int(centerPoint.y() - self.height / 2)
+        self.left = int(center_point.x() - self.width / 2)
+        self.top = int(center_point.y() - self.height / 2)
         self.title = 'Choose colors'
         self.data = data
         self.parent = parent
@@ -38,10 +34,11 @@ class ColorOptions(QWidget):
     def setup_ui(self):
         """ Setup UI for the color options window.
         """
-        
+
         grid_lt = QGridLayout()
-        
-        lbl_info = QLabel("Select the color for each channel:\nPlease note that any non-standard channel "
+
+        lbl_info = QLabel("Select the color for each channel:"
+                        + "\nPlease note that any non-standard channel "
                         + "\nor names not recognized by the program will be "
                         + "\nassigned the color of the midline.")
         grid_lt.addWidget(lbl_info,0,0)

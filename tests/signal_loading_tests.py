@@ -354,6 +354,22 @@ class TestChannelLoading(unittest.TestCase):
         self.assertEqual(self.channel_info.labels_to_plot, ["Notes"] + labelsBIP_organized)
         for c, l in zip(self.channel_info.colors, self.channel_info.labels_to_plot[1:]):
             self.assertEqual(c, self.channel_info._get_color(l))
+    
+    def test_prepare_to_plot3(self):
+        # Test prepare to plot
+        labelsBIP1020 = ["CZ-PZ","FZ-CZ","P4-O2","C4-P4","F4-C4","FP2-F4",
+                              "P3-O1","C3-P3","F3-C3","FP1-F3","P8-O2","T8-P8",
+                              "F8-T8","FP2-F8","P7-O1","T7-P7","F7-T7","FP1-F7"]
+        labelsAR1020 = ["O2","O1","PZ","CZ","FZ","P8","P7","T8","T7","F8",
+                             "F7","P4","P3","C4","C3","F4","F3","FP2","FP1"]
+        self.channel_info.converted_chn_names = [k for k in labelsAR1020] + ["A1"]
+        self.channel_info.prepare_to_plot([0, 2, 5, 8, 19], self.parent, 0,
+                            plot_bip_from_ar = 0, txt_file_name = "")
+        self.assertEqual(self.channel_info.nchns_to_plot, 5)
+        self.assertEqual(len(self.channel_info.labels_to_plot), self.channel_info.nchns_to_plot + 1)
+        self.assertEqual(self.channel_info.labels_to_plot, ["Notes"] + ["A1", "O2", "PZ", "P8", "T7"])
+        for c, l in zip(self.channel_info.colors, self.channel_info.labels_to_plot[1:]):
+            self.assertEqual(c, self.channel_info._get_color(l))
 
     def tearDown(self):
         pass

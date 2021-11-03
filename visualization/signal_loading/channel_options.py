@@ -2,17 +2,16 @@
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import (QVBoxLayout, QWidget, QListWidget, QPushButton,
                                 QCheckBox, QLabel, QGridLayout, QScrollArea,
-                                QListWidgetItem, QAbstractItemView, QFileDialog,
-                                QDesktopWidget)
+                                QListWidgetItem, QAbstractItemView, QFileDialog,)
 
 from matplotlib.backends.qt_compat import QtWidgets
 
 import numpy as np
+import pyedflib
 from visualization.predictions.prediction_info import PredictionInfo
-from visualization.signal_loading.channel_info import ChannelInfo, convert_txt_chn_names
+from visualization.signal_loading.channel_info import convert_txt_chn_names
 from visualization.signal_loading.organize_channels import OrganizeChannels
 from visualization.signal_loading.color_options import ColorOptions
-import pyedflib
 
 class ChannelOptions(QWidget):
     """ Class for the channel loading window """
@@ -292,7 +291,8 @@ class ChannelOptions(QWidget):
                     grand_child.setChecked(0)
 
     def txt_file_checked(self):
-        # Called if a text file is selected.
+        """ Called if a text file is selected.
+        """
         c = self.sender()
         name = c.text()
         chns = self.data.get_chns(self.data.labels_from_txt_file[name])

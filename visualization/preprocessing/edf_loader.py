@@ -84,7 +84,7 @@ class EdfLoader():
                 eeg_info.labels2chns[label.upper()] = edf_chn
                 eeg_info.chns2labels[edf_chn] = label.upper()
         # Close the edf file
-        f._close()
+        f.close()
         del f
 
         if len(set(eeg_info.fs)) == 1:

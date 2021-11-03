@@ -1,7 +1,7 @@
 """ Module for holding channel information."""
+import re
 import numpy as np
 import pyedflib
-import re
 
 def _check_label(label, label_list):
     """ Checks if a label is in the label list
@@ -238,7 +238,7 @@ class ChannelInfo():
         """ Whether or not the channels for the montage are present.
 
             Args:
-                chns_to_check: the list of channel names to check if 
+                chns_to_check: the list of channel names to check if
                     they match the given labels
                 bip_ar: 1 for average reference, 0 for bipolar
                 mont1010_1020: 1 for 1010, 0 for 1020
@@ -434,7 +434,7 @@ class ChannelInfo():
                 ar1010 = 1
             #elif self.converted_chn_names[idxs[i]] in self.labelsBIP1010 and mont_type == 3:
             #    bip1010 = 1
-            elif mont_type == 4 or mont_type == 5:
+            elif mont_type in [4, 5]:
                 if self.converted_chn_names[idxs[i]] in self.labelsAR1020:
                     ar = 1
                 elif self.converted_chn_names[idxs[i]] in self.labelsBIP1020:

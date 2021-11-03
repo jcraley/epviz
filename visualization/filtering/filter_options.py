@@ -3,8 +3,6 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import (QWidget, QPushButton, QCheckBox, QLabel,
                                 QGridLayout, QDoubleSpinBox, QDesktopWidget)
 
-from matplotlib.backends.qt_compat import QtWidgets
-
 
 class FilterOptions(QWidget):
     """ Class for filtering options window. """
@@ -16,12 +14,11 @@ class FilterOptions(QWidget):
                 parent - the main (parent) window
         """
         super().__init__()
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
-        print(centerPoint)
+        center_point = QDesktopWidget().availableGeometry().center()
         self.width = int(parent.width / 5)
         self.height = int(parent.height / 3)
-        self.left = int(centerPoint.x() - self.width / 2)
-        self.top = int(centerPoint.y() - self.height / 2)
+        self.left = int(center_point.x() - self.width / 2)
+        self.top = int(center_point.y() - self.height / 2)
         self.title = 'Filter Options'
         self.data = data
         self.parent = parent

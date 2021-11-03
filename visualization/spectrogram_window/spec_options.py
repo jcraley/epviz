@@ -1,24 +1,23 @@
 """ Module for spectrogram options window """
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QGridLayout,
-                                QComboBox, QDoubleSpinBox, QDesktopWidget)
+                                QComboBox, QDoubleSpinBox)
 from PyQt5.QtGui import QFont
+import numpy as np
 from matplotlib.backends.qt_compat import QtWidgets
 
 from visualization.plot_utils import filter_data
-import numpy as np
-from scipy import signal
 
 class SpecOptions(QWidget):
     """ Class for spectrogram options window """
     def __init__(self, data, parent):
         """ Constructor """
         super().__init__()
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
         self.width = int(parent.width / 3)
         self.height = int(parent.height / 2.5)
-        self.left = int(centerPoint.x() - self.width / 2)
-        self.top = int(centerPoint.y() - self.height / 2)
+        self.left = int(center_point.x() - self.width / 2)
+        self.top = int(center_point.y() - self.height / 2)
         self.title = 'Select signal for spectrogram'
         self.data = data
         self.parent = parent
@@ -112,7 +111,8 @@ class SpecOptions(QWidget):
             self.data.data = self.parent.ci.data_to_plot[self.data.chn_plotted,:]
             fs = self.parent.edf_info.fs
             if self.parent.filter_checked == 1:
-                self.data.data = np.squeeze(filter_data(np.array(self.data.data)[np.newaxis,:], fs, self.parent.fi))
+                self.data.data = np.squeeze(filter_data(np.array(self.data.data)[np.newaxis,:],
+                                                                fs, self.parent.fi))
             if not self.data.plot_spec:
                 self.data.plot_spec = 1
                 self.parent.make_spec_plot()

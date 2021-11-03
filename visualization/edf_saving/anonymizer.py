@@ -1,10 +1,10 @@
 """ Module for the anonymizer window """
 from PyQt5.QtCore import Qt, QTime, QDate, QSize
 
-from PyQt5.QtWidgets import (QMessageBox, QWidget, QPushButton, QLabel,
-                             QGridLayout, QLineEdit, QTimeEdit, QFrame,
-                             QDateEdit, QGroupBox, QRadioButton, QHBoxLayout,
-                             QCheckBox, QDesktopWidget)
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QGridLayout,
+                             QLineEdit, QTimeEdit, QFrame, QDateEdit,
+                             QGroupBox, QRadioButton, QHBoxLayout,
+                             QCheckBox,)
 from PyQt5.QtGui import QFont
 from matplotlib.backends.qt_compat import QtWidgets
 
@@ -48,11 +48,11 @@ class Anonymizer(QWidget):
         """
         super().__init__()
         self.title = 'EDF Anonymizer'
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
         self.width = int(parent.width / 2)
         self.height = int(parent.height / 1.1)
-        self.left = centerPoint.x() - self.width / 2
-        self.top = centerPoint.y() - self.height / 2
+        self.left = center_point.x() - int(self.width / 2)
+        self.top = center_point.y() - int(self.height / 2)
         self.field_defaults = [bytes(" " * 80, 'utf-8'), bytes(" " * 80, 'utf-8'),
                                 bytes("01.01.01", 'utf-8'), bytes("01.01.01", 'utf-8')]
 
@@ -452,8 +452,9 @@ class Anonymizer(QWidget):
         if len(pt_id) < 80:
             pt_id = pt_id + " " * (80 - len(pt_id))
         elif len(pt_id) > 80:
-            self.parent.throw_alert("The patient ID fields must be less than 80 characters. You have "
-                    + str(len(pt_id)) + " characters. Please edit your fields and try again.")
+            self.parent.throw_alert("The patient ID fields must be less than 80 characters. "
+                    + "You have " + str(len(pt_id)) + " characters. Please edit your" 
+                    + " fields and try again.")
             return
 
         if self.rec_info_date_x.isChecked():

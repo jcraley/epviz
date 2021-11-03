@@ -8,7 +8,6 @@ def apply_low_pass(x, fs, fc=30, N=4):
     b, a = scipy.signal.butter(N, wc)
     return scipy.signal.filtfilt(b, a, x, method='gust')
 
-
 def apply_high_pass(x, fs, fc=1.6, N=4):
     """ Apply a high-pass filter to the signal
     """

@@ -48,7 +48,6 @@ class TestPlotUtils(unittest.TestCase):
             else:
                 self.assertEqual(idx_w_ann[i], 1)
 
-        
     # 1. Filter data
     def test_filter_data(self):
         # Test filtering with different parameters

@@ -1,10 +1,9 @@
 """ Utility functions for plot.py """
 from copy import deepcopy
 import numpy as np
-import scipy.signal
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QProgressDialog
-import visualization.preprocessing.dsp as dsp
+from visualization.preprocessing import dsp
 
 def check_annotations(t_start, window_size, edf_info):
     """ Checks to see if there are any anotations in the range t_start to t_end sec

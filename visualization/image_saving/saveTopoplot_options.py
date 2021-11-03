@@ -4,8 +4,7 @@ import numpy as np
 
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import (QHBoxLayout, QWidget, QCheckBox, QGridLayout,
-                             QLineEdit, QDialogButtonBox, QFileDialog, QDoubleSpinBox,
-                             QDesktopWidget)
+                             QLineEdit, QDialogButtonBox, QFileDialog, QDoubleSpinBox,)
 from PyQt5 import QtWidgets
 
 from matplotlib.backends.backend_qt5agg import FigureCanvas
@@ -180,7 +179,7 @@ class SaveTopoplotOptions(QWidget):
             # Scale locations from [-1, 1]
             pos2d = 2 * (pos2d - 0.5)
 
-            im, cn = mne.viz.plot_topomap(curr_score, pos2d, sphere=1,
+            _, _ = mne.viz.plot_topomap(curr_score, pos2d, sphere=1,
                                   axes=self.ax[i], vmin=0, vmax=1, show=False,
                                   outlines='head')
 

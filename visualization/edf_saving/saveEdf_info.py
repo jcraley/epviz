@@ -37,7 +37,8 @@ class SaveEdfInfo():
             MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP",
                             "OCT","NOV","DEC"]
             month = MONTHS.index(pt_id_fields[2].split("-")[1]) + 1
-            self.pyedf_header['birthdate'] = datetime.datetime(int(pt_id_fields[2].split("-")[2]), month, int(pt_id_fields[2].split("-")[0]))
+            self.pyedf_header['birthdate'] = datetime.datetime(int(pt_id_fields[2].split("-")[2]),
+                                                                month, int(pt_id_fields[2].split("-")[0]))
         else:
             self.pyedf_header['birthdate'] = ""
         self.pyedf_header['patientname'] = pt_id_fields[3]

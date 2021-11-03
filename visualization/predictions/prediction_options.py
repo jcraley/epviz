@@ -11,11 +11,11 @@ class PredictionOptions(QWidget):
     def __init__(self,pi,parent):
         """ Constructor """
         super().__init__()
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
         self.width = int(parent.width / 2)
         self.height = int(parent.height / 2.5)
-        self.left = int(centerPoint.x() - self.width / 2)
-        self.top = int(centerPoint.y() - self.height / 2)
+        self.left = int(center_point.x() - self.width / 2)
+        self.top = int(center_point.y() - self.height / 2)
         self.title = 'Prediction Options'
         self.data = pi
         self.parent = parent
