@@ -35,11 +35,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install numpy==1.21.2  
-          pip install -r requirements.txt
-          
+          pip install -r requirements.txt  
       - name: Run filter tests
         run: python tests/filter_test.py
-        
       - name: Run tests
         run: |
          chmod +x ./run_tests.sh
