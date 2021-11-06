@@ -21,7 +21,7 @@ jobs:
     
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.7]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -35,7 +35,14 @@ jobs:
       - name: Install dependencies
         run: |
           pip install numpy==1.21.2  
-          pip install -r requirements.txt
-          
+          pip install -r requirements.txt  
       - name: Run tests
-        run: sh ./run_tests
+        run: |
+          # cd $GITHUB_WORKSPACE
+          echo $GITHUB_WORKSPACE
+          # echo "$GITHUB_PATH"
+          # echo "PYTHONPATH=epviz" >> $GITHUB_ENV
+          python tests/filter_tests.py
+        working-directory: epviz
+        env:
+          QT_QPA_PLATFORM: offscreen

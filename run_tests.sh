@@ -7,9 +7,9 @@ find tests -name '*tests.py' -print0 |
         if [[ $line = "tests/filter_tests.py" ]]
         then
             echo "${green} Running tests for ${line} ${reset}"
-            # python3 -m coverage run "$line"
+            python3 -m coverage run "$line"
             echo "${cyan} Coverage Report for ${line}"
-            # python3 -m coverage report -m visualization/filtering/filter_options.py
+            python3 -m coverage report -m visualization/filtering/filter_options.py
         elif [[ $line = "tests/signal_loading_tests.py" ]]
         then
             echo "${green} Running tests for ${line} ${reset}"
@@ -39,11 +39,11 @@ find tests -name '*tests.py' -print0 |
         elif [[ $line = "tests/edf_saving_tests.py" ]]
         then
             echo "${green} Running tests for ${line} ${reset}"
-            python3 -m coverage run "$line"
+            # python3 -m coverage run "$line"
             echo "${cyan} Coverage Report for ${line}"
-            python3 -m coverage report -m visualization/edf_saving/saveEdf_options.py
-            python3 -m coverage report -m visualization/edf_saving/saveEdf_info.py
-            python3 -m coverage report -m visualization/edf_saving/anonymizer.py
+            # python3 -m coverage report -m visualization/edf_saving/saveEdf_options.py
+            # python3 -m coverage report -m visualization/edf_saving/saveEdf_info.py
+            # python3 -m coverage report -m visualization/edf_saving/anonymizer.py
         elif [[ $line = "tests/spectrogram_tests.py" ]]
         then
             echo "${green} Running tests for ${line} ${reset}"
