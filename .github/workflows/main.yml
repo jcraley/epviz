@@ -30,7 +30,7 @@ jobs:
       - name: Setup python version
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.7 # ${{ matrix.python-version }}
           architecture: x64
       - name: Install dependencies
         run: |
@@ -39,3 +39,5 @@ jobs:
           
       - name: Run tests
         run: sh ./run_tests
+        env:
+          QT_QPA_PLATFORM: offscreen
