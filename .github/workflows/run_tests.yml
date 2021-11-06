@@ -19,9 +19,9 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     
-    #strategy:
-    #  matrix:
-    #    python-version: [3.7, 3.8, 3.9]
+    strategy:
+      matrix:
+        python-version: [3.7]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -30,7 +30,7 @@ jobs:
       - name: Setup python version
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7 #${{ matrix.python-version }}
+          python-version: ${{ matrix.python-version }}
           architecture: x64
       - name: Install dependencies
         run: |
@@ -38,8 +38,9 @@ jobs:
           pip install -r requirements.txt  
       - name: Run tests
         run: |
-          echo "$GITHUB_PATH"
-          echo "PYTHONPATH=epviz" >> $GITHUB_ENV
+          cd $GITHUB_WORKSPACE
+          # echo "$GITHUB_PATH"
+          # echo "PYTHONPATH=epviz" >> $GITHUB_ENV
           python tests/filter_tests.py
         shell: bash
         env:
