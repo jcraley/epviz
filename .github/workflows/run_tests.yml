@@ -42,6 +42,6 @@ jobs:
           # echo "$GITHUB_PATH"
           # echo "PYTHONPATH=epviz" >> $GITHUB_ENV
           python tests/filter_tests.py
-        shell: bash
+        working-directory: epviz
         env:
           QT_QPA_PLATFORM: offscreen
