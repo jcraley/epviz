@@ -6,7 +6,7 @@ Installation:
 -----
 Clone the repository ```git clone https://github.com/jcraley/epviz.git```  
 
-Python >= 3.5 is required. Other packages can be installed by creating a virtual environment and using the provided requirements.txt file.
+Python >= 3.7 is required. Other packages can be installed by creating a virtual environment and using the provided requirements.txt file.
 
 To create the virtual environment:  
 ```
