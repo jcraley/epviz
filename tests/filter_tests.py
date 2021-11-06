@@ -10,10 +10,10 @@ import unittest
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtTest import QTest
 from PyQt5.QtCore import Qt
-from visualization.filtering.filter_options import FilterOptions
-from visualization.filtering.filter_info import FilterInfo
-from visualization.plot import MainPage
-from visualization.plot import check_args, get_args
+#from visualization.filtering.filter_options import FilterOptions
+#from visualization.filtering.filter_info import FilterInfo
+# from visualization.plot import MainPage
+from plot import check_args, get_args
 from unittest.mock import patch
 
 app = QApplication([])
@@ -22,11 +22,12 @@ class TestFilter(unittest.TestCase):
         patch('sys.argv', ["--show","0"])
         args = get_args()
         check_args(args)
-        self.parent = MainPage(args, app)
-        self.filter_info = FilterInfo()
+        # self.parent = MainPage(args, app)
+        # self.filter_info = FilterInfo()
         # Create a dummy "edf_info" object to hold the fs
         # (doesn't really need to be edf_info, fs is the only thing
         # filter_info needs from edf_info)
+        """
         self.parent.edf_info = FilterInfo()
         self.parent.edf_info.fs = 256
         self.filter_info2 = FilterInfo()
@@ -37,9 +38,10 @@ class TestFilter(unittest.TestCase):
         self.filter_info2.bp1 = 2
         self.filter_info2.bp1 = 40
         self.filter_info2.notch = 30
-        self.ui = FilterOptions(self.filter_info, self.parent)
-        self.ui2 = FilterOptions(self.filter_info2, self.parent)
-
+        """
+        # self.ui = FilterOptions(self.filter_info, self.parent)
+        # self.ui2 = FilterOptions(self.filter_info2, self.parent)
+    """
     def test_setup(self):
         # Test that everything is checked properly at startup
         self.assertEqual(self.ui.cbox_lp.isChecked(),1)
@@ -199,11 +201,8 @@ class TestFilter(unittest.TestCase):
         self.assertEqual(self.filter_info.hp, 2)
         self.assertEqual(self.filter_info.lp, 30)
         self.assertEqual(self.filter_info.notch, 60)
-
+    """
     def tearDown(self):
-        # sys.exit()
-        # self.parent.close()
-        # sys.exit(self.app.exec_())
         pass
 
 if __name__ == '__main__':
