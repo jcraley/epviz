@@ -38,8 +38,9 @@ jobs:
           pip install -r requirements.txt  
       - name: Run tests
         run: |
-         chmod +x ./run_tests.sh
-         ./run_tests.sh
+          echo "$PATH"
+          chmod +x ./run_tests.sh
+          ./run_tests.sh
         shell: bash
         env:
           QT_QPA_PLATFORM: offscreen
