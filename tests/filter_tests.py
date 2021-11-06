@@ -3,7 +3,6 @@ import sys
 import os
 cwd = os.getcwd()
 print(cwd)
-sys.path.append('visualization')
 cwd = os.getcwd()
 print(cwd)
 import unittest
@@ -13,7 +12,7 @@ from PyQt5.QtCore import Qt
 #from visualization.filtering.filter_options import FilterOptions
 #from visualization.filtering.filter_info import FilterInfo
 # from visualization.plot import MainPage
-from plot import check_args, get_args
+from visualization.plot import check_args, get_args
 from unittest.mock import patch
 
 app = QApplication([])
