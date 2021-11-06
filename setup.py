@@ -15,7 +15,7 @@ setuptools.setup(
         "Documentation": "https://engineering.jhu.edu/nsa/links/epviz/",
     },
     package_data={'visualization.ui_files': ['gui_stylesheet.css',]},
-    packages=setuptools.find_packages(),
+    packages=["visualization", "visualization.signal_loading", "visualization.edf_saving", "visualization.filtering", "visualization.image_saving", "visualization.models", "visualization.predictions", "visualization.preprocessing", "visualization.signal_stats", "visualization.spectrogram_window",],
     entry_points={
         'console_scripts': ['epviz=visualization.plot:main', ]
     },
