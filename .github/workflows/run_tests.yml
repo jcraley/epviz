@@ -38,7 +38,8 @@ jobs:
           pip install -r requirements.txt  
       - name: Run tests
         run: |
-          cd $GITHUB_WORKSPACE
+          # cd $GITHUB_WORKSPACE
+          echo $GITHUB_WORKSPACE
           # echo "$GITHUB_PATH"
           # echo "PYTHONPATH=epviz" >> $GITHUB_ENV
           python tests/filter_tests.py
