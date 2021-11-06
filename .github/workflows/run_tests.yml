@@ -39,8 +39,10 @@ jobs:
       - name: Run tests
         run: |
           echo "$PATH"
-          chmod +x ./run_tests.sh
-          ./run_tests.sh
+          echo "$GITHUB_PATH"
+          echo "/home/runner/work/epviz/epviz" >> $GITHUB_PATH
+          echo "/home/runner/work/epviz/epviz" >> $PATH
+          python tests/filter_tests.py
         shell: bash
         env:
           QT_QPA_PLATFORM: offscreen
