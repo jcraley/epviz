@@ -52,7 +52,7 @@ def check_annotations(t_start, window_size, edf_info):
 
     return ret, idx_w_ann
 
-def filter_data(data, fs, fi):
+def filter_data(data, fs, fi, show=1):
     """ Filters the data.
         Progress bar is created if the process is estimated to take > 4s
 
@@ -60,6 +60,8 @@ def filter_data(data, fs, fi):
         data - the data to filter
         fs - the fs
         fi - a filterInfo object
+        show - can be set to 0 for testing purposes so as not to show the
+            filtering progress bar
     Returns:
         filtered data
     """
@@ -80,8 +82,10 @@ def filter_data(data, fs, fi):
 
     nchns = len(data)
     filt_bufs = deepcopy(data)
-    progress = QProgressDialog("Filtering...", "Cancel", 0, nchns * 4)
-    progress.setWindowModality(Qt.WindowModal)
+
+    if show:
+        progress = QProgressDialog("Filtering...", "Cancel", 0, nchns * 4)
+        progress.setWindowModality(Qt.WindowModal)
 
     i = 0
     for chn in range(nchns):
@@ -89,34 +93,38 @@ def filter_data(data, fs, fi):
         if notch > 0:
             filt_bufs[chn] = dsp.apply_notch(filt_bufs[chn], fs, fi.notch)
         i += 1
-        progress.setValue(i)
-        if progress.wasCanceled():
-            fi.filter_canceled = 1
-            break
+        if show:
+            progress.setValue(i)
+            if progress.wasCanceled():
+                fi.filter_canceled = 1
+                break
         # LPF
         if lp > 0:
             filt_bufs[chn] = dsp.apply_low_pass(filt_bufs[chn], fs, lp)
         i += 1
-        progress.setValue(i)
-        if progress.wasCanceled():
-            fi.filter_canceled = 1
-            break
+        if show:
+            progress.setValue(i)
+            if progress.wasCanceled():
+                fi.filter_canceled = 1
+                break
         # HPF
         if hp > 0:
             filt_bufs[chn] = dsp.apply_high_pass(filt_bufs[chn], fs, hp)
         i += 1
-        progress.setValue(i)
-        if progress.wasCanceled():
-            fi.filter_canceled = 1
-            break
+        if show:
+            progress.setValue(i)
+            if progress.wasCanceled():
+                fi.filter_canceled = 1
+                break
         # BPF
         if bp1 > 0:
             filt_bufs[chn] = dsp.apply_band_pass(filt_bufs[chn], fs, [bp1, bp2])
         i += 1
-        progress.setValue(i)
-        if progress.wasCanceled():
-            fi.filter_canceled = 1
-            break
+        if show:
+            progress.setValue(i)
+            if progress.wasCanceled():
+                fi.filter_canceled = 1
+                break
 
     return filt_bufs
 

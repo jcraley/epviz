@@ -13,7 +13,7 @@ class SaveEdfInfo():
         self.start_date = "01.01.01"
         self.start_time = "01.01.01"
         self.py_h = 2
-        self.pyedf_header = {'technician': '002', 'recording_additional': '', 'patientname': '',
+        self.pyedf_header = {'technician': '', 'recording_additional': '', 'patientname': '',
                         'patient_additional': '', 'patientcode': '', 'equipment': '',
                         'admincode': '', 'gender': '',
                         'startdate': datetime.datetime(2001, 1, 1, 1, 1, 1),

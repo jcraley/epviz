@@ -1108,8 +1108,11 @@ class MainPage(QMainWindow):
         """
         if self.init == 1:
             if self.filter_checked == 1:
+                show = 1
+                if self.argv.save_edf_fn is not None:
+                    show = 0
                 data_to_save = filter_data(
-                    self.ci.data_to_plot, self.edf_info.fs, self.fi)
+                    self.ci.data_to_plot, self.edf_info.fs, self.fi, show)
                 if self.fi.filter_canceled == 1:
                     self.fi.filter_canceled = 0
                     return
@@ -1457,7 +1460,6 @@ class MainPage(QMainWindow):
         self.main_plot.getAxis('left').setTicks(y_ticks)
         self.main_plot.getAxis("left").setStyle(tickTextOffset = 10)
         self.main_plot.setLabel('left', ' ', pen=(0,0,0), fontsize=20)
-        # self.main_plot.getAxis("left").setScale(y_lim * (nchns + 2))
 
         self.main_plot.setXRange(0 * fs, (0 + self.window_size) * fs, padding=0)
         self.main_plot.getAxis('bottom').setTicks(x_ticks)
@@ -1507,8 +1509,6 @@ class MainPage(QMainWindow):
                     self.ann_list.append(txt_item)
 
         if print_graph == 1 or (not self.argv.export_png_file is None and self.init == 0):
-            # exporter = pg.exporters.ImageExporter(self.plotWidget.scene())
-            # exporter.export(file[0] + '.png')
             self.sii.data = plot_data
             self.sii.pi = self.pi
             self.sii.ci = self.ci
@@ -1551,31 +1551,8 @@ class MainPage(QMainWindow):
             self.spec_select_time_rect.setBounds([0,fs * self.window_size])
             self.main_plot.addItem(self.spec_select_time_rect)
             self.spec_select_time_rect.sigRegionChangeFinished.connect(self.spec_time_select_changed)
-            # dataForSpec = self.si.data
-            # f, t, Sxx = scipy.signal.spectrogram(
-            # self.si.data[self.count * fs:(self.count + self.window_size) * fs],
-            # fs=fs, nperseg=fs, noverlap=0)
-            # Fit the min and max levels of the histogram to the data available
-            # self.hist.axis.setPen(black_pen)
-            # self.hist.setLevels(0,200)#np.min(Sxx), np.max(Sxx))
-            # This gradient is roughly comparable to the gradient used by Matplotlib
-            # You can adjust it and then save it using hist.gradient.saveState()
-            # self.hist.gradient.restoreState(
-            #     {'mode': 'rgb',
-            #     'ticks': [(0.5, (0, 182, 188, 255)),
-            #            (1.0, (246, 111, 0, 255)),
-            #            (0.0, (75, 0, 113, 255))]})
-            # Sxx contains the amplitude for each pixel
-            # self.img.setImage(Sxx)
-            # Scale the X and Y Axis to time and frequency (standard is pixels)
-            # self.img.scale(self.window_size/np.size(Sxx, axis=1),
-            #         f[-1]/np.size(Sxx, axis=0))
-            # Limit panning/zooming to the spectrogram
-            # self.specPlot.setLimits(xMin=0, xMax=self.window_size,
-            # yMin=self.si.min_fs, yMax=self.si.max_fs)
             self.spec_time_select_changed()
             self.specPlot.getAxis('bottom').setTextPen(black_pen)
-            # self.specPlot.getAxis('bottom').setTicks(spec_x_ticks)
             # Add labels to the axis
             self.specPlot.setLabel('bottom', "Frequency", units='Hz')
             # pyqtgraph automatically scales the axis and adjusts
@@ -1584,7 +1561,6 @@ class MainPage(QMainWindow):
             self.specPlot.setLabel('left', "PSD", units='log(V**2/Hz)')
             self.specPlot.setXRange(self.si.min_fs,self.si.max_fs,padding=0)
             self.specPlot.setLogMode(False, True)
-            # self.specPlot.setYRange(self.si.min_fs,self.si.max_fs,padding=0)
             self.specPlot.setTitle(self.si.chn_name,color='k',size='16pt')
         if self.btn_zoom.text() == "Close zoom":
             # need to redraw each time, because if there are preds
@@ -1788,26 +1764,6 @@ class MainPage(QMainWindow):
         qGraphicsGridLayout = self.plot_layout.ci.layout
         qGraphicsGridLayout.setRowStretchFactor(0, 2)
         qGraphicsGridLayout.setRowStretchFactor(1, 1)
-        # pg.setConfigOptions(imageAxisOrder='row-major')
-        # self.img = pg.ImageItem() # Item for displaying image data
-        # self.specPlot.addItem(self.img)
-        # self.hist = pg.HistogramLUTItem()
-        # Add a histogram with which to control the gradient of the image
-        # self.hist.setImageItem(self.img)
-        # # Link the histogram to the image
-        # self.plot_layout.addItem(self.hist, row = 1, col = 1)
-        # To make visible, add the histogram
-        # self.hist.setLevels(0,200)
-        #redBrush = QBrush(QColor(217, 43, 24,50))
-        #nchns = self.ci.nchns_to_plot
-        #self.spec_select_time_rect = pg.LinearRegionItem(values=(fs, 4 * fs),
-        #                brush=redBrush, movable=True,
-        #                orientation=pg.LinearRegionItem.Vertical)
-        #self.spec_select_time_rect.setSpan((self.si.chn_plotted + 2) / (nchns + 3),
-        #                (self.si.chn_plotted + 3) / (nchns + 3))
-        #self.spec_select_time_rect.setBounds([0,fs * self.window_size])
-        #self.main_plot.addItem(self.spec_select_time_rect)
-        #self.spec_select_time_rect.sigRegionChangeFinished.connect(self.spec_time_select_changed)
 
     def spec_time_select_changed(self):
         """ Function called when the user changes the region that selects where in
