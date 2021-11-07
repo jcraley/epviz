@@ -13,8 +13,9 @@ from unittest.mock import patch
 
 app = QApplication([])
 class TestFilter(unittest.TestCase):
+
     def setUp(self):
-        patch('sys.argv', ["--show","0"])
+        sys.argv = ['visualization/plot.py']
         args = get_args()
         check_args(args)
         self.parent = MainPage(args, app)

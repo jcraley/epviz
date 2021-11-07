@@ -62,7 +62,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.fn_full_temp, self.TEST_FN)
         self.assertEqual(self.plot_window.fn_temp, self.TEST_FN.split("/")[-1])
         self.assertEqual(self.plot_window.edf_info_temp.fs, 256)
-        self.assertEqual(self.plot_window.max_time_temp, 688)
+        self.assertEqual(self.plot_window.max_time_temp, 744)
         self.assertEqual(self.plot_window.chn_win_open, 1)
         self.assertEqual(self.plot_window.predicted, 0)
 
