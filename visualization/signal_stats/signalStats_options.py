@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (QWidget, QListWidget, QPushButton, QLabel,
                                 QHBoxLayout, QColorDialog, QLineEdit,
                                 QDoubleSpinBox, QDesktopWidget)
 
-from visualization.signal_loading.channel_info import ChannelInfo
+from signal_loading.channel_info import ChannelInfo
 
 from matplotlib.backends.qt_compat import QtWidgets
 

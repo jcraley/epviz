@@ -6,8 +6,8 @@ import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 
-from visualization.plot_utils import check_annotations
-from visualization.ui_files.saveImg import Ui_Form
+from plot_utils import check_annotations
+from ui_files.saveImg import Ui_Form
 
 class SaveImgOptions(QWidget):
     """ Class for the print preview window """

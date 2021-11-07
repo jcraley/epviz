@@ -6,7 +6,7 @@ from PyQt5.QtGui import QFont
 import numpy as np
 from matplotlib.backends.qt_compat import QtWidgets
 
-from visualization.plot_utils import filter_data
+from plot_utils import filter_data
 
 class SpecOptions(QWidget):
     """ Class for spectrogram options window """

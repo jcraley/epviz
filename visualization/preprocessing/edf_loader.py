@@ -1,7 +1,7 @@
 """ Module for loading edf files """
 import pyedflib
 
-from visualization.preprocessing.eeg_info import EegInfo
+from preprocessing.eeg_info import EegInfo
 
 
 def _check_label(label, label_list):

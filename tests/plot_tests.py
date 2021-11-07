@@ -1,6 +1,5 @@
 """ Module for testing the filter options window """
 import sys
-sys.path.append('visualization')
 import unittest
 import numpy as np
 from PyQt5.QtWidgets import QApplication
@@ -18,7 +17,7 @@ from PyQt5.QtWidgets import QCheckBox
 app = QApplication([])
 class TestPlot(unittest.TestCase):
     def setUp(self):
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03.edf"
+        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_file_annotations.edf"
         patch('sys.argv', ["--show","0"])
         args = get_args()
         check_args(args)
