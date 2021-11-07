@@ -1,14 +1,14 @@
 """ Module for testing the filter options window """
 import sys
-# sys.path.append('visualization')
+sys.path.append('visualization')
 from PyQt5.QtWidgets import QApplication
 import unittest
-from visualization.plot_utils import *
+from plot_utils import *
 from preprocessing.edf_loader import EdfLoader
-from visualization.filtering.filter_info import FilterInfo
+from filtering.filter_info import FilterInfo
 import pyedflib
 import numpy as np
-import visualization.preprocessing.dsp as dsp
+import preprocessing.dsp as dsp
 
 app = QApplication([])
 class TestPlotUtils(unittest.TestCase):
