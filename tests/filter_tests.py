@@ -5,15 +5,16 @@ import unittest
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtTest import QTest
 from PyQt5.QtCore import Qt
-from filtering.filter_options import FilterOptions
-from filtering.filter_info import FilterInfo
-from plot import MainPage
-from plot import check_args, get_args
-from unittest.mock import patch
+# from filtering.filter_options import FilterOptions
+from visualization.filtering.filter_info import FilterInfo
+#from plot import MainPage
+#from plot import check_args, get_args
+#from unittest.mock import patch
 
 app = QApplication([])
 class TestFilter(unittest.TestCase):
     def setUp(self):
+        """
         patch('sys.argv', ["--show","0"])
         args = get_args()
         check_args(args)
@@ -24,6 +25,7 @@ class TestFilter(unittest.TestCase):
         # filter_info needs from edf_info)
         self.parent.edf_info = FilterInfo()
         self.parent.edf_info.fs = 256
+        """
         self.filter_info2 = FilterInfo()
         self.filter_info2.do_lp = 0
         self.filter_info2.do_hp = 0
@@ -32,6 +34,7 @@ class TestFilter(unittest.TestCase):
         self.filter_info2.bp1 = 2
         self.filter_info2.bp1 = 40
         self.filter_info2.notch = 30
+        """
         self.ui = FilterOptions(self.filter_info, self.parent)
         self.ui2 = FilterOptions(self.filter_info2, self.parent)
 
@@ -197,6 +200,6 @@ class TestFilter(unittest.TestCase):
 
     def tearDown(self):
         pass
-
+    """
 if __name__ == '__main__':
     unittest.main(exit=False)
