@@ -1,6 +1,6 @@
 """ Module for testing the filter options window """
 import sys
-import os
+sys.path.append('visualization')
 import unittest
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtTest import QTest
