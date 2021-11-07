@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtTest import QTest
 from PyQt5.QtCore import Qt
 # from filtering.filter_options import FilterOptions
-from visualization.filtering.filter_info import FilterInfo
+from filtering.filter_info import FilterInfo
 #from plot import MainPage
 #from plot import check_args, get_args
 #from unittest.mock import patch
