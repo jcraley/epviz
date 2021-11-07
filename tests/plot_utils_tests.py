@@ -12,6 +12,7 @@ import visualization.preprocessing.dsp as dsp
 
 app = QApplication([])
 class TestPlotUtils(unittest.TestCase):
+    """
     def setUp(self):
         # Set the test files
         self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_file_annotations.edf"
@@ -111,6 +112,6 @@ class TestPlotUtils(unittest.TestCase):
 
     def tearDown(self):
         pass
-
+    """
 if __name__ == '__main__':
     unittest.main(exit=False)
