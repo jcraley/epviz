@@ -39,5 +39,6 @@ jobs:
       - name: Run tests
         run: |
           python tests/filter_tests.py
+        working-directory: visualization
         env:
           QT_QPA_PLATFORM: offscreen
