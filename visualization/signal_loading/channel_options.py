@@ -224,9 +224,6 @@ class ChannelOptions(QWidget):
         if cbox.isChecked():
             if self.ar1010:
                 self.cbox_ar1010.setChecked(0)
-        #        self.cbox_bip1010.setChecked(0)
-        #    elif self.bip1010:
-        #        self.cbox_bip1010.setChecked(0)
         if self.ar1020:
             chns = self.data.get_chns(self.data.labelsAR1020)
             if cbox.isChecked():
@@ -257,31 +254,6 @@ class ChannelOptions(QWidget):
         else:
             self._select_chns(chns, 1)
 
-    #def bip_checked1010(self):
-    """ Called when bipolar 1010 is called.
-    """
-    """
-        cbox = self.sender()
-        chns = self.data.get_chns(self.data.labelsBIP1010)
-        if self.ar1020:
-            chns = self.data.get_chns(self.data.labelsAR1010)
-            if cbox.isChecked():
-                self.cbox_ar.setChecked(0)
-                self.uncheck_txt_files()
-                if self.ar1010:
-                    self.cbox_ar1010.setChecked(0)
-                self.cbox_bip.setChecked(0)
-                self._select_chns(chns, 0)
-            else:
-                self._select_chns(chns, 1)
-        elif cbox.isChecked():
-            self.uncheck_txt_files()
-            self.cbox_bip.setChecked(0)
-            # select all bipolar channels, deselect all others
-            self._select_chns(chns, 0)
-        else:
-            self._select_chns(chns, 1)
-    """
     def uncheck_txt_files(self):
         """ Deselect all text files.
         """

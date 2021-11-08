@@ -32,6 +32,7 @@ class TestChannelLoading(unittest.TestCase):
         self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/tuh_test_file.edf"
         self.TEST_TXT_FILE = "/Users/daniellecurrey/Desktop/gui_edf_files/test_chns_valid.txt"
         self.TEST_INVALID_TXT_FILE = "/Users/daniellecurrey/Desktop/gui_edf_files/test_chns_invalid.txt"
+        self.TEST_FN_PREDS = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03_with_preds.edf"
         # Load in the file
         loader = EdfLoader()
         self.parent.edf_info_temp = loader.load_metadata(self.TEST_FN)
@@ -370,6 +371,32 @@ class TestChannelLoading(unittest.TestCase):
         self.assertEqual(self.channel_info.labels_to_plot, ["Notes"] + ["A1", "O2", "PZ", "P8", "T7"])
         for c, l in zip(self.channel_info.colors, self.channel_info.labels_to_plot[1:]):
             self.assertEqual(c, self.channel_info._get_color(l))
+
+    def test_loading_file_with_predictions(self):
+        # Test that loading predictions in a file works
+        loader = EdfLoader()
+        self.parent.edf_info_temp = loader.load_metadata(self.TEST_FN_PREDS)
+        # Create the ChannelInfo object
+        self.channel_info = ChannelInfo()
+        self.channel_info.chns2labels = self.parent.edf_info_temp.chns2labels
+        self.channel_info.labels2chns = self.parent.edf_info_temp.labels2chns
+        self.channel_info.fs = self.parent.edf_info_temp.fs[0]
+        self.parent.max_time_temp = int(
+                self.parent.edf_info_temp.nsamples[0] / self.parent.edf_info_temp.fs[0])
+        self.channel_info.edf_fn = self.TEST_FN_PREDS
+        self.parent.fn_full_temp = self.TEST_FN_PREDS
+        self.parent.fn_temp = self.TEST_FN_PREDS.split("/")[-1]
+
+        self.ui2 = ChannelOptions(self.channel_info, self.parent)
+
+        print()
+        for x, y in zip(self.ui2.pi.preds_to_plot, self.ui2.data.pred_chn_data):
+            self.assertEqual(x, y)
+        self.assertEqual(self.ui2.pi.preds_loaded, 1)
+        self.assertEqual(self.ui2.pi.plot_loaded_preds, 1)
+        self.assertEqual(self.ui2.pi.preds_fn, "loaded from .edf file")
+        self.assertEqual(self.ui2.pi.pred_width, (self.ui2.data.fs
+                                * self.parent.max_time_temp) / self.ui2.pi.preds.shape[0])
 
     def tearDown(self):
         pass

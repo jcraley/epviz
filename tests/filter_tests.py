@@ -15,6 +15,10 @@ app = QApplication([])
 class TestFilter(unittest.TestCase):
 
     def setUp(self):
+        text_file = open("test_files/test_chns.txt", "r")
+        lines = text_file.readlines()
+        for l in lines:
+            print(l)
         sys.argv = ['visualization/plot.py']
         args = get_args()
         check_args(args)

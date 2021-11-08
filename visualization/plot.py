@@ -1166,6 +1166,8 @@ class MainPage(QMainWindow):
                             nchns + i, fs / self.pi.pred_width)
                         saved_edf.setLabel(nchns + i, "PREDICTIONS_" + str(i))
                     for i in range(nchns):
+                        print(self.pi.preds_to_plot[:, i].shape)
+                        print(np.squeeze(self.pi.preds_to_plot[:, i]).shape)
                         temp.append(self.pi.preds_to_plot[:, i])
                 else:
                     saved_edf.setPhysicalMaximum(nchns, 1)
@@ -1174,7 +1176,8 @@ class MainPage(QMainWindow):
                     saved_edf.setLabel(nchns, "PREDICTIONS")
                     temp.append(self.pi.preds_to_plot)
                 data_to_save = temp
-
+            for i in range(len(temp)):
+                print(len(temp[i]))
             saved_edf.writeSamples(data_to_save)
 
             # write annotations
