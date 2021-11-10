@@ -9,7 +9,6 @@ from visualization.signal_loading.channel_options import ChannelOptions
 from visualization.signal_loading.channel_info import ChannelInfo, _check_label, convert_txt_chn_names
 from visualization.plot import MainPage
 from visualization.plot import check_args, get_args
-from unittest.mock import patch
 from preprocessing.edf_loader import EdfLoader
 
 from PyQt5.QtWidgets import QCheckBox
@@ -17,7 +16,7 @@ from PyQt5.QtWidgets import QCheckBox
 app = QApplication([])
 class TestChannelLoading(unittest.TestCase):
     def setUp(self):
-        patch('sys.argv', ["--show","0"])
+        sys.argv = ['visualization/plot.py']
         args = get_args()
         check_args(args)
         self.parent = MainPage(args, app)
