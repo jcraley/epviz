@@ -10,16 +10,10 @@ import pyedflib
 class TestEdfLoader(unittest.TestCase):
     def setUp(self):
         # Setup
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03.edf"
+        self.TEST_FN = "test_files/chb.edf"
         self.edf_loader = EdfLoader()
 
     def test_setup(self):
-        pass
-
-    def test_check_label(self):
-        # Test checking labels
-        #label_list = {"FP1": 0, "CZ": 1, ""}
-        #_check_label()
         pass
 
     def test_load_metadata0(self):
