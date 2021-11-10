@@ -61,3 +61,8 @@ jobs:
           python3 -m unittest tests/edf_saving_tests.py
         env:
           QT_QPA_PLATFORM: offscreen
+      - name: Run prediction tests
+        run: |
+          python3 -m unittest tests/prediction_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
