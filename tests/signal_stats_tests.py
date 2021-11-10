@@ -11,7 +11,7 @@ from visualization.plot import MainPage
 from visualization.plot import check_args, get_args
 
 app = QApplication([])
-class TestFilter(unittest.TestCase):
+class TestSignalStats(unittest.TestCase):
     def setUp(self):
         self.TEST_FN = "test_files/chb.edf"
         sys.argv = ['visualization/plot.py']
