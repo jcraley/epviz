@@ -7,7 +7,7 @@ from visualization.preprocessing.edf_loader import EdfLoader, _check_label
 from visualization.preprocessing.eeg_info import EegInfo
 import pyedflib
 
-class TestFilter(unittest.TestCase):
+class TestEdfLoading(unittest.TestCase):
     def setUp(self):
         # Setup
         self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03.edf"
