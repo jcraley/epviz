@@ -99,9 +99,9 @@ To run Pylint on all visualizer code:
 ./run_pylint
 ```
 
-Find an issue? [Let us know] (https://github.com/jcraley/epviz/issues).
+Find an issue? [Let us know](https://github.com/jcraley/epviz/issues).
 
-Test files come from the CHB-MIT database [1, 2] (https://physionet.org/content/chbmit/1.0.0/) and the TUH EEG Corpus [3] (https://isip.piconepress.com/projects/tuh_eeg/html/overview.shtml). We have also linked the liscence for the CHB-MIT data below.
+Test files come from the CHB-MIT database [1, 2](https://physionet.org/content/chbmit/1.0.0/) and the TUH EEG Corpus [3](https://isip.piconepress.com/projects/tuh_eeg/html/overview.shtml). We have also linked the liscence for the CHB-MIT data below.
 
 Citations for CHB-MIT dataset:
 1. Ali Shoeb. Application of Machine Learning to Epileptic Seizure Onset Detection and Treatment. PhD Thesis, Massachusetts Institute of Technology, September 2009.
