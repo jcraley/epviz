@@ -9,13 +9,12 @@ from visualization.signal_stats.signalStats_options import SignalStatsOptions
 from visualization.signal_stats.signalStats_info import SignalStatsInfo
 from visualization.plot import MainPage
 from visualization.plot import check_args, get_args
-from unittest.mock import patch
 
 app = QApplication([])
 class TestFilter(unittest.TestCase):
     def setUp(self):
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03.edf"
-        patch('sys.argv', ["--show","0"])
+        self.TEST_FN = "test_files/chb.edf"
+        sys.argv = ['visualization/plot.py']
         args = get_args()
         check_args(args)
         self.parent = MainPage(args, app)
