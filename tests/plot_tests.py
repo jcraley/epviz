@@ -22,12 +22,12 @@ import torch
 app = QApplication([])
 class TestPlot(unittest.TestCase):
     def setUp(self):
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_file_annotations.edf"
-        self.TEST_FN_FOR_PREDS = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03.edf"
-        self.TEST_PREDS = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03_preds.pt"
-        self.TEST_PREDS_MULTICLASS = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chb01_03_multiclass.pt"
-        self.TEST_PREDS_MULTICHN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chb01_03_multichannel.pt"
-        self.TEST_PREDS_MULTI_CLASS_CHN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chb01_03_multiclass_multichannel.pt"
+        self.TEST_FN = "test_files/tuh_with_annotations.edf"
+        self.TEST_FN_FOR_PREDS = "test_files/chb.edf"
+        self.TEST_PREDS = "test_files/chb_preds.pt"
+        self.TEST_PREDS_MULTICLASS = "test_files/chb_multiclass.pt"
+        self.TEST_PREDS_MULTICHN = "test_files/chb_multichannel.pt"
+        self.TEST_PREDS_MULTI_CLASS_CHN = "test_files/chb_multiclass_multichannel.pt"
         sys.argv = ['visualization/plot.py']
         args = get_args()
         check_args(args)
