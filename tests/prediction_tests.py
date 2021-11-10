@@ -19,7 +19,7 @@ app = QApplication([])
 class TestPrediction(unittest.TestCase):
     def setUp(self):
         self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03.edf"
-        self.TEST_MODEL = "/Users/daniellecurrey/Desktop/gui_edf_files/model.pt"
+        self.TEST_MODEL = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03_model.pt"
         self.TEST_DATA = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03_feats.pt"
         self.TEST_PREDS = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03_preds.pt"
         self.TEST_PREDS_MULTICLASS = "/Users/daniellecurrey/Desktop/gui_edf_files/test_chb01_03_multiclass.pt"
