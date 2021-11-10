@@ -18,13 +18,13 @@ import datetime
 app = QApplication([])
 class TestPrediction(unittest.TestCase):
     def setUp(self):
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03.edf"
-        self.TEST_MODEL = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03_model.pt"
-        self.TEST_DATA = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03_feats.pt"
-        self.TEST_PREDS = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03_preds.pt"
-        self.TEST_PREDS_MULTICLASS = "/Users/daniellecurrey/Desktop/gui_edf_files/test_chb01_03_multiclass.pt"
-        self.TEST_PREDS_MULTICHN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_chb01_03_multichannel.pt"
-        self.TEST_PREDS_MULTI_CLASS_CHN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_chb01_03_multiclass_multichannel.pt"
+        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03.edf"
+        self.TEST_MODEL = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03_model.pt"
+        self.TEST_DATA = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03_feats.pt"
+        self.TEST_PREDS = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03_preds.pt"
+        self.TEST_PREDS_MULTICLASS = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chb01_03_multiclass.pt"
+        self.TEST_PREDS_MULTICHN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chb01_03_multichannel.pt"
+        self.TEST_PREDS_MULTI_CLASS_CHN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chb01_03_multiclass_multichannel.pt"
         patch('sys.argv', ["--show","0"])
         args = get_args()
         check_args(args)

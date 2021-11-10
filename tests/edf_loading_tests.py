@@ -10,7 +10,7 @@ import pyedflib
 class TestFilter(unittest.TestCase):
     def setUp(self):
         # Setup
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03.edf"
+        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03.edf"
         self.edf_loader = EdfLoader()
 
     def test_setup(self):

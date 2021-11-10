@@ -29,10 +29,10 @@ class TestChannelLoading(unittest.TestCase):
                             "EEG P4-REF","EEG P3-REF","EEG C4-REF","EEG C3-REF",
                             "EEG F4-REF","EEG F3-REF","EEG FP2-REF","EEG FP1-REF"]
         # Set the test files
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/tuh_test_file.edf"
-        self.TEST_TXT_FILE = "/Users/daniellecurrey/Desktop/gui_edf_files/test_chns_valid.txt"
-        self.TEST_INVALID_TXT_FILE = "/Users/daniellecurrey/Desktop/gui_edf_files/test_chns_invalid.txt"
-        self.TEST_FN_PREDS = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03_with_preds.edf"
+        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/tuh_test_file.edf"
+        self.TEST_TXT_FILE = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chns_valid.txt"
+        self.TEST_INVALID_TXT_FILE = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chns_invalid.txt"
+        self.TEST_FN_PREDS = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03_with_preds.edf"
         # Load in the file
         loader = EdfLoader()
         self.parent.edf_info_temp = loader.load_metadata(self.TEST_FN)

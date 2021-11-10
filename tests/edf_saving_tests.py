@@ -17,8 +17,8 @@ import datetime
 app = QApplication([])
 class TestEdfSaving(unittest.TestCase):
     def setUp(self):
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/chb01_03.edf"
-        self.TEST_SAVE_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test0.edf"
+        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03.edf"
+        self.TEST_SAVE_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test0.edf"
         patch('sys.argv', ["--show","0"])
         args = get_args()
         check_args(args)

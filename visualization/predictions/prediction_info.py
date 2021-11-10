@@ -148,8 +148,8 @@ class PredictionInfo():
         """
         # check size
         ret = -1
-        print("checking preds")
-        print(preds.shape)
+        # print("checking preds")
+        # print(preds.shape)
         self.pred_by_chn = 0 # reset
         self.multi_class = 0 # reset
         if binary:

@@ -111,8 +111,11 @@ class SpecOptions(QWidget):
             self.data.data = self.parent.ci.data_to_plot[self.data.chn_plotted,:]
             fs = self.parent.edf_info.fs
             if self.parent.filter_checked == 1:
+                show = 1
+                if not self.parent.show:
+                    show = 0
                 self.data.data = np.squeeze(filter_data(np.array(self.data.data)[np.newaxis,:],
-                                                                fs, self.parent.fi))
+                                                                fs, self.parent.fi, show=show))
             if not self.data.plot_spec:
                 self.data.plot_spec = 1
                 self.parent.make_spec_plot()
