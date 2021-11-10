@@ -51,3 +51,8 @@ jobs:
           python3 -m unittest tests/plot_utils_tests.py
         env:
           QT_QPA_PLATFORM: offscreen
+      - name: Run signal stats tests
+        run: |
+          python3 -m unittest tests/signal_stats_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
