@@ -53,10 +53,10 @@ find tests -name '*tests.py' -print0 |
         elif [[ $line = "tests/prediction_tests.py" ]]
         then
             echo "${green} Running tests for ${line} ${reset}"
-            # python3 -m coverage run "$line"
+            python3 -m coverage run "$line"
             echo "${cyan} Coverage Report for ${line}"
-            # python3 -m coverage report -m visualization/predictions/prediction_options.py
-            # python3 -m coverage report -m visualization/predictions/prediction_info.py
+            python3 -m coverage report -m visualization/predictions/prediction_options.py
+            python3 -m coverage report -m visualization/predictions/prediction_info.py
         elif [[ $line = "tests/edf_loading_tests.py" ]]
         then
             echo "${green} Running tests for ${line} ${reset}"

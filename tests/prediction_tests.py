@@ -9,7 +9,6 @@ from visualization.predictions.prediction_options import PredictionOptions
 from visualization.predictions.prediction_info import PredictionInfo
 from visualization.plot import MainPage
 from visualization.plot import check_args, get_args
-from unittest.mock import patch
 
 import torch
 import numpy as np
@@ -18,14 +17,14 @@ import datetime
 app = QApplication([])
 class TestPrediction(unittest.TestCase):
     def setUp(self):
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03.edf"
-        self.TEST_MODEL = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03_model.pt"
-        self.TEST_DATA = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03_feats.pt"
-        self.TEST_PREDS = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03_preds.pt"
-        self.TEST_PREDS_MULTICLASS = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chb01_03_multiclass.pt"
-        self.TEST_PREDS_MULTICHN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chb01_03_multichannel.pt"
-        self.TEST_PREDS_MULTI_CLASS_CHN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test_chb01_03_multiclass_multichannel.pt"
-        patch('sys.argv', ["--show","0"])
+        self.TEST_FN = "test_files/chb.edf"
+        self.TEST_MODEL = "test_files/chb_model.pt"
+        self.TEST_DATA = "test_files/chb_features.pt"
+        self.TEST_PREDS = "test_files/chb_preds.pt"
+        self.TEST_PREDS_MULTICLASS = "test_files/chb_multiclass.pt"
+        self.TEST_PREDS_MULTICHN = "test_files/chb_multichannel.pt"
+        self.TEST_PREDS_MULTI_CLASS_CHN = "test_files/chb_multiclass_multichannel.pt"
+        sys.argv = ['visualization/plot.py']
         args = get_args()
         check_args(args)
         self.parent = MainPage(args, app)
