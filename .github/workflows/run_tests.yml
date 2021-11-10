@@ -38,6 +38,11 @@ jobs:
           pip install -r requirements.txt  
       - name: Run signal loading tests
         run: |
+          python3 -m unittest tests/signal_loading_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - name: Run filtering tests
+        run: |
           python3 -m unittest tests/filter_tests.py
         env:
           QT_QPA_PLATFORM: offscreen
