@@ -46,3 +46,8 @@ jobs:
           python3 -m unittest tests/filter_tests.py
         env:
           QT_QPA_PLATFORM: offscreen
+      - name: Run plot utils tests
+        run: |
+          python3 -m unittest tests/plot_utils_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
