@@ -56,3 +56,8 @@ jobs:
           python3 -m unittest tests/signal_stats_tests.py
         env:
           QT_QPA_PLATFORM: offscreen
+      - name: Run edf saving tests
+        run: |
+          python3 -m unittest tests/edf_saving_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
