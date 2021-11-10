@@ -10,16 +10,15 @@ from visualization.edf_saving.saveEdf_info import SaveEdfInfo
 from visualization.edf_saving.anonymizer import Anonymizer, _valid_date
 from visualization.plot import MainPage
 from visualization.plot import check_args, get_args
-from unittest.mock import patch
 
 import datetime
 
 app = QApplication([])
 class TestEdfSaving(unittest.TestCase):
     def setUp(self):
-        self.TEST_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/chb01_03.edf"
-        self.TEST_SAVE_FN = "/Users/daniellecurrey/Desktop/gui_edf_files/test_files/test0.edf"
-        patch('sys.argv', ["--show","0"])
+        self.TEST_FN = "test_files/chb.edf"
+        self.test_save_fn = "test_files/test0.edf"
+        sys.argv = ['visualization/plot.py']
         args = get_args()
         check_args(args)
         self.parent = MainPage(args, app)
@@ -38,7 +37,7 @@ class TestEdfSaving(unittest.TestCase):
     
     def test_setup_with_edf_fn(self):
         # Test with edf file to save + anon
-        self.parent.argv.save_edf_fn = self.TEST_SAVE_FN
+        self.parent.argv.save_edf_fn = self.test_save_fn
         saveedf_info2 = SaveEdfInfo()
         saveedf_info2.fn =self.TEST_FN
         ui2 = SaveEdfOptions(saveedf_info2, self.parent)
@@ -46,7 +45,7 @@ class TestEdfSaving(unittest.TestCase):
 
     def test_setup_with_edf_fn_orig(self):
         # Test with edf file to save + anon
-        self.parent.argv.save_edf_fn = self.TEST_SAVE_FN
+        self.parent.argv.save_edf_fn = self.test_save_fn
         self.parent.argv.anonymize_edf = 0
         saveedf_info2 = SaveEdfInfo()
         saveedf_info2.fn = self.TEST_FN
@@ -149,7 +148,7 @@ class TestEdfSaving(unittest.TestCase):
         file = bytearray(file)
         pt_id_text = file[8:88].decode("utf-8").split(" ")
         rec_info_text = file[88:168].decode("utf-8").split(" ")
-        self.assertEqual(self.anon_ui.lbl_fn.text(), "chb01_03.edf")
+        self.assertEqual(self.anon_ui.lbl_fn.text(), self.TEST_FN.split("/")[1])
         self.assertEqual(self.anon_ui.btn_anonfile.isEnabled(), 1)
         self.assertEqual(self.anon_ui.cbox_copyoriginal.isEnabled(), 1)
         self.assertEqual(self.anon_ui.cbox_setdefaults.isEnabled(), 1)
