@@ -66,3 +66,8 @@ jobs:
           python3 -m unittest tests/prediction_tests.py
         env:
           QT_QPA_PLATFORM: offscreen
+      - name: Run edf loader tests
+        run: |
+          python3 -m unittest tests/edf_loader_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
