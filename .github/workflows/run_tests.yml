@@ -71,3 +71,8 @@ jobs:
           python3 -m unittest tests/edf_loader_tests.py
         env:
           QT_QPA_PLATFORM: offscreen
+      - name: Run spectrogram tests
+        run: |
+          python3 -m unittest tests/spectrogram_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
