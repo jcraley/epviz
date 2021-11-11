@@ -236,7 +236,7 @@ class TestPlot(unittest.TestCase):
 
     # 3. Test moving the plot
     def test_move_plot(self):
-        # Test moving the plot left and right
+        # Test moving the plot left and right PASS
         self.plot_window.argv.show = 0
         self.plot_window.argv.fn = self.TEST_FN
         self.plot_window.load_data(name=self.TEST_FN)
@@ -253,7 +253,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.count, 11)
         self.plot_window.left_plot_10s()
         self.assertEqual(self.plot_window.count, 1)
-    """
+
     def test_change_amp(self):
         # Test changing the ylim
         self.plot_window.argv.show = 0
@@ -473,7 +473,7 @@ class TestPlot(unittest.TestCase):
         self.assertTrue(x)
         self.assertEqual(loc, 1)
         self.assertEqual(self.plot_window.ann_txt_edit.text(), "")
-
+    """
     def test_opening_windows(self):
         # Try opening auxillary windows to make sure nothing crashes
         self._load_signals()
