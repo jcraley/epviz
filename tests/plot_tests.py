@@ -21,7 +21,8 @@ import torch
 
 app = QApplication([])
 class TestPlot(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.TEST_FN = "test_files/tuh_with_annotations.edf"
         self.TEST_FN_FOR_PREDS = "test_files/chb.edf"
         self.TEST_PREDS = "test_files/chb_preds.pt"
@@ -32,6 +33,9 @@ class TestPlot(unittest.TestCase):
         args = get_args()
         check_args(args)
         self.plot_window = MainPage(args, app)
+
+    def setUp(self):
+        self.plot_window.init_values()
 
     # 0. Initialization
     def test_init_values(self):
@@ -80,6 +84,7 @@ class TestPlot(unittest.TestCase):
         # Test that everything is set properly when graph is initialized PASS
         self.plot_window.argv.fn = self.TEST_FN
         self.plot_window.argv.filter[0] = 1
+        self.plot_window.argv.prediction_thresh = 0.5
         self.plot_window.load_data(name=self.TEST_FN)
 
         self.plot_window.edf_info = self.plot_window.edf_info_temp
@@ -217,7 +222,7 @@ class TestPlot(unittest.TestCase):
         self.plot_window.slider.setValue(742)
         self.plot_window.slider_change()
         self.assertEqual(self.plot_window.count, 739)
-    
+
     def test_thresh_slider(self):
         # Test the threshold slider
         self.plot_window.argv.show = 0
@@ -281,13 +286,16 @@ class TestPlot(unittest.TestCase):
         # Test the time ann label updates properly NO
         self._load_signals()
 
+        # if the annotation editor is open, close it
+        if self.plot_window.btn_open_edit_ann.text() != "Open annotation editor":
+            self.plot_window.open_ann_editor()
+        self.plot_window.open_ann_editor()
+
         # Before changing
         self.assertEqual(self.plot_window.ann_time_edit_time.time().second(), 0)
         self.assertEqual(self.plot_window.ann_time_edit_time.time().minute(), 0)
         self.assertEqual(self.plot_window.ann_time_edit_time.time().hour(), 0)
         self.assertEqual(self.plot_window.ann_time_edit_count.value(), 0)
-        self.assertEqual(self.plot_window.ann_duration.minimum(), 0)
-        self.assertEqual(self.plot_window.ann_duration.maximum(), 99)
 
         self.plot_window.ann_time_edit_count.setValue(27)
         self.plot_window.update_normal_time()
@@ -298,11 +306,15 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.ann_time_edit_count.value(), 27)
         self.assertEqual(self.plot_window.ann_duration.minimum(), -1)
         self.assertEqual(self.plot_window.ann_duration.maximum(), 744 - 27)
-    """
+
     # 4. Test the annotation editor
     def test_open_ann_editor(self):
         # Test opening annotation editor NO
         self._load_signals()
+
+        # if the annotation editor is open, close it
+        if self.plot_window.btn_open_edit_ann.text() != "Open annotation editor":
+            self.plot_window.open_ann_editor()
 
         # Make sure the docks are open and the editors are not
         self.assertTrue(self.plot_window.ann_edit_dock.isHidden())
@@ -342,7 +354,6 @@ class TestPlot(unittest.TestCase):
     def test_click_ann_editor(self):
         # Test editing annotations NO
         self._load_signals()
-
 
         # Let's click on an annotation and make sure everthing happens properly
         item_num = 1
@@ -395,6 +406,9 @@ class TestPlot(unittest.TestCase):
     def test_edit_ann(self):
         # Test editing annotations NO
         self._load_signals()
+
+        if self.plot_window.btn_open_edit_ann.text() != "Open annotation editor":
+            self.plot_window.open_ann_editor()
 
         # Let's click on an annotation and edit it
         self.plot_window.open_ann_editor()
@@ -473,7 +487,7 @@ class TestPlot(unittest.TestCase):
         self.assertTrue(x)
         self.assertEqual(loc, 1)
         self.assertEqual(self.plot_window.ann_txt_edit.text(), "")
-
+    """
     def test_opening_windows(self):
         # Try opening auxillary windows to make sure nothing crashes
         self._load_signals()
