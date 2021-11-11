@@ -35,7 +35,7 @@ class TestPlot(unittest.TestCase):
 
     # 0. Initialization
     def test_init_values(self):
-        # Check that values are initialized properly
+        # Check that values are initialized properly PASS
         self.assertEqual(self.plot_window.count, 0)
         self.assertEqual(self.plot_window.init, 0)
         self.assertEqual(self.plot_window.window_size, 10)
@@ -64,7 +64,7 @@ class TestPlot(unittest.TestCase):
 
     # 1. Loading data
     def test_load_data(self):
-        # Test that everything is set properly when data is loaded
+        # Test that everything is set properly when data is loaded PASS
         self.plot_window.argv.fn = self.TEST_FN
         self.plot_window.load_data(name=self.TEST_FN)
 
@@ -77,7 +77,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.predicted, 0)
 
     def test_init_graph(self):
-        # Test that everything is set properly when graph is initialized
+        # Test that everything is set properly when graph is initialized PASS
         self.plot_window.argv.fn = self.TEST_FN
         self.plot_window.argv.filter[0] = 1
         self.plot_window.load_data(name=self.TEST_FN)
@@ -110,7 +110,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.thresh, 0.5)
         self.assertEqual(self.plot_window.thresh_lbl.text(),
                 "Change threshold of prediction:  (threshold = 0.5)")
-    """
+
     def test_init_graph_filtered0(self):
         # Test that filter info properties are set correctly if filtered info is
         #   in the annotations
@@ -188,7 +188,7 @@ class TestPlot(unittest.TestCase):
                             - self.plot_window.window_size)
         self.assertEqual(self.plot_window.thresh_slider.value(), 70)
         self.assertEqual(self.plot_window.init, 1)
-
+    """
     # 2. Test the sliders
     def test_slider(self):
         # Test whether the slider changes count properly
