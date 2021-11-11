@@ -83,6 +83,7 @@ def filter_data(data, fs, fi, show=1):
     nchns = len(data)
     filt_bufs = deepcopy(data)
 
+    # For testing purposes, progress dialogue will not work if show is false
     if show:
         progress = QProgressDialog("Filtering...", "Cancel", 0, nchns * 4)
         progress.setWindowModality(Qt.WindowModal)

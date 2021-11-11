@@ -1731,7 +1731,7 @@ class MainPage(QMainWindow):
             self.filtered_data = np.zeros((self.ci.nchns_to_plot,self.window_size * fs))
         filt_window_size = filter_data(
             self.ci.data_to_plot[:, self.count * fs:(self.count + self.window_size)*fs],
-                            fs, self.fi)
+                            fs, self.fi, self.argv.show)
         filt_window_size = np.array(filt_window_size)
         self.filtered_data = filt_window_size
 
