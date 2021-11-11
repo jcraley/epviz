@@ -35,7 +35,7 @@ class TestPlot(unittest.TestCase):
 
     # 0. Initialization
     def test_init_values(self):
-        print(0)
+        print("Running test 0")
         # Check that values are initialized properly
         self.assertEqual(self.plot_window.count, 0)
         self.assertEqual(self.plot_window.init, 0)
@@ -65,7 +65,7 @@ class TestPlot(unittest.TestCase):
 
     # 1. Loading data
     def test_load_data(self):
-        print(1)
+        print("Running test 1")
         # Test that everything is set properly when data is loaded
         self.plot_window.argv.fn = self.TEST_FN
         self.plot_window.load_data(name=self.TEST_FN)
@@ -79,7 +79,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.predicted, 0)
 
     def test_init_graph(self):
-        print(2)
+        print("Running test 2")
         # Test that everything is set properly when graph is initialized
         self.plot_window.argv.fn = self.TEST_FN
         self.plot_window.argv.filter[0] = 1
@@ -115,7 +115,7 @@ class TestPlot(unittest.TestCase):
                 "Change threshold of prediction:  (threshold = 0.5)")
 
     def test_init_graph_filtered0(self):
-        print(3)
+        print("Running test 3")
         # Test that filter info properties are set correctly if filtered info is
         #   in the annotations
         self.plot_window.argv.fn = self.TEST_FN
@@ -147,7 +147,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.cbox_filter.isChecked(), 0)
 
     def test_init_graph_filtered1(self):
-        print(4)
+        print("Running test 4")
         # Test that filter info properties are set correctly if filtered info is
         #   in the annotations
         self.plot_window.argv.fn = self.TEST_FN
@@ -179,7 +179,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.cbox_filter.isChecked(), 0)
 
     def test_call_initial_move_plot(self):
-        print(5)
+        print("Running test 5")
         # Test the functionality of call_initial_move_plot
         self.plot_window.argv.show = 0
         self.plot_window.argv.fn = self.TEST_FN
@@ -197,7 +197,7 @@ class TestPlot(unittest.TestCase):
 
     # 2. Test the sliders
     def test_slider(self):
-        print(6)
+        print("Running test 6")
         # Test whether the slider changes count properly
         self.plot_window.argv.show = 0
         self.plot_window.argv.fn = self.TEST_FN
@@ -226,7 +226,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.count, 739)
     
     def test_thresh_slider(self):
-        print(7)
+        print("Running test 7")
         # Test the threshold slider
         self.plot_window.argv.show = 0
         self.plot_window.argv.fn = self.TEST_FN
@@ -244,7 +244,7 @@ class TestPlot(unittest.TestCase):
 
     # 3. Test moving the plot
     def test_move_plot(self):
-        print(8)
+        print("Running test 8")
         # Test moving the plot left and right
         self.plot_window.argv.show = 0
         self.plot_window.argv.fn = self.TEST_FN
@@ -264,7 +264,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.count, 1)
 
     def test_change_amp(self):
-        print(9)
+        print("Running test 9")
         # Test changing the ylim
         self.plot_window.argv.show = 0
         self.plot_window.argv.fn = self.TEST_FN
@@ -288,7 +288,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.ylim, [60, 40])
 
     def test_update_normal_time(self):
-        print(10)
+        print("Running test 10")
         # Test the time ann label updates properly
         self._load_signals()
 
@@ -312,7 +312,7 @@ class TestPlot(unittest.TestCase):
 
     # 4. Test the annotation editor
     def test_open_ann_editor(self):
-        print(11)
+        print("Running test 11")
         # Test opening annotation editor
         self._load_signals()
 
@@ -352,7 +352,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(len(self.plot_window.ann_qlist.selectedItems()), 0)
 
     def test_click_ann_editor(self):
-        print(12)
+        print("Running test 12")
         # Test editing annotations
         self._load_signals()
 
@@ -406,7 +406,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(len(self.plot_window.ann_qlist.selectedItems()), 0)
 
     def test_edit_ann(self):
-        print(13)
+        print("Running test 13")
         # Test editing annotations
         self._load_signals()
 
@@ -489,7 +489,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.ann_txt_edit.text(), "")
 
     def test_opening_windows(self):
-        print(14)
+        print("Running test 14")
         # Try opening auxillary windows to make sure nothing crashes
         self._load_signals()
 
@@ -518,14 +518,14 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.spec_win_open, 1)
 
     def test_open_zoom(self):
-        print(15)
+        print("Running test 15")
         # Open the zoom window to make sure nothing crashes
         self._load_signals()
         self.plot_window.open_zoom_plot()
         self.assertEqual(self.plot_window.btn_zoom.text(), "Close zoom")
 
     def test_save_sig_to_edf0(self):
-        print(16)
+        print("Running test 16")
         # Test saving signals to edf
         self._load_signals()
         self.plot_window.argv.show = 1
@@ -568,7 +568,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(start_time, "01.01.01")
 
     def test_save_sig_to_edf1(self):
-        print(17)
+        print("Running test 17")
         # Test save sig to edf with header fields updated
         self._load_signals()
         self.plot_window.argv.show = 1
@@ -628,7 +628,7 @@ class TestPlot(unittest.TestCase):
             self.assertTrue(x - y < 0.01)
 
     def test_save_sig_to_edf2(self):
-        print(18)
+        print("Running test 18")
         # Test saving predictions
         self._load_signals_and_predicitons0()
         self.plot_window.argv.show = 1
@@ -663,13 +663,13 @@ class TestPlot(unittest.TestCase):
             self.assertTrue(x - y < 0.01)
 
     def test_loading_multiclass_preds(self):
-        print(19)
+        print("Running test 19")
         # Try loading multiclass preds to make sure nothing crashes
         self._load_signals_and_predicitons1()
         self.assertEqual(self.plot_window.predicted, 1)
 
     def test_loading_multichanel_preds(self):
-        print(20)
+        print("Running test 20")
         # Try loading multichn preds to make sure nothing crashes
         self._load_signals_and_predicitons2()
         self.assertEqual(self.plot_window.predicted, 1)
