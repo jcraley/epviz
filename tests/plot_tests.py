@@ -110,7 +110,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.thresh, 0.5)
         self.assertEqual(self.plot_window.thresh_lbl.text(),
                 "Change threshold of prediction:  (threshold = 0.5)")
-
+    """
     def test_init_graph_filtered0(self):
         # Test that filter info properties are set correctly if filtered info is
         #   in the annotations
@@ -657,7 +657,7 @@ class TestPlot(unittest.TestCase):
         # Try loading multiclass / multichannel preds to make sure nothing crashes
         self._load_signals_and_predicitons3()
         self.assertEqual(self.plot_window.predicted, 1)
-
+    """
     def _load_signals(self):
         # for loading in the test file
         self.plot_window.argv.show = 0
