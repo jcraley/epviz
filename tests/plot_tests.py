@@ -255,7 +255,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.count, 1)
 
     def test_change_amp(self):
-        # Test changing the ylim NO
+        # Test changing the ylim PASS
         self.plot_window.argv.show = 0
         self.plot_window.argv.fn = self.TEST_FN
         self.plot_window.load_data(name=self.TEST_FN)
@@ -276,7 +276,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.ylim, [45, 30])
         self.plot_window.dec_amp()
         self.assertEqual(self.plot_window.ylim, [60, 40])
-    """
+
     def test_update_normal_time(self):
         # Test the time ann label updates properly NO
         self._load_signals()
@@ -298,7 +298,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.ann_time_edit_count.value(), 27)
         self.assertEqual(self.plot_window.ann_duration.minimum(), -1)
         self.assertEqual(self.plot_window.ann_duration.maximum(), 744 - 27)
-
+    """
     # 4. Test the annotation editor
     def test_open_ann_editor(self):
         # Test opening annotation editor NO
