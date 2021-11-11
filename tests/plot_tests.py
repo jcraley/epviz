@@ -675,7 +675,6 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.predicted, 1)
     
     def test_loading_multiclass_multichannel_preds(self):
-        print(21)
         # Try loading multiclass / multichannel preds to make sure nothing crashes
         self._load_signals_and_predicitons3()
         self.assertEqual(self.plot_window.predicted, 1)
