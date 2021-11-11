@@ -1108,11 +1108,8 @@ class MainPage(QMainWindow):
         """
         if self.init == 1:
             if self.filter_checked == 1:
-                show = 1
-                if self.argv.save_edf_fn is not None:
-                    show = 0
                 data_to_save = filter_data(
-                    self.ci.data_to_plot, self.edf_info.fs, self.fi, show)
+                    self.ci.data_to_plot, self.edf_info.fs, self.fi, self.argv.show)
                 if self.fi.filter_canceled == 1:
                     self.fi.filter_canceled = 0
                     return
