@@ -255,7 +255,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.count, 1)
 
     def test_change_amp(self):
-        # Test changing the ylim
+        # Test changing the ylim NO
         self.plot_window.argv.show = 0
         self.plot_window.argv.fn = self.TEST_FN
         self.plot_window.load_data(name=self.TEST_FN)
@@ -276,9 +276,9 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.ylim, [45, 30])
         self.plot_window.dec_amp()
         self.assertEqual(self.plot_window.ylim, [60, 40])
-
+    """
     def test_update_normal_time(self):
-        # Test the time ann label updates properly
+        # Test the time ann label updates properly NO
         self._load_signals()
 
         # Before changing
@@ -301,7 +301,7 @@ class TestPlot(unittest.TestCase):
 
     # 4. Test the annotation editor
     def test_open_ann_editor(self):
-        # Test opening annotation editor
+        # Test opening annotation editor NO
         self._load_signals()
 
         # Make sure the docks are open and the editors are not
@@ -340,7 +340,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(len(self.plot_window.ann_qlist.selectedItems()), 0)
 
     def test_click_ann_editor(self):
-        # Test editing annotations
+        # Test editing annotations NO
         self._load_signals()
 
 
@@ -393,7 +393,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(len(self.plot_window.ann_qlist.selectedItems()), 0)
 
     def test_edit_ann(self):
-        # Test editing annotations
+        # Test editing annotations NO
         self._load_signals()
 
         # Let's click on an annotation and edit it
@@ -473,7 +473,7 @@ class TestPlot(unittest.TestCase):
         self.assertTrue(x)
         self.assertEqual(loc, 1)
         self.assertEqual(self.plot_window.ann_txt_edit.text(), "")
-    """
+
     def test_opening_windows(self):
         # Try opening auxillary windows to make sure nothing crashes
         self._load_signals()

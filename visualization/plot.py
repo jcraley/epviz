@@ -266,6 +266,7 @@ class MainPage(QMainWindow):
         self.btn_open_ann_dock.hide()
 
         self.button_lt_10s = QPushButton("<10", self)
+        self.button_lt_10s.setIcon(self.style().standardIcon(getattr(QStyle, "SP_MediaSkipBackward")))
         self.button_lt_10s.setToolTip("Click to go back")
         self.grid_rt.addWidget(self.button_lt_10s, 7, 1)
 

@@ -127,8 +127,6 @@ class ChannelOptions(QWidget):
         grid_lt.addWidget(btn_colors,9,0)
 
         btn_exit = QPushButton('Ok', self)
-        btn_exit.setDefault(True)
-        print(btn_exit.isDefault())
         btn_exit.clicked.connect(self.okay_pressed)
         grid_lt.addWidget(btn_exit,10,0)
 
