@@ -2,8 +2,6 @@
 
 EPViz is a tool to aid researchers in developing, validating, and reporting their predictive modeling outputs. A lightweight and standalone software package developed in Python, EPViz allows researchers to load a PyTorch deep learning model, apply it to the EEG, and overlay the output channel-wise or subject-level temporal predictions on top of the original time series. 
 
-You can find documentation [here](https://engineering.jhu.edu/nsa/links/epviz/).
-
 Installation:
 -----
 Clone the repository ```git clone https://github.com/jcraley/epviz.git```  
@@ -30,7 +28,6 @@ pip install numpy==1.21.2
 pip install -r requirements.txt
 ```
 
-
 Running the visualizer:
 -----
 You can then run the visualizer from the main folder using  
@@ -51,6 +48,10 @@ This will save the signals that are currently being plotted. If the signals are 
 
 ***Saving to .png:***  
 This will save an image of the current graph along with any predictions that are plotted. 
+
+Documentation:
+-----
+You can find documentation [here](https://engineering.jhu.edu/nsa/links/epviz/).
 
 ![](epviz0.png)
 
@@ -94,7 +95,7 @@ Style guide:
 -----
 We are using Pylint to comply with PEP8 style guidelines.
 
-To run Pylint on all visualizer code:
+To run Pylint on the visualizer code:
 ```
 ./run_pylint
 ```
