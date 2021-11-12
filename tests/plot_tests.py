@@ -63,7 +63,7 @@ class TestPlot(unittest.TestCase):
         self.assertEqual(self.plot_window.zoom_roi_pos, (0,0))
         self.assertEqual(self.plot_window.zoom_roi_size, (100,100))
         self.assertEqual(self.plot_window.zoom_roi, None)
-        self.assertEqual(self.plot_window.spec_roi_val, [0,100])
+        self.assertEqual(self.plot_window.spec_roi_val, [0, 256])
         self.assertEqual(self.plot_window.spec_select_time_rect, None)
 
     # 1. Loading data
