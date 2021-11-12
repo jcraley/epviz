@@ -32,12 +32,6 @@ class SpecOptions(QWidget):
         self.chn_combobox = QComboBox()
         self.chn_combobox.addItems(["<select channel>"])
 
-        lbl_info = QLabel("To hide the plot, click \n\"Clear\" and then \"Ok\".")
-        grid.addWidget(lbl_info, 3, 0)
-        my_font=QFont()
-        my_font.setBold(True)
-        lbl_info.setFont(my_font)
-
         lbl_chn = QLabel("Select a channel for \nspectrogram plotting: ")
         grid.addWidget(lbl_chn, 1, 0)
         grid.addWidget(self.chn_combobox, 1, 1, 1, 3)
@@ -57,7 +51,7 @@ class SpecOptions(QWidget):
         self.btn_get_max_fs.setValue(self.data.max_fs)
         grid.addWidget(self.btn_get_max_fs, 2, 3)
 
-        self.btn_clear = QPushButton('Clear', self)
+        self.btn_clear = QPushButton('Close plot', self)
         grid.addWidget(self.btn_clear, 3, 1, 1, 2)
         self.btn_exit = QPushButton('Ok', self)
         grid.addWidget(self.btn_exit, 3, 3)
@@ -99,6 +93,7 @@ class SpecOptions(QWidget):
         """
         self.chn_combobox.setCurrentIndex(0)
         self.data.chn_plotted = -1
+        self.check()
 
     def check(self):
         """ Function to check the clicked channel and exit.

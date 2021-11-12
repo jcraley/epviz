@@ -266,7 +266,6 @@ class MainPage(QMainWindow):
         self.btn_open_ann_dock.hide()
 
         self.button_lt_10s = QPushButton("<10", self)
-        self.button_lt_10s.setIcon(self.style().standardIcon(getattr(QStyle, "SP_MediaSkipBackward")))
         self.button_lt_10s.setToolTip("Click to go back")
         self.grid_rt.addWidget(self.button_lt_10s, 7, 1)
 
@@ -524,7 +523,7 @@ class MainPage(QMainWindow):
         self.zoom_roi_pos = (0,0) # location of the roi object
         self.zoom_roi_size = (100,100) # size of the roi object
         self.zoom_roi = None # zoomROI to be updated
-        self.spec_roi_val = [0,100] # size of the spec roi object
+        self.spec_roi_val = [0,256] # size of the spec roi object
         self.spec_select_time_rect = None # the ROI to be updated
 
     def closeEvent(self, event):
@@ -895,7 +894,8 @@ class MainPage(QMainWindow):
                     q_graphics_grid_layout = self.plot_layout.ci.layout
                     q_graphics_grid_layout.setRowStretchFactor(0, 2)
                     q_graphics_grid_layout.setRowStretchFactor(1, 1)
-                    self.zoom_roi = pg.RectROI([0,0], [self.edf_info.fs * 2,200], pen=(1,9))
+                    pen = pg.mkPen(color=(178, 7, 245), width=3, style=QtCore.Qt.SolidLine)
+                    self.zoom_roi = pg.RectROI([0,0], [self.edf_info.fs * 2,200], pen=pen)
                     self.zoom_roi.addScaleHandle([0.5,1],[0.5,0.5])
                     self.zoom_roi.addScaleHandle([0,0.5],[0.5,0.5])
                     self.main_plot.addItem(self.zoom_roi)
@@ -1563,7 +1563,7 @@ class MainPage(QMainWindow):
             # the SI prefix (in this case kHz)
             self.specPlot.getAxis('left').setTextPen(black_pen)
             self.specPlot.setLabel('left', "PSD", units='log(V**2/Hz)')
-            self.specPlot.setXRange(self.si.min_fs,self.si.max_fs,padding=0)
+            self.specPlot.setXRange(self.si.min_fs, self.si.max_fs, padding=0)
             self.specPlot.setLogMode(False, True)
             self.specPlot.setTitle(self.si.chn_name,color='k',size='16pt')
         if self.btn_zoom.text() == "Close zoom":
@@ -1571,8 +1571,9 @@ class MainPage(QMainWindow):
             # and you do not redraw the roi will not be shown
             if not self.zoom_roi is None:
                 self.main_plot.removeItem(self.zoom_roi)
+            pen = pg.mkPen(color=(178, 7, 245), width=3, style=QtCore.Qt.SolidLine)
             self.zoom_roi = pg.RectROI([self.zoom_roi_pos[0],self.zoom_roi_pos[1]],
-                                        [self.zoom_roi_size[0],self.zoom_roi_size[1]], pen=(1,9))
+                                        [self.zoom_roi_size[0],self.zoom_roi_size[1]], pen=pen)
             self.zoom_roi.addScaleHandle([0.5,1],[0.5,0.5])
             self.zoom_roi.addScaleHandle([0,0.5],[0.5,0.5])
             self.main_plot.addItem(self.zoom_roi)
@@ -1763,11 +1764,12 @@ class MainPage(QMainWindow):
         pen = QPen(QColor(0,0,0))
         self.spec_plot_lines.append(self.specPlot.plot(f,Pxx_den, clickable=False, pen=pen))
 
-
         self.specPlot.setMouseEnabled(x=False, y=False)
         qGraphicsGridLayout = self.plot_layout.ci.layout
         qGraphicsGridLayout.setRowStretchFactor(0, 2)
         qGraphicsGridLayout.setRowStretchFactor(1, 1)
+        # call move plot to update all params
+        self.call_move_plot(0, 0)
 
     def spec_time_select_changed(self):
         """ Function called when the user changes the region that selects where in
@@ -1889,6 +1891,7 @@ class MainPage(QMainWindow):
                         orientation=pg.LinearRegionItem.Vertical)
         self.statSelectTimeRect.setSpan((chn + 2) / (self.ci.nchns_to_plot + 3),
                                         (chn + 3) / (self.ci.nchns_to_plot + 3))
+        self.statSelectTimeRect.setBounds([0, self.edf_info.fs * self.window_size])
         self.main_plot.addItem(self.statSelectTimeRect)
         self.statSelectTimeRect.sigRegionChangeFinished.connect(self.stat_time_select_changed)
         self.stat_time_select_changed()
