@@ -35,6 +35,10 @@ You can then run the visualizer from the main folder using
     
 For more command line options, see the section below. 
     
+Documentation:
+-----
+You can find documentation [here](https://engineering.jhu.edu/nsa/links/epviz/).
+
 Features:
 -----
 ***EDF files:***  
@@ -49,9 +53,6 @@ This will save the signals that are currently being plotted. If the signals are 
 ***Saving to .png:***  
 This will save an image of the current graph along with any predictions that are plotted. 
 
-Documentation:
------
-You can find documentation [here](https://engineering.jhu.edu/nsa/links/epviz/).
 
 ![](epviz0.png)
 
@@ -90,6 +91,7 @@ Unit tests are located in the tests directory. To run the tests:
 ```
 ./run_tests
 ```
+All tests will be run via a Github Action when pull requests are created.
 
 Style guide:
 -----
