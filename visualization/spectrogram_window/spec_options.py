@@ -2,7 +2,6 @@
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QGridLayout,
                                 QComboBox, QDoubleSpinBox)
-from PyQt5.QtGui import QFont
 import numpy as np
 from matplotlib.backends.qt_compat import QtWidgets
 

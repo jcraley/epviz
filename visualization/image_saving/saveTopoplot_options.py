@@ -42,6 +42,10 @@ class SaveTopoplotOptions(QWidget):
         self.parent = parent
         self.plot_title = ""
         self.show_subplot_times = 0
+        self.plot_single_time = 0 # default to plotting everything
+        line_val = self.parent.topoplot_line.value() + self.parent.count * self.parent.edf_info.fs
+        line_val = line_val / self.parent.edf_info.fs
+        self.plot_at_time = self._get_pred_sample_from_time(line_val) # start where line is
         self.setup_ui()
 
     def setup_ui(self):
@@ -61,12 +65,9 @@ class SaveTopoplotOptions(QWidget):
         self.cbox_single_time = QCheckBox("Single plot (time in sec):", self)
         self.title_input = QLineEdit(self)
         self.spinbox_single_time = QDoubleSpinBox(self)
+        self.spinbox_single_time.setRange(0, self.parent.max_time - 1)
         line_val = self.parent.topoplot_line.value() + self.parent.count * self.parent.edf_info.fs
         line_val = line_val / self.parent.edf_info.fs
-        self.plot_single_time = 0 # default to plotting everything
-        self.plot_at_time = self._get_pred_sample_from_time(line_val) # start where line is
-        print(self.plot_at_time)
-        self.spinbox_single_time.setRange(0, self.parent.max_time - 1)
         self.spinbox_single_time.setValue(line_val)
         self.rt_side_layout.addWidget(self.cbox_single_time, 0,0,1,1)
         self.rt_side_layout.addWidget(self.spinbox_single_time, 0,1,1,1)

@@ -1,12 +1,7 @@
 """ Module to hold the stats fs band options class """
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtWidgets import (QWidget, QListWidget, QPushButton, QLabel,
-                                QGridLayout, QScrollArea, QListWidgetItem,
-                                QAbstractItemView, QGroupBox, QRadioButton,
-                                QHBoxLayout, QColorDialog, QLineEdit,
-                                QDoubleSpinBox, QDesktopWidget)
-
-from signal_loading.channel_info import ChannelInfo
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QGridLayout,
+                                QLineEdit, QDoubleSpinBox,)
 
 from matplotlib.backends.qt_compat import QtWidgets
 
@@ -20,12 +15,12 @@ class SignalStatsOptions(QWidget):
                 parent - the main (parent) window
         """
         super().__init__()
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
         self.title = 'Add frequency band'
         self.width = int(parent.width / 6)
         self.height = int(parent.height / 4)
-        self.left = int(centerPoint.x() - self.width / 2)
-        self.top = int(centerPoint.y() - self.height / 2)
+        self.left = int(center_point.x() - self.width / 2)
+        self.top = int(center_point.y() - self.height / 2)
         self.data = data
         self.parent = parent
         self.fs_band_count = len(self.data.fs_bands.keys()) - 5
@@ -38,9 +33,9 @@ class SignalStatsOptions(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.resize(QSize(self.width, self.height))
-        
+
         grid_lt = QGridLayout()
-        
+
         lbl_info = QLabel("Add a frequency band with a name. You may add up to 5.")
         grid_lt.addWidget(lbl_info, 0, 0, 1, 5)
 
@@ -67,7 +62,7 @@ class SignalStatsOptions(QWidget):
 
         self.grid_list = QGridLayout()
         grid_lt.addLayout(self.grid_list, 2, 0, 1, 7)
-        
+
         prev_fs = ["alpha", "beta", "gamma", "delta", "theta"]
         for fs_band in self.data.fs_bands.keys():
             if not fs_band in prev_fs:
@@ -144,10 +139,12 @@ class SignalStatsOptions(QWidget):
                 self.parent.grid_layout.addWidget(lbl, ud + curr, 1, 1, 1)
                 self.parent.fs_band_lbls[fs_band] = QtWidgets.QLabel()
                 self.parent.fs_band_lbls[fs_band].setText("")
-                self.parent.grid_layout.addWidget(self.parent.fs_band_lbls[fs_band], ud + curr, 2, 1, 1)
+                self.parent.grid_layout.addWidget(self.parent.fs_band_lbls[fs_band],
+                                                    ud + curr, 2, 1, 1)
                 self.parent.fs_band_sel_lbls[fs_band] = QtWidgets.QLabel()
                 self.parent.fs_band_sel_lbls[fs_band].setText("")
-                self.parent.grid_layout.addWidget(self.parent.fs_band_sel_lbls[fs_band], ud + curr, 3, 1, 1)
+                self.parent.grid_layout.addWidget(self.parent.fs_band_sel_lbls[fs_band],
+                                                    ud + curr, 3, 1, 1)
                 curr += 1
         # update the fields on the side panel
         self.parent.stat_time_select_changed()

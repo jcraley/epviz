@@ -20,16 +20,12 @@ python3 -m pylint visualization/edf_saving/saveEdf_options.py
 
 echo "${red}----------------------------------${reset}"
 echo "${red} Running pylint for filtering ${reset}"
-echo "${green} filter_info.py ${reset}"
-python3 -m pylint visualization/filtering/filter_info.py
 
 echo "${green} filter_options.py ${reset}"
 python3 -m pylint visualization/filtering/filter_options.py
 
 echo "${red}----------------------------------${reset}"
 echo "${red} Running pylint for image_saving ${reset}"
-echo "${green} saveImg_info.py ${reset}"
-python3 -m pylint visualization/image_saving/saveImg_info.py
 
 echo "${green} saveImg_options.py ${reset}"
 python3 -m pylint visualization/image_saving/saveImg_options.py
@@ -47,14 +43,9 @@ python3 -m pylint visualization/predictions/prediction_options.py
 
 echo "${red}----------------------------------${reset}"
 echo "${red} Running pylint for preprocessing ${reset}"
-echo "${green} dsp.py ${reset}"
-python3 -m pylint visualization/preprocessing/dsp.py
 
 echo "${green} edf_loader.py ${reset}"
 python3 -m pylint visualization/preprocessing/edf_loader.py
-
-echo "${green} edf_info.py ${reset}"
-python3 -m pylint visualization/preprocessing/eeg_info.py
 
 echo "${red}----------------------------------${reset}"
 echo "${red} Running pylint for signal_loading ${reset}"
@@ -72,8 +63,6 @@ python3 -m pylint visualization/signal_loading/organize_channels.py
 
 echo "${red}----------------------------------${reset}"
 echo "${red} Running pylint for spectrograms ${reset}"
-echo "${green} spec_info.py ${reset}"
-python3 -m pylint visualization/spectrogram_window/spec_info.py
 
 echo "${green} spec_options.py ${reset}"
 python3 -m pylint visualization/spectrogram_window/spec_options.py
@@ -84,8 +73,8 @@ echo "${red} Running pylint for signal stats ${reset}"
 echo "${green} signalStats_info.py ${reset}"
 python3 -m pylint visualization/signal_stats/signalStats_info.py
 
-echo "${green} statsFsBand_options.py ${reset}"
-python3 -m pylint visualization/signal_stats/statsFsBand_options.py
+echo "${green} signalStats_options.py ${reset}"
+python3 -m pylint visualization/signal_stats/signalStats_options.py
 
 echo "${red}----------------------------------${reset}"
 echo "${red} Running pylint for utils and plot.py ${reset}"
