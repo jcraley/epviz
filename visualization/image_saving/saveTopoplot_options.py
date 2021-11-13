@@ -33,11 +33,11 @@ class SaveTopoplotOptions(QWidget):
                 parent - the main (parent) window
         """
         super().__init__()
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
         self.width = int(parent.width / 2)
         self.height = int(parent.height / 2)
-        self.left = int(centerPoint.x() - self.width / 2)
-        self.top = int(centerPoint.y() - self.height / 2)
+        self.left = int(center_point.x() - self.width / 2)
+        self.top = int(center_point.y() - self.height / 2)
         self.title = 'Save topoplot'
         self.parent = parent
         self.plot_title = ""
@@ -99,8 +99,7 @@ class SaveTopoplotOptions(QWidget):
     def add_times(self):
         """ Called when cbox is checked to set the times on the plot.
         """
-        cbox = self.sender()
-        if cbox.isChecked():
+        if self.cbox_add_times.isChecked():
             self.show_subplot_times = 1
         else:
             self.show_subplot_times = 0
@@ -136,7 +135,7 @@ class SaveTopoplotOptions(QWidget):
         """
         self.toggle_plot_single_time()
 
-    def _get_pred_sample_from_time(self, time_val:float):
+    def _get_pred_sample_from_time(self, time_val: float):
         """ Get the value of the prediction from the time.
 
             Args:
@@ -205,7 +204,7 @@ class SaveTopoplotOptions(QWidget):
         ws = self.parent.window_size
         width = int(self.parent.pi.pred_width)
         fs = self.parent.edf_info.fs
-        for i in range(count* fs,(count + ws) * fs):
+        for i in range(count * fs, (count + ws) * fs):
             if i % width == 0:
                 start = i / width
                 break

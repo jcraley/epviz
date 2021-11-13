@@ -63,6 +63,13 @@ find tests -name '*tests.py' -print0 |
             python3 -m coverage run "$line"
             echo "${cyan} Coverage Report for ${line}"
             python3 -m coverage report -m visualization/preprocessing/edf_loader.py
+        elif [[ $line = "tests/image_saving_tests.py" ]]
+        then
+            echo "${green} Running tests for ${line} ${reset}"
+            python3 -m coverage run "$line"
+            echo "${cyan} Coverage Report for ${line}"
+            python3 -m coverage report -m visualization/image_saving/saveImg_options.py
+            python3 -m coverage report -m visualization/image_saving/saveTopoplot_options.py
         fi
     done
 echo "${reset}"

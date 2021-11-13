@@ -22,8 +22,6 @@ class TestEdfSaving(unittest.TestCase):
         args = get_args()
         check_args(args)
         self.parent = MainPage(args, app)
-        # self.parent.argv.save_edf_fn = "/Users/daniellecurrey/Desktop/test0.edf"
-        # self._load_signals()
         self.saveedf_info = SaveEdfInfo()
         self.saveedf_info.fn = self.TEST_FN
         self.ui = SaveEdfOptions(self.saveedf_info, self.parent)
