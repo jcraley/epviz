@@ -76,6 +76,11 @@ jobs:
           python3 -m unittest tests/spectrogram_tests.py
         env:
           QT_QPA_PLATFORM: offscreen
+      - name: Run image saving tests
+        run: |
+          python3 -m unittest tests/image_saving_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
       - name: Run plot tests
         run: |
           python3 -m unittest tests/plot_tests.py
