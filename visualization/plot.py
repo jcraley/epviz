@@ -1136,12 +1136,16 @@ class MainPage(QMainWindow):
             nchns = self.ci.nchns_to_plot
             labels = self.ci.labels_to_plot
 
-            # if predictions, save them as well
+            # if predictions, save them as well UNLESS multiclass
             if self.predicted == 1:
-                if self.pi.pred_by_chn:
+                if self.pi.pred_by_chn and not self.pi.multi_class:
                     saved_edf = pyedflib.EdfWriter(file + '.edf', nchns * 2)
-                else:
+                elif not self.pi.pred_by_chn and not self.pi.multi_class:
                     saved_edf = pyedflib.EdfWriter(file + '.edf', nchns + 1)
+                else:
+                    self.throw_alert("Only saving binary predictions is supported" +
+                                     "\n at this time. Predictions will not be saved.")
+                    saved_edf = pyedflib.EdfWriter(file + '.edf', nchns)
             else:
                 saved_edf = pyedflib.EdfWriter(file + '.edf', nchns)
 
@@ -1155,7 +1159,7 @@ class MainPage(QMainWindow):
                 saved_edf.setSamplefrequency(i, fs)
                 saved_edf.setLabel(i, labels[i + 1])
             # if predictions, save them as well
-            if self.predicted == 1:
+            if self.predicted == 1 and not self.pi.multi_class:
                 temp = []
                 for i in range(nchns):
                     temp.append(data_to_save[i])
@@ -1167,8 +1171,6 @@ class MainPage(QMainWindow):
                             nchns + i, fs / self.pi.pred_width)
                         saved_edf.setLabel(nchns + i, "PREDICTIONS_" + str(i))
                     for i in range(nchns):
-                        print(self.pi.preds_to_plot[:, i].shape)
-                        print(np.squeeze(self.pi.preds_to_plot[:, i]).shape)
                         temp.append(self.pi.preds_to_plot[:, i])
                 else:
                     saved_edf.setPhysicalMaximum(nchns, 1)
@@ -1177,8 +1179,6 @@ class MainPage(QMainWindow):
                     saved_edf.setLabel(nchns, "PREDICTIONS")
                     temp.append(self.pi.preds_to_plot)
                 data_to_save = temp
-                # for i in range(len(temp)):
-                #    print(len(temp[i]))
             saved_edf.writeSamples(data_to_save)
 
             # write annotations
@@ -1611,8 +1611,11 @@ class MainPage(QMainWindow):
         """
         self.topoplot_dock.show()
         black_pen = QPen(QColor(0,0,0))
-        self.topoplot_line = pg.InfiniteLine(pos=self.edf_info.fs,
+        if not self.topoplot_line is None:
+            self.main_plot.removeItem(self.topoplot_line)
+        self.topoplot_line = pg.InfiniteLine(pos=self.topoplot_line_val,
                                 angle=90, movable=True,pen=black_pen)
+        self.topoplot_line.sigPositionChanged.connect(self.update_topoplot_line)
         self.main_plot.addItem(self.topoplot_line)
         self.topoplot_line.setZValue(2000)
 
