@@ -8,9 +8,7 @@ on:
   push:
     branches:    
       # Push events on main branch
-      # - main
-      # Push events to branches matching refs/heads/mona/octocat
-      - 'tests'
+      - 'main'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
