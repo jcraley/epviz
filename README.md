@@ -34,7 +34,9 @@ You can then run the visualizer from the main folder using
     ```python visualization/plot.py```
     
 For more command line options, see the section below. 
-    
+
+Find an issue? [Let us know.](https://github.com/jcraley/epviz/issues).
+
 Documentation:
 -----
 You can find documentation [here](https://engineering.jhu.edu/nsa/links/epviz/).
@@ -95,15 +97,12 @@ All tests will be run via a Github Action when pull requests are created.
 
 Style guide:
 -----
-We are using Pylint to comply with PEP8 style guidelines.
+We are using Pylint to ensure quality code style in accordance with PEP 8 guidelines.
 
 To run Pylint on the visualizer code:
 ```
 ./run_pylint
 ```
-
-Find an issue? [Let us know](https://github.com/jcraley/epviz/issues).
-
 
 Test files:
 -----
