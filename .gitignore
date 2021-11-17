@@ -4,4 +4,4 @@
 dist/
 EPViz.egg-info/
 eeg-gui-venv/
-*__pycache__/
+__pycache__/
