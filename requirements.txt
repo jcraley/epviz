@@ -6,3 +6,5 @@ torch==1.9.0
 pyedflib==0.1.22
 pyqtgraph==0.12.2
 mne==0.23.4
+coverage==5.5
+pylint==2.11.1

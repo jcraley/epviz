@@ -1,0 +1,7 @@
+.DS_Store
+.coverage
+.edf
+dist/
+EPViz.egg-info/
+eeg-gui-venv/
+__pycache__/

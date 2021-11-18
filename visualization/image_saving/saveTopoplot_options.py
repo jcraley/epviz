@@ -2,8 +2,9 @@
 import math
 import numpy as np
 
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import (QHBoxLayout, QWidget, QCheckBox, QGridLayout,
-                             QLineEdit, QDialogButtonBox, QFileDialog, QDoubleSpinBox)
+                             QLineEdit, QDialogButtonBox, QFileDialog, QDoubleSpinBox,)
 from PyQt5 import QtWidgets
 
 from matplotlib.backends.backend_qt5agg import FigureCanvas
@@ -32,14 +33,19 @@ class SaveTopoplotOptions(QWidget):
                 parent - the main (parent) window
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
+        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
+        self.width = int(parent.width / 2)
+        self.height = int(parent.height / 2)
+        self.left = int(center_point.x() - self.width / 2)
+        self.top = int(center_point.y() - self.height / 2)
         self.title = 'Save topoplot'
-        self.width = parent.width / 2
-        self.height = parent.height / 2
         self.parent = parent
         self.plot_title = ""
         self.show_subplot_times = 0
+        self.plot_single_time = 0 # default to plotting everything
+        line_val = self.parent.topoplot_line.value() + self.parent.count * self.parent.edf_info.fs
+        line_val = line_val / self.parent.edf_info.fs
+        self.plot_at_time = self._get_pred_sample_from_time(line_val) # start where line is
         self.setup_ui()
 
     def setup_ui(self):
@@ -49,9 +55,8 @@ class SaveTopoplotOptions(QWidget):
         # left side - plot window
         self.m = PlotCanvas(self, width=7, height=7)
         self.layout.addWidget(self.m)
-        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(center_point.x() - self.width / 2,
-                center_point.y() - self.height / 2, self.width, self.height)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         # right side - options
         self.rt_side_layout = QGridLayout()
@@ -60,11 +65,9 @@ class SaveTopoplotOptions(QWidget):
         self.cbox_single_time = QCheckBox("Single plot (time in sec):", self)
         self.title_input = QLineEdit(self)
         self.spinbox_single_time = QDoubleSpinBox(self)
+        self.spinbox_single_time.setRange(0, self.parent.max_time - 1)
         line_val = self.parent.topoplot_line.value() + self.parent.count * self.parent.edf_info.fs
         line_val = line_val / self.parent.edf_info.fs
-        self.plot_single_time = 0 # default to plotting everything
-        self.plot_at_time = self._get_pred_sample_from_time(line_val) # start where line is
-        self.spinbox_single_time.setRange(0, self.parent.max_time - 1)
         self.spinbox_single_time.setValue(line_val)
         self.rt_side_layout.addWidget(self.cbox_single_time, 0,0,1,1)
         self.rt_side_layout.addWidget(self.spinbox_single_time, 0,1,1,1)
@@ -96,8 +99,7 @@ class SaveTopoplotOptions(QWidget):
     def add_times(self):
         """ Called when cbox is checked to set the times on the plot.
         """
-        cbox = self.sender()
-        if cbox.isChecked():
+        if self.cbox_add_times.isChecked():
             self.show_subplot_times = 1
         else:
             self.show_subplot_times = 0
@@ -133,7 +135,7 @@ class SaveTopoplotOptions(QWidget):
         """
         self.toggle_plot_single_time()
 
-    def _get_pred_sample_from_time(self, time_val:float):
+    def _get_pred_sample_from_time(self, time_val: float):
         """ Get the value of the prediction from the time.
 
             Args:
@@ -161,7 +163,7 @@ class SaveTopoplotOptions(QWidget):
             layout = mne.channels.read_layout('EEG1005')
             pos2d = []
             layout_names = [name.upper() for name in layout.names]
-            for ch in self.parent.ci.labels_to_plot:
+            for ch in reversed(self.parent.ci.labels_to_plot):
                 if ch != "Notes":
                     if '-' in ch:
                         anode, cathode = ch.split('-')
@@ -177,7 +179,7 @@ class SaveTopoplotOptions(QWidget):
             # Scale locations from [-1, 1]
             pos2d = 2 * (pos2d - 0.5)
 
-            im, cn = mne.viz.plot_topomap(curr_score, pos2d, sphere=1,
+            _, _ = mne.viz.plot_topomap(curr_score, pos2d, sphere=1,
                                   axes=self.ax[i], vmin=0, vmax=1, show=False,
                                   outlines='head')
 
@@ -202,7 +204,7 @@ class SaveTopoplotOptions(QWidget):
         ws = self.parent.window_size
         width = int(self.parent.pi.pred_width)
         fs = self.parent.edf_info.fs
-        for i in range(count* fs,(count + ws) * fs):
+        for i in range(count * fs, (count + ws) * fs):
             if i % width == 0:
                 start = i / width
                 break
@@ -235,7 +237,7 @@ class SaveTopoplotOptions(QWidget):
         if len(file[0]) == 0 or file[0] is None:
             return
         self.m.fig.savefig(file[0] + ".png", bbox_inches='tight', dpi=300)
-        self.closeWindow()
+        self.close_window()
 
     def close_window(self):
         """ Called when "ok" is pressed to exit.

@@ -1,11 +1,10 @@
 """ Module for the organize channels window """
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import (QWidget, QListWidget, QPushButton, QLabel,
                                 QGridLayout, QScrollArea, QListWidgetItem,
                                 QAbstractItemView)
 
 import numpy as np
-from signal_loading.channel_info import ChannelInfo
 
 from matplotlib.backends.qt_compat import QtWidgets
 
@@ -20,13 +19,16 @@ class OrganizeChannels(QWidget):
                 parent - the main (parent) window
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
+        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
+        self.width = int(parent.width / 6)
+        self.height = int(parent.height / 2.5)
+        self.left = center_point.x() - self.width / 2
+        self.top = center_point.y() - self.height / 2
         self.title = 'Organize signals'
-        self.width = parent.width / 6
-        self.height = parent.height / 2.5
         self.data = data
         self.parent = parent
+        self.chn_items = []
+        self.labels_flipped = []
         self.setup_ui()
 
     def setup_ui(self):
@@ -48,25 +50,24 @@ class OrganizeChannels(QWidget):
         self.chn_qlist.setDropIndicatorShown(True)
 
         self.scroll.setWidget(self.chn_qlist)
-        self.populateChnList()
+        self.populate_chn_list()
 
         self.setWindowTitle(self.title)
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(centerPoint.x() - self.width / 2,
-                centerPoint.y() - self.height / 2, self.width, self.height)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         lbl_info = QLabel("Drag and drop channels \n to change their order: ")
         grid_lt.addWidget(lbl_info,0,0)
 
         btn_exit = QPushButton('Ok', self)
-        btn_exit.clicked.connect(self.updateChnOrder)
+        btn_exit.clicked.connect(self.update_chn_order)
         grid_lt.addWidget(btn_exit,2,0)
         grid_lt.addWidget(self.scroll,1,0)
         self.setLayout(grid_lt)
 
         self.show()
 
-    def populateChnList(self):
+    def populate_chn_list(self):
         """ Fills the list with all of the channels to be loaded.
         """
         self.chn_items = []
@@ -75,28 +76,32 @@ class OrganizeChannels(QWidget):
         if len(self.data.labels_to_plot) == 0:
             self.close_window()
         else:
-            for i in range(len(self.data.labels_to_plot) - 1):                
+            for i in range(len(self.data.labels_to_plot) - 1):
                 self.labels_flipped.append(self.data.labels_to_plot[i+1])
-                self.chn_items.append(QListWidgetItem(self.data.labels_to_plot[len(self.data.labels_to_plot) - 1 - i], self.chn_qlist))
+                self.chn_items.append(QListWidgetItem(
+                    self.data.labels_to_plot[len(self.data.labels_to_plot) - 1 - i],
+                    self.chn_qlist))
                 self.chn_qlist.addItem(self.chn_items[i])
             self.scroll.show()
 
-    def updateChnOrder(self):
+    def update_chn_order(self):
         """ Function to check the clicked channels and exit.
         """
         temp_labels = ["Notes"]
         temp_colors = []
         temp_data = np.zeros(self.data.data_to_plot.shape)
         for i in range(len(self.data.colors)):
-            temp_labels.append(self.data.labels_to_plot[i+1])
+            temp_labels.append(self.data.labels_to_plot[i + 1])
             temp_colors.append(self.data.colors[i])
-            temp_data[i,:] += self.data.data_to_plot[i,:]
+            temp_data[i, :] += self.data.data_to_plot[i, :]
 
         for k in range(len(self.chn_items)):
             row = self.chn_qlist.row(self.chn_items[k])
             temp_labels[len(self.chn_items) - row] = self.chn_items[k].text()
-            temp_colors[len(self.chn_items) - row - 1] = self.data.colors[len(self.chn_items) - k - 1]
-            temp_data[len(self.chn_items) - row - 1,:] = self.data.data_to_plot[len(self.chn_items) - k - 1,:]
+            temp_colors[len(self.chn_items) - row - 1] = self.data.colors[
+                                                len(self.chn_items) - k - 1]
+            temp_data[len(self.chn_items) - row - 1,:] = self.data.data_to_plot[
+                                                    len(self.chn_items) - k - 1,:]
         self.data.labels_to_plot = temp_labels
         self.data.colors = temp_colors
         self.data.data_to_plot = temp_data

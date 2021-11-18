@@ -1,0 +1,86 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Run tests
+
+# Controls when the workflow will run
+on:
+  pull_request:
+  push:
+    branches:    
+      # Push events on main branch
+      - 'main'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Setup python version
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - name: Install dependencies
+        run: |
+          pip install numpy==1.21.2  
+          pip install -r requirements.txt  
+      - name: Run signal loading tests
+        run: |
+          python3 -m unittest tests/signal_loading_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - name: Run filtering tests
+        run: |
+          python3 -m unittest tests/filter_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - name: Run plot utils tests
+        run: |
+          python3 -m unittest tests/plot_utils_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - name: Run signal stats tests
+        run: |
+          python3 -m unittest tests/signal_stats_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - name: Run edf saving tests
+        run: |
+          python3 -m unittest tests/edf_saving_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - name: Run prediction tests
+        run: |
+          python3 -m unittest tests/prediction_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - name: Run edf loader tests
+        run: |
+          python3 -m unittest tests/edf_loader_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - name: Run spectrogram tests
+        run: |
+          python3 -m unittest tests/spectrogram_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - name: Run image saving tests
+        run: |
+          python3 -m unittest tests/image_saving_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - name: Run plot tests
+        run: |
+          python3 -m unittest tests/plot_tests.py
+        env:
+          QT_QPA_PLATFORM: offscreen

@@ -1,12 +1,42 @@
 """ Module for the anonymizer window """
-from PyQt5.QtCore import Qt, QTime, QDate
+from PyQt5.QtCore import Qt, QTime, QDate, QSize
 
-from PyQt5.QtWidgets import (QMessageBox, QWidget, QPushButton, QLabel,
-                             QGridLayout, QLineEdit, QTimeEdit, QFrame,
-                             QDateEdit, QGroupBox, QRadioButton, QHBoxLayout,
-                             QCheckBox)
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QGridLayout,
+                             QLineEdit, QTimeEdit, QFrame, QDateEdit,
+                             QGroupBox, QRadioButton, QHBoxLayout,
+                             QCheckBox,)
 from PyQt5.QtGui import QFont
 from matplotlib.backends.qt_compat import QtWidgets
+
+MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP",
+          "OCT","NOV","DEC"]
+
+def _valid_date(datetext):
+    """ Function to check if a date is valid.
+        Valid dates are in the form 05-DEC-1998.
+
+        Args:
+            datetext - the date in the form DD-MMM-YYYY
+        Returns:
+            -1 if the date is invalid, 0 if the date is valid
+    """
+    date = datetext.split("-")
+    if len(date) != 3:
+        return -1
+    if len(date[2]) != 4:
+        return -1
+    if len(date[0]) != 2:
+        return -1
+    try:
+        MONTHS.index(date[1])
+    except ValueError:
+        return -1
+    try:
+        int(date[2])
+        int(date[0])
+    except ValueError:
+        return -1
+    return 0
 
 class Anonymizer(QWidget):
     """ Class for the anonymizer window """
@@ -18,20 +48,20 @@ class Anonymizer(QWidget):
                 parent - the main gui window object
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
         self.title = 'EDF Anonymizer'
-        size_object = QtWidgets.QDesktopWidget().screenGeometry(-1)
-        self.width = size_object.width() * 0.2
-        self.height = size_object.height() * 0.2
+        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
+        self.width = int(parent.width / 2)
+        self.height = int(parent.height / 1.1)
+        self.left = center_point.x() - int(self.width / 2)
+        self.top = center_point.y() - int(self.height / 2)
         self.field_defaults = [bytes(" " * 80, 'utf-8'), bytes(" " * 80, 'utf-8'),
                                 bytes("01.01.01", 'utf-8'), bytes("01.01.01", 'utf-8')]
 
         self.data = data
         self.parent = parent
 
-        self.MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP",
-                        "OCT","NOV","DEC"]
+        self.input_fn = ""
+        self.input_fn_text = ""
 
         self.init_ui()
 
@@ -130,10 +160,10 @@ class Anonymizer(QWidget):
         ptidother = QLineEdit()
         self.oldpt_id_fields = [hospcode,groupbox_sex,groupbox_date,ptname,ptidother]
 
-        for i,l in enumerate(self.pt_id_lbls):
-            pt_id_rec_info_fields.addWidget(l,i + 3,1)
-            pt_id_rec_info_fields.addWidget(self.oldpt_id_fields[i],i + 3,2)
-            pt_id_rec_info_fields.addWidget(self.pt_id_fields[i],i + 3,3)
+        for i, lbl in enumerate(self.pt_id_lbls):
+            pt_id_rec_info_fields.addWidget(lbl, i + 3,1)
+            pt_id_rec_info_fields.addWidget(self.oldpt_id_fields[i], i + 3, 2)
+            pt_id_rec_info_fields.addWidget(self.pt_id_fields[i], i + 3, 3)
             self.oldpt_id_fields[i].setDisabled(1)
             self.pt_id_fields[i].setDisabled(1)
 
@@ -185,8 +215,8 @@ class Anonymizer(QWidget):
                                    techcode,
                                    equipcode,
                                    recinfoother]
-        for i,l in enumerate(self.rec_info_lbls):
-            pt_id_rec_info_fields.addWidget(l,
+        for i, lbl in enumerate(self.rec_info_lbls):
+            pt_id_rec_info_fields.addWidget(lbl,
                     i + len(self.oldpt_id_fields) + 4,1)
             pt_id_rec_info_fields.addWidget(self.oldrec_info_fields[i],
                     i + len(self.oldpt_id_fields) + 4,2)
@@ -213,8 +243,8 @@ class Anonymizer(QWidget):
         self.date_time_lbls = [lbl_start_date,lbl_start_time]
         self.olddatetimefield_inputs = [oldinput_start_date,oldinput_start_time]
         self.datetimefield_inputs = [inputStartDate,inputStartTime]
-        for i,l in enumerate(self.date_time_lbls):
-            pt_id_rec_info_fields.addWidget(l,i + len(self.oldpt_id_fields) +
+        for i, lbl in enumerate(self.date_time_lbls):
+            pt_id_rec_info_fields.addWidget(lbl, i + len(self.oldpt_id_fields) +
                             len(self.pt_id_lbls) + 6,1)
             self.olddatetimefield_inputs[i].setDisabled(1)
             self.datetimefield_inputs[i].setDisabled(1)
@@ -238,7 +268,8 @@ class Anonymizer(QWidget):
 
         self.lbl_fn = QLabel("No file loaded.")
         self.lbl_fn.setFont(font)
-        layout.addWidget(self.lbl_fn,1,1,1,1)
+        self.lbl_fn.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.lbl_fn,1,0,1,3)
         layout.addWidget(QHLine(), 2, 0, 1, 3)
 
         layout.addWidget(QHLine(), len(self.date_time_lbls) + 5, 0, 1, 3)
@@ -248,6 +279,9 @@ class Anonymizer(QWidget):
 
         self.setWindowTitle(self.title)
         self.setLayout(layout)
+
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         self.set_signals_slots()
         self.show()
@@ -281,8 +315,8 @@ class Anonymizer(QWidget):
         for i in range(len(self.date_time_lbls)):
             self.datetimefield_inputs[i].setDisabled(0)
         # Open the file
-        with open(self.input_fn, 'rb') as f:
-            file = f.read(200)
+        with open(self.input_fn, 'rb') as edffile:
+            file = edffile.read(200)
         file = bytearray(file)
         pt_id_text = file[8:88].decode("utf-8").split(" ")
         rec_info_text = file[88:168].decode("utf-8").split(" ")
@@ -291,7 +325,7 @@ class Anonymizer(QWidget):
             if not (pt_id_text[1] in {"X","F","M"}):
                 pt_id_text[1] = "X"
             if len(pt_id_text) > 2:
-                if self._valid_date(pt_id_text[2]) == -1:
+                if _valid_date(pt_id_text[2]) == -1:
                     pt_id_text[2] = "01-JAN-2001"
         if len(pt_id_text) == 0:
             pt_id_text = ["X","X","01-JAN-2001","X"]
@@ -311,7 +345,7 @@ class Anonymizer(QWidget):
                 pt_id_text[3] = "X"
 
         if len(rec_info_text) > 1:
-            if self._valid_date(rec_info_text[1]) == -1:
+            if _valid_date(rec_info_text[1]) == -1:
                 rec_info_text[1] = "01-JAN-2001"
         if len(rec_info_text) == 0:
             rec_info_text = ["Startdate","01-JAN-2001","X","X","X"]
@@ -347,10 +381,10 @@ class Anonymizer(QWidget):
             self.radio_pt_id_date_x2.setChecked(1)
         else:
             self.radio_pt_id_date2.setChecked(1)
-            yr = int(pt_id_text[2].split("-")[2])
-            mth = self.MONTHS.index(pt_id_text[2].split("-")[1]) + 1
+            year = int(pt_id_text[2].split("-")[2])
+            mth = MONTHS.index(pt_id_text[2].split("-")[1]) + 1
             day = int(pt_id_text[2].split("-")[0])
-            self.dob.setDate(QDate(yr,mth,day))
+            self.dob.setDate(QDate(year,mth,day))
         self.oldpt_id_fields[3].setText(pt_id_text[3])
         if len(pt_id_text) > 4:
             self.oldpt_id_fields[4].setText("".join(pt_id_text[4:]))
@@ -361,10 +395,10 @@ class Anonymizer(QWidget):
             self.rec_info_date_x2.setChecked(1)
         else:
             self.rec_info_date2.setChecked(1)
-            yr = int(rec_info_text[1].split("-")[2])
-            mth = self.MONTHS.index(rec_info_text[1].split("-")[1]) + 1
+            year = int(rec_info_text[1].split("-")[2])
+            mth = MONTHS.index(rec_info_text[1].split("-")[1]) + 1
             day = int(rec_info_text[1].split("-")[0])
-            self.startdate.setDate(QDate(yr,mth,day))
+            self.startdate.setDate(QDate(year,mth,day))
         self.oldrec_info_fields[1].setText(rec_info_text[2])
         self.oldrec_info_fields[2].setText(rec_info_text[3])
         self.oldrec_info_fields[3].setText(rec_info_text[4])
@@ -374,7 +408,7 @@ class Anonymizer(QWidget):
             self.oldrec_info_fields[4].setText("")
 
         yrs = int(file[174:176].decode("utf-8"))
-        if yrs > 20:
+        if yrs > 30:
             yrs = yrs + 1900
         else:
             yrs = yrs + 2000
@@ -407,20 +441,21 @@ class Anonymizer(QWidget):
         else:
             pt_id_date = self.dobedit.date().toString("dd-MMM-yyyy").upper()
 
-        if self.pt_id_fields[0].text() == "" or self.pt_id_fields[0].text() == " ":
+        if self.pt_id_fields[0].text() == "" or self.pt_id_fields[0].text().isspace():
             self.pt_id_fields[0].setText("X")
-        if self.pt_id_fields[3].text() == "" or self.pt_id_fields[3].text() == " ":
+        if self.pt_id_fields[3].text() == "" or self.pt_id_fields[3].text().isspace():
             self.pt_id_fields[3].setText("X")
 
         pt_id = (self.pt_id_fields[0].text().replace(" ","_") + " " + sex + " " +
                 pt_id_date + " " + self.pt_id_fields[3].text().replace(" ","_") + " " +
-                self.pt_id_fields[4].text().replace(" ","_"))
+                self.pt_id_fields[4].text())
 
         if len(pt_id) < 80:
             pt_id = pt_id + " " * (80 - len(pt_id))
         elif len(pt_id) > 80:
-            self.throw_alert("The patient ID fields must be less than 80 characters. You have "
-                    + str(len(pt_id)) + " characters. Please edit your fields and try again.")
+            self.parent.throw_alert("The patient ID fields must be less than 80 characters. "
+                    + "You have " + str(len(pt_id)) + " characters. Please edit your"
+                    + " fields and try again.")
             return
 
         if self.rec_info_date_x.isChecked():
@@ -428,11 +463,11 @@ class Anonymizer(QWidget):
         else:
             rec_info_date = self.startdateedit.date().toString("dd-MMM-yyyy").upper()
 
-        if self.rec_info_fields[1].text() == "" or self.rec_info_fields[1].text() == " ":
+        if self.rec_info_fields[1].text() == "" or self.rec_info_fields[1].text().isspace():
             self.rec_info_fields[1].setText("X")
-        if self.rec_info_fields[2].text() == "" or self.rec_info_fields[2].text() == " ":
+        if self.rec_info_fields[2].text() == "" or self.rec_info_fields[2].text().isspace():
             self.rec_info_fields[2].setText("X")
-        if self.rec_info_fields[3].text() == "" or self.rec_info_fields[3].text() == " ":
+        if self.rec_info_fields[3].text() == "" or self.rec_info_fields[3].text().isspace():
             self.rec_info_fields[3].setText("X")
         rec_info = ("Startdate " + rec_info_date + " "
                     + self.rec_info_fields[1].text().replace(" ","_")
@@ -442,7 +477,7 @@ class Anonymizer(QWidget):
         if len(rec_info) < 80:
             rec_info = rec_info + " " * (80 - len(rec_info))
         elif len(rec_info) > 80:
-            self.throw_alert("The recording information fields must be less than "
+            self.parent.throw_alert("The recording information fields must be less than "
                 + "80 characters. You have " + str(len(rec_info))
                 + " characters. Please edit your fields and try again.")
             return
@@ -519,33 +554,10 @@ class Anonymizer(QWidget):
             self.datetimefield_inputs[0].setDate(QDate(2001,1,1))
             self.datetimefield_inputs[1].setTime(QTime(1,1,1))
 
-    def _valid_date(self,datetext):
-        date = datetext.split("-")
-        if len(date) != 3:
-            return -1
-        if len(date[2]) != 4:
-            return -1
-        if len(date[0]) != 2:
-            return -1
-        if self.MONTHS.index(date[1]) == -1:
-            return -1
-        return 0
-
-    def throw_alert(self, msg, text = ""):
-        """ Throws an alert to the user.
-        """
-        alert = QMessageBox()
-        alert.setIcon(QMessageBox.Information)
-        alert.setText(msg)
-        alert.setInformativeText(text)
-        alert.setWindowTitle("Warning")
-        alert.exec_()
-        self.resize( self.sizeHint() )
-
 class QHLine(QFrame):
     """ Class for a horizontal line widget """
     def __init__(self):
         """ Constructor """
-        super(QHLine, self).__init__()
+        super().__init__()
         self.setFrameShape(QFrame.HLine)
         self.setFrameShadow(QFrame.Sunken)

@@ -11,7 +11,7 @@ from ui_files.saveImg import Ui_Form
 
 class SaveImgOptions(QWidget):
     """ Class for the print preview window """
-    def __init__(self,data,parent):
+    def __init__(self, data, parent):
         """ Constructor.
 
             Args:
@@ -42,8 +42,8 @@ class SaveImgOptions(QWidget):
         self.ann_list = []
         self.aspan_list = []
 
-        self.nchns = self.data.ci.nchns_to_plot
-        self.fs = self.data.fs
+        self.nchns = self.parent.ci.nchns_to_plot
+        self.fs = self.parent.edf_info.fs
         self.plot_data = self.data.data
         self.count = self.data.count
         self.window_size = self.data.window_size
@@ -79,11 +79,6 @@ class SaveImgOptions(QWidget):
     def ann_checked(self):
         """ Called when the annotation cbox is toggled.
         """
-        cbox = self.sender()
-        if cbox.isChecked():
-            self.data.plot_ann = 1
-        else:
-            self.data.plot_ann = 0
         self.make_plot()
 
     def title_checked(self):
@@ -104,22 +99,27 @@ class SaveImgOptions(QWidget):
     def chg_line_thick(self):
         """ Called when the line thickness is changed.
         """
-        thickness = self.sio_ui.lineThickInput.currentText()
-        thickness = float(thickness.split("px")[0])
-        self.data.line_thick = thickness
         self.make_plot()
 
     def chg_text_size(self):
         """ Called when the font size is changed.
         """
-        font_size = self.sio_ui.textSizeInput.currentText()
-        font_size = int(font_size.split("pt")[0])
-        self.data.font_size = font_size
         self.make_plot()
 
     def make_plot(self):
         """ Makes the plot with the given specifications.
         """
+        # Get values
+        self.data.plot_ann = self.sio_ui.annCbox.isChecked()
+        # Protect against special case when text size gets set before line thickness
+        if self.sio_ui.lineThickInput.currentIndex() != -1:
+            thickness = self.sio_ui.lineThickInput.currentText()
+            thickness = float(thickness.split("px")[0])
+            self.data.line_thick = thickness
+        font_size = self.sio_ui.textSizeInput.currentText()
+        font_size = int(font_size.split("pt")[0])
+        self.data.font_size = font_size
+
         self.m.fig.clf()
         self.ax = self.m.fig.add_subplot(self.m.gs[0])
 
@@ -251,7 +251,7 @@ class SaveImgOptions(QWidget):
                                                             color=(r,g,b,a)))
 
 
-        self.ax.set_xlim([0, self.fs*self.window_size])
+        self.ax.set_xlim([0, self.fs * self.window_size])
         step_size = self.fs  # Updating the x labels with scaling
         step_width = 1
         if self.window_size >= 15 and self.window_size <= 25:
@@ -316,7 +316,7 @@ class SaveImgOptions(QWidget):
                 self.close_window()
         else:
             file = QFileDialog.getSaveFileName(self, 'Save File')
-            if len(file[0]) == 0 or file[0] == None:
+            if len(file[0]) == 0 or file[0] is None:
                 return
             else:
                 self.ax.figure.savefig(file[0] + ".png",

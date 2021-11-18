@@ -1,5 +1,7 @@
 """ Module for the infomation needed for the edf header """
 import datetime
+MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP",
+          "OCT","NOV","DEC"]
 
 class SaveEdfInfo():
     """ Data structure for holding information for saving to edf namely
@@ -13,7 +15,7 @@ class SaveEdfInfo():
         self.start_date = "01.01.01"
         self.start_time = "01.01.01"
         self.py_h = 2
-        self.pyedf_header = {'technician': '002', 'recording_additional': '', 'patientname': '',
+        self.pyedf_header = {'technician': '', 'recording_additional': '', 'patientname': '',
                         'patient_additional': '', 'patientcode': '', 'equipment': '',
                         'admincode': '', 'gender': '',
                         'startdate': datetime.datetime(2001, 1, 1, 1, 1, 1),
@@ -34,10 +36,9 @@ class SaveEdfInfo():
         self.pyedf_header['patientcode'] = pt_id_fields[0]
         self.pyedf_header['gender'] = pt_id_fields[1]
         if pt_id_fields[2] != "X":
-            MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP",
-                            "OCT","NOV","DEC"]
             month = MONTHS.index(pt_id_fields[2].split("-")[1]) + 1
-            self.pyedf_header['birthdate'] = datetime.datetime(int(pt_id_fields[2].split("-")[2]), month, int(pt_id_fields[2].split("-")[0]))
+            self.pyedf_header['birthdate'] = datetime.datetime(int(pt_id_fields[2].split("-")[2]),
+                                                        month, int(pt_id_fields[2].split("-")[0]))
         else:
             self.pyedf_header['birthdate'] = ""
         self.pyedf_header['patientname'] = pt_id_fields[3]
@@ -54,14 +55,16 @@ class SaveEdfInfo():
         else:
             self.pyedf_header['recording_additional'] = ""
 
-        yr = int(self.start_date.split(".")[2])
-        if yr > 20:
-            yr += 1900
+        year = int(self.start_date.split(".")[2])
+        if year > 30:
+            year += 1900
         else:
-            yr += 2000
-        self.pyedf_header['startdate'] = datetime.datetime(yr,
-                                            int(self.start_date.split(".")[1]),
-                                            int(self.start_date.split(".")[0]),
-                                            int(self.start_time.split(".")[0]),
-                                            int(self.start_time.split(".")[1]),
-                                            int(self.start_time.split(".")[2]))
+            year += 2000
+        start_date = self.start_date.split(".")
+        start_time = self.start_time.split(".")
+        self.pyedf_header['startdate'] = datetime.datetime(year,
+                                            int(start_date[1]),
+                                            int(start_date[0]),
+                                            int(start_time[0]),
+                                            int(start_time[1]),
+                                            int(start_time[2]))

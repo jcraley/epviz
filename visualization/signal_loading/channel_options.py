@@ -1,15 +1,17 @@
 """ Module for loading channels """
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import (QVBoxLayout, QWidget, QListWidget, QPushButton,
                                 QCheckBox, QLabel, QGridLayout, QScrollArea,
-                                QListWidgetItem, QAbstractItemView, QFileDialog)
+                                QListWidgetItem, QAbstractItemView, QFileDialog,)
+
+from matplotlib.backends.qt_compat import QtWidgets
 
 import numpy as np
-from predictions.preds_info import PredsInfo
-from signal_loading.channel_info import ChannelInfo, convert_txt_chn_names
+import pyedflib
+from predictions.prediction_info import PredictionInfo
+from signal_loading.channel_info import convert_txt_chn_names
 from signal_loading.organize_channels import OrganizeChannels
 from signal_loading.color_options import ColorOptions
-import pyedflib
 
 class ChannelOptions(QWidget):
     """ Class for the channel loading window """
@@ -17,17 +19,16 @@ class ChannelOptions(QWidget):
         """ Constructor for channel loading.
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
-        self.title = 'Select signals'
-        self.width = int(parent.width / 5)
+        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        self.width = int(parent.width / 4)
         self.height = int(parent.height / 2.5)
-        # self.unprocessed_data = data_for_preds
+        self.left = int(centerPoint.x() - self.width / 2)
+        self.top = int(centerPoint.y() - self.height / 2)
+        self.title = 'Select signals'
         # if loading new data make copies in case user cancels loading channels
         self.new_load = 0
-        # if len(self.unprocessed_data) != 0:
         if data.edf_fn != parent.ci.edf_fn:
-            self.pi = PredsInfo()
+            self.pi = PredictionInfo()
             self.new_load = 1
         else:
             self.pi = parent.pi
@@ -60,12 +61,9 @@ class ChannelOptions(QWidget):
         self.ar1020 = self.data.can_do_bip_ar(1,0)
         self.bip1020 = self.data.can_do_bip_ar(0,0)
         self.ar1010 = self.data.can_do_bip_ar(1,1)
-        #self.bip1010 = self.data.can_do_bip_ar(0,1)
         self.data.total_nchns = len(self.data.chns2labels)
 
         self.setWindowTitle(self.title)
-        self.setGeometry(int(self.parent.width / 3), int(self.parent.height / 3),
-                                self.width, self.height)
 
         lbl_info = QLabel("Select channels to plot: ")
         grid_lt.addWidget(lbl_info,0,0)
@@ -94,14 +92,6 @@ class ChannelOptions(QWidget):
             self.cbox_ar1010.toggled.connect(self.ar_checked1010)
             grid_lt.addWidget(self.cbox_ar1010,3,0)
 
-        #    self.cbox_bip1010 = QCheckBox("Bipolar (10-10)",self)
-        #    self.cbox_bip1010.toggled.connect(self.bip_checked1010)
-        #    grid_lt.addWidget(self.cbox_bip1010,4,0)
-        #elif self.bip1010:
-        #    self.cbox_bip1010 = QCheckBox("Bipolar (10-10)",self)
-        #    self.cbox_bip1010.toggled.connect(self.bip_checked1010)
-        #    grid_lt.addWidget(self.cbox_bip1010,3,0)
-
         self.chn_cbox_list = QWidget()
         self.scroll_chn_cbox.setWidget(self.chn_cbox_list)
         self.chn_cbox_layout = QVBoxLayout()
@@ -112,18 +102,10 @@ class ChannelOptions(QWidget):
         self.uncheck_txt_files()
 
         grid_lt.addWidget(self.scroll_chn_cbox,5,0)
-        #self.cbox_txtfile = QCheckBox("",self)
-        #self.cbox_txtfile.toggled.connect(self.txtFileChecked)
-        #grid_lt.addWidget(self.cbox_txtfile,6,0)
 
         self.btn_loadtxtfile = QPushButton("Load text file",self)
         self.btn_loadtxtfile.clicked.connect(self.load_txt_file)
         grid_lt.addWidget(self.btn_loadtxtfile,6,0)
-
-        #self.btn_cleartxtfile = QPushButton("Clear text file",self)
-        #self.btn_cleartxtfile.clicked.connect(self.clearTxtFile)
-        #self.btn_cleartxtfile.setVisible(0)
-        #grid_lt.addWidget(self.btn_cleartxtfile,6,0)
 
         if len(self.data.txt_file_fn) > 0:
             if self.data.use_loaded_txt_file:
@@ -153,6 +135,9 @@ class ChannelOptions(QWidget):
         layout.addLayout(grid_lt,0,0)
         layout.addLayout(grid_rt,0,1)
         self.setLayout(layout)
+
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         if (not self.parent.argv.montage_file is None) and self.parent.init == 0:
             self.load_txt_file(self.parent.argv.montage_file)
@@ -221,8 +206,8 @@ class ChannelOptions(QWidget):
         if cbox.isChecked():
             self.uncheck_txt_files()
             self.cbox_bip.setChecked(0)
-            #if self.ar1010:
-            #    self.cbox_ar1010.setChecked(0)
+            if self.ar1010:
+                self.cbox_ar1010.setChecked(0)
             #    self.cbox_bip1010.setChecked(0)
             #elif self.bip1010:
             #    self.cbox_bip1010.setChecked(0)
@@ -239,9 +224,6 @@ class ChannelOptions(QWidget):
         if cbox.isChecked():
             if self.ar1010:
                 self.cbox_ar1010.setChecked(0)
-        #        self.cbox_bip1010.setChecked(0)
-        #    elif self.bip1010:
-        #        self.cbox_bip1010.setChecked(0)
         if self.ar1020:
             chns = self.data.get_chns(self.data.labelsAR1020)
             if cbox.isChecked():
@@ -272,30 +254,6 @@ class ChannelOptions(QWidget):
         else:
             self._select_chns(chns, 1)
 
-    def bip_checked1010(self):
-        """ Called when bipolar 1010 is called.
-        """
-        cbox = self.sender()
-        chns = self.data.get_chns(self.data.labelsBIP1010)
-        if self.ar1020:
-            chns = self.data.get_chns(self.data.labelsAR1010)
-            if cbox.isChecked():
-                self.cbox_ar.setChecked(0)
-                self.uncheck_txt_files()
-                if self.ar1010:
-                    self.cbox_ar1010.setChecked(0)
-                self.cbox_bip.setChecked(0)
-                self._select_chns(chns, 0)
-            else:
-                self._select_chns(chns, 1)
-        elif cbox.isChecked():
-            self.uncheck_txt_files()
-            self.cbox_bip.setChecked(0)
-            # select all bipolar channels, deselect all others
-            self._select_chns(chns, 0)
-        else:
-            self._select_chns(chns, 1)
-
     def uncheck_txt_files(self):
         """ Deselect all text files.
         """
@@ -305,7 +263,8 @@ class ChannelOptions(QWidget):
                     grand_child.setChecked(0)
 
     def txt_file_checked(self):
-        # Called if a text file is selected.
+        """ Called if a text file is selected.
+        """
         c = self.sender()
         name = c.text()
         chns = self.data.get_chns(self.data.labels_from_txt_file[name])

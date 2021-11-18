@@ -28,14 +28,19 @@ pip install numpy==1.21.2
 pip install -r requirements.txt
 ```
 
-
 Running the visualizer:
 -----
 You can then run the visualizer from the main folder using  
     ```python visualization/plot.py```
     
 For more command line options, see the section below. 
-    
+
+Find an issue? [Let us know.](https://github.com/jcraley/epviz/issues).
+
+Documentation:
+-----
+You can find documentation [here](https://engineering.jhu.edu/nsa/links/epviz/).
+
 Features:
 -----
 ***EDF files:***  
@@ -49,6 +54,7 @@ This will save the signals that are currently being plotted. If the signals are 
 
 ***Saving to .png:***  
 This will save an image of the current graph along with any predictions that are plotted. 
+
 
 ![](epviz0.png)
 
@@ -80,3 +86,30 @@ These options include:
     * Font size for the saved graph
 * Name of the .edf file to save
     * Whether or not to anonymize the file
+
+Tests:
+-----
+Unit tests are located in the tests directory. To run the tests:
+```
+./run_tests
+```
+All tests will be run via a Github Action when pull requests are created.
+
+Style guide:
+-----
+We are using Pylint to ensure quality code style in accordance with PEP 8 guidelines.
+
+To run Pylint on the visualizer code:
+```
+./run_pylint
+```
+
+Test files:
+-----
+Test files come from the CHB-MIT database [1, 2](https://physionet.org/content/chbmit/1.0.0/) and the TUH EEG Corpus [3](https://isip.piconepress.com/projects/tuh_eeg/html/overview.shtml). The license for the CHB-MIT data can be found [here](https://physionet.org/content/chbmit/view-license/1.0.0/).
+
+The test files used in this repo are chb01_03 (from CHB) and 00013145_s004_t004 (from TUH). They have been renamed for convenience. 
+
+Citations for CHB-MIT dataset:
+1. Ali Shoeb. Application of Machine Learning to Epileptic Seizure Onset Detection and Treatment. PhD Thesis, Massachusetts Institute of Technology, September 2009.
+2. Goldberger, A., Amaral, L., Glass, L., Hausdorff, J., Ivanov, P. C., Mark, R., ... & Stanley, H. E. (2000). PhysioBank, PhysioToolkit, and PhysioNet: Components of a new research resource for complex physiologic signals. Circulation [Online]. 101 (23), pp. e215–e220.

@@ -1,11 +1,7 @@
 """ Module for the color options class """
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QWidget, QListWidget, QPushButton, QLabel,
-                                QGridLayout, QScrollArea, QListWidgetItem,
-                                QAbstractItemView, QGroupBox, QRadioButton,
-                                QHBoxLayout, QColorDialog)
-
-from signal_loading.channel_info import ChannelInfo
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QGridLayout,
+                             QGroupBox, QRadioButton, QHBoxLayout, QColorDialog)
 
 from matplotlib.backends.qt_compat import QtWidgets
 
@@ -21,11 +17,12 @@ class ColorOptions(QWidget):
                 chn_ops - the channel options window
         """
         super().__init__()
-        self.left = 10
-        self.top = 10
+        center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
+        self.width = int(parent.width / 2)
+        self.height = int(parent.height / 3)
+        self.left = int(center_point.x() - self.width / 2)
+        self.top = int(center_point.y() - self.height / 2)
         self.title = 'Choose colors'
-        self.width = parent.width / 6
-        self.height = parent.height / 3
         self.data = data
         self.parent = parent
         self.chn_ops = chn_ops
@@ -37,15 +34,12 @@ class ColorOptions(QWidget):
     def setup_ui(self):
         """ Setup UI for the color options window.
         """
-        self.setWindowTitle(self.title)
-        centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
-        self.setGeometry(centerPoint.x() - self.width / 2,
-                centerPoint.y() - self.height / 2, self.width, self.height)
-        
+
         grid_lt = QGridLayout()
-        
-        lbl_info = QLabel("Select the color for each channel:\n Please note that any non-standard channel "
-                        + "\n or names not recognized by the program will be "
+
+        lbl_info = QLabel("Select the color for each channel:"
+                        + "\nPlease note that any non-standard channel "
+                        + "\nor names not recognized by the program will be "
                         + "\nassigned the color of the midline.")
         grid_lt.addWidget(lbl_info,0,0)
 
@@ -112,6 +106,10 @@ class ColorOptions(QWidget):
         btn_exit.clicked.connect(self.check)
         grid_lt.addWidget(btn_exit,4,0)
         self.setLayout(grid_lt)
+
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.resize(QSize(self.width, self.height))
 
         self.show()
 
