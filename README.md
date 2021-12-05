@@ -113,3 +113,4 @@ The test files used in this repo are chb01_03 (from CHB) and 00013145_s004_t004 
 Citations for CHB-MIT dataset:
 1. Ali Shoeb. Application of Machine Learning to Epileptic Seizure Onset Detection and Treatment. PhD Thesis, Massachusetts Institute of Technology, September 2009.
 2. Goldberger, A., Amaral, L., Glass, L., Hausdorff, J., Ivanov, P. C., Mark, R., ... & Stanley, H. E. (2000). PhysioBank, PhysioToolkit, and PhysioNet: Components of a new research resource for complex physiologic signals. Circulation [Online]. 101 (23), pp. e215–e220.
+3. I. Obeid and J. Picone, “The Temple University Hospital EEG Data corpus,” Frontiers in Neuroscience, vol. 10, 2016. 
