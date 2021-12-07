@@ -4,7 +4,7 @@ from os import path
 import sys
 import os
 
-from signal_loading.channel_info import ChannelInfo
+from visualization.signal_loading.channel_info import ChannelInfo
 from signal_loading.channel_options import ChannelOptions
 from filtering.filter_options import FilterOptions
 from filtering.filter_info import FilterInfo
