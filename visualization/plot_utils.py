@@ -3,7 +3,7 @@ from copy import deepcopy
 import numpy as np
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QProgressDialog
-from preprocessing import dsp
+from visualization.preprocessing import dsp
 
 def check_annotations(t_start, window_size, edf_info):
     """ Checks to see if there are any anotations in the range t_start to t_end sec
