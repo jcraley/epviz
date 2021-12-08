@@ -4,6 +4,19 @@ EPViz is a tool to aid researchers in developing, validating, and reporting thei
 
 Installation:
 -----
+```
+pip install EPViz==0.0.0
+```
+
+To run the vizualizer:
+```
+epviz
+```
+
+PyPI package: https://pypi.org/project/EPViz/0.0.0/
+
+Installation (from source):
+-----
 Clone the repository ```git clone https://github.com/jcraley/epviz.git```  
 
 Python >= 3.7 is required. Other packages can be installed by creating a virtual environment and using the provided requirements.txt file.
@@ -28,8 +41,6 @@ pip install numpy==1.21.2
 pip install -r requirements.txt
 ```
 
-Running the visualizer:
------
 You can then run the visualizer from the main folder using  
     ```python visualization/plot.py```
     
