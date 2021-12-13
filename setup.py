@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="EPViz",
-    version="0.0.1",
+    version="0.0.0",
     description="An open source EEG Visualization software",
     long_description=long_description,
     long_description_content_type="text/markdown",
