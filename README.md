@@ -4,6 +4,19 @@ EPViz is a tool to aid researchers in developing, validating, and reporting thei
 
 Installation:
 -----
+```
+pip install EPViz==0.0.0
+```
+
+To run the vizualizer:
+```
+epviz
+```
+
+PyPI package: https://pypi.org/project/EPViz/0.0.0/
+
+Installation (from source):
+-----
 Clone the repository ```git clone https://github.com/jcraley/epviz.git```  
 
 Python >= 3.7 is required. Other packages can be installed by creating a virtual environment and using the provided requirements.txt file.
@@ -28,8 +41,6 @@ pip install numpy==1.21.2
 pip install -r requirements.txt
 ```
 
-Running the visualizer:
------
 You can then run the visualizer from the main folder using  
     ```python visualization/plot.py```
     
@@ -106,10 +117,11 @@ To run Pylint on the visualizer code:
 
 Test files:
 -----
-Test files come from the CHB-MIT database [1, 2](https://physionet.org/content/chbmit/1.0.0/) and the TUH EEG Corpus [3](https://isip.piconepress.com/projects/tuh_eeg/html/overview.shtml). The license for the CHB-MIT data can be found [here](https://physionet.org/content/chbmit/view-license/1.0.0/).
+Test files come from the CHB-MIT database [1, 2](https://physionet.org/content/chbmit/1.0.0/), the TUH EEG Corpus [3](https://isip.piconepress.com/projects/tuh_eeg/html/overview.shtml), and collaborators from the University of Wisconsin-Madison (UW). The University of Wisconsin IRB has approved the UW files for release. The license for the CHB-MIT data can be found [here](https://physionet.org/content/chbmit/view-license/1.0.0/).
 
 The test files used in this repo are chb01_03 (from CHB) and 00013145_s004_t004 (from TUH). They have been renamed for convenience. 
 
 Citations for CHB-MIT dataset:
 1. Ali Shoeb. Application of Machine Learning to Epileptic Seizure Onset Detection and Treatment. PhD Thesis, Massachusetts Institute of Technology, September 2009.
 2. Goldberger, A., Amaral, L., Glass, L., Hausdorff, J., Ivanov, P. C., Mark, R., ... & Stanley, H. E. (2000). PhysioBank, PhysioToolkit, and PhysioNet: Components of a new research resource for complex physiologic signals. Circulation [Online]. 101 (23), pp. e215–e220.
+3. I. Obeid and J. Picone, “The Temple University Hospital EEG Data corpus,” Frontiers in Neuroscience, vol. 10, 2016. 
