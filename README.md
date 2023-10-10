@@ -2,6 +2,8 @@
 
 EPViz is a tool to aid researchers in developing, validating, and reporting their predictive modeling outputs. A lightweight and standalone software package developed in Python, EPViz allows researchers to load a PyTorch deep learning model, apply it to the EEG, and overlay the output channel-wise or subject-level temporal predictions on top of the original time series. 
 
+_Note: this package should be run with Python 3.7. Some newer versions of Python may be incompatible._
+
 Installation:
 -----
 ```
